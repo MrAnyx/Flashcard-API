@@ -1,6 +1,6 @@
 parameters:
     level: 6
-    editorUrl: 'vscode://file/%%file%%:%%line%%'
+    editorUrl: "vscode://file/%%file%%:%%line%%"
     paths:
         - bin/
         - config/
