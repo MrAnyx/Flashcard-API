@@ -1,7 +1,5 @@
 {
 	"php-cs-fixer.onsave": true,
-	"php-cs-fixer.config": ".php-cs-fixer.php",
-	// "php-cs-fixer.executablePath": "vendor/bin/php-cs-fixer",
 	"php-cs-fixer.allowRisky": false,
 	"php.version": "8.2",
 	"[php]": {
