@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+    database:
+        command: --max-allowed-packet=64MB
+        container_name: flashcard-database
+        image: mariadb
+        ports:
+            - 3306:3306 # To access the database through the mysql extension in vscode
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: flashcard
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+        volumes:
+            - data:/var/lib/mariadb
+        networks:
+            - dev
+
+    adminer:
+        container_name: flashcard-adminer
+        image: adminer
+        ports:
+            - 8081:8080
+        networks:
+            - dev
+        depends_on:
+            - database
+
+    web:
+        container_name: flashcard-web
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - VARIANT=8.2.8-apache
+        ports:
+            - 8080:80
+        volumes:
+            - ../:/var/www
+        networks:
+            - dev
+        depends_on:
+            - database
+
+volumes:
+    data:
+
+networks:
+    dev:

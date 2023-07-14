@@ -1,0 +1,29 @@
+{
+	"name": "Flashcard API",
+	"forwardPorts": [8080, 8081],
+	"portsAttributes": {
+		"8080": {
+			"label": "Web"
+		},
+		"8081": {
+			"label": "Adminer"
+		}
+	},
+	"dockerComposeFile": "docker-compose.yaml",
+	"service": "web",
+	"workspaceFolder": "/var/www",
+	// "postCreateCommand": "task app:default:config",
+	// "remoteUser": "vscode",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"php.executablePath": "/usr/local/bin/php"
+			}
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"version": "latest"
+		}
+	}
+}
