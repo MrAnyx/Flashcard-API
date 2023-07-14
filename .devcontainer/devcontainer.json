@@ -12,7 +12,7 @@
 	"dockerComposeFile": "docker-compose.yaml",
 	"service": "web",
 	"workspaceFolder": "/var/www",
-	// "postCreateCommand": "task app:default:config",
+	"postCreateCommand": "task app:default:config",
 	// "remoteUser": "vscode",
 	"customizations": {
 		"vscode": {

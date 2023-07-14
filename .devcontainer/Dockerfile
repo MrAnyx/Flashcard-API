@@ -1,23 +1,8 @@
 # Dockerfile arguments
 ARG VARIANT=8.2.8-apache
 
-# Dockerfile variables
-# ARG USERNAME=vscode
-# ARG USER_UID=1000
-# ARG USER_GID=$USER_UID
-
 # Pull existing php image
 FROM php:${VARIANT}
-
-# Create the non root user
-# RUN groupadd --gid $USER_GID $USERNAME \
-#     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
-
-# RUN groupadd --gid 1000 vscode \
-#     && useradd --uid 1000 --gid 1000 --create-home vscode --shell /bin/bash
-
-# Set default user
-# USER $USERNAME
 
 # Install Taskfile
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b  /usr/local/bin
