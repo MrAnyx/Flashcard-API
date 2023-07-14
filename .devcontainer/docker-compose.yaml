@@ -20,6 +20,9 @@ services:
     adminer:
         container_name: flashcard-adminer
         image: adminer
+        environment:
+            ADMINER_DEFAULT_SERVER: database
+            ADMINER_DESIGN: dracula
         ports:
             - 8081:8080
         networks:
