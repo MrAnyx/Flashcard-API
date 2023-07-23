@@ -22,7 +22,7 @@ services:
         image: adminer
         environment:
             ADMINER_DEFAULT_SERVER: database
-            ADMINER_DESIGN: dracula
+            ADMINER_DESIGN: galkaev
         ports:
             - 8081:8080
         networks:

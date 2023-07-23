@@ -1,9 +1,7 @@
 {
-	"php-cs-fixer.onsave": true,
-	"php-cs-fixer.allowRisky": false,
-	"php.version": "8.2",
-	"[php]": {
-		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "junstyle.php-cs-fixer"
-	}
+    "php.version": "8.2",
+    "[php]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "open-southeners.laravel-pint"
+    }
 }

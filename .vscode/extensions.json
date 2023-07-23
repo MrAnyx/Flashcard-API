@@ -6,10 +6,10 @@
 		// "ms-vscode.test-adapter-converter",
 		"esbenp.prettier-vscode",
 		// "recca0120.vscode-phpunit",
-		// "MehediDracula.php-namespace-resolver",
+		"MehediDracula.php-namespace-resolver",
 		// "bmewburn.vscode-intelephense-client",
 		// "neilbrayfield.php-docblocker",
-		"junstyle.php-cs-fixer",
+		// "junstyle.php-cs-fixer",
 		// "MykhailoKushnir.vscode-php-getter-setter",
 		// "christian-kohler.path-intellisense",
 		"formulahendry.vscode-mysql",
@@ -20,6 +20,7 @@
 		"miguelsolorio.fluent-icons",
 		"EditorConfig.EditorConfig",
 		"mikestead.dotenv",
-		"adpyke.codesnap"
+		"adpyke.codesnap",
+		"open-southeners.laravel-pint"
 	]
 }
