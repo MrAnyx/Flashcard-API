@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures;
 
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {

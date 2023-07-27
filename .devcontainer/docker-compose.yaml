@@ -17,18 +17,21 @@ services:
         networks:
             - dev
 
-    adminer:
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
         container_name: flashcard-adminer
-        image: adminer
+        links:
+            - database
         environment:
-            ADMINER_DEFAULT_SERVER: database
-            ADMINER_DESIGN: galkaev
-        ports:
-            - 8081:8080
-        networks:
-            - dev
+            PMA_HOST: database
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
         depends_on:
             - database
+        networks:
+            - dev
+        ports:
+            - 8081:80
 
     web:
         container_name: flashcard-web
