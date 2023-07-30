@@ -1,0 +1,4 @@
+gesdinet_jwt_refresh_token:
+    refresh_token_class: App\Entity\JWTRefreshToken
+    single_use: true
+    user_provider: app_user_provider
