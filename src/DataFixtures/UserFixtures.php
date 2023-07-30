@@ -12,7 +12,8 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         Factory::delayFlush(function () {
-            UserFactory::createOne();
+            UserFactory::createOne(['username' => 'admin', 'roles' => ['ROLE_ADMIN']]);
+            UserFactory::createOne(['username' => 'user']);
         });
     }
 }
