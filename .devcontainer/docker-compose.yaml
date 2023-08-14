@@ -17,9 +17,18 @@ services:
         networks:
             - dev
 
+    maildev:
+        image: maildev/maildev
+        container_name: flashcard-mail
+        command: bin/maildev --web 80 --smtp 25 --hide-extensions STARTTLS
+        ports:
+            - 8082:80
+        networks:
+            - dev
+
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
-        container_name: flashcard-adminer
+        container_name: flashcard-phpmyadmin
         links:
             - database
         environment:
@@ -33,8 +42,8 @@ services:
         ports:
             - 8081:80
 
-    web:
-        container_name: flashcard-web
+    api:
+        container_name: flashcard-api
         build:
             context: .
             dockerfile: Dockerfile
