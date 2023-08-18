@@ -4,13 +4,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
-use App\OptionsResolver\UserOptionsResolver;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Exception\InvalidRequestParameterException;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +22,7 @@ class UserController extends AbstractController
     #[Route('/users', name: 'get_users', methods: ['GET'])]
     public function getAllUsers(UserRepository $userRepository): JsonResponse
     {
+        // TODO Add pagination
         $users = $userRepository->findAll();
 
         return $this->json($users);
@@ -35,37 +35,43 @@ class UserController extends AbstractController
     }
 
     #[Route('/users', name: 'create_user', methods: ['POST'])]
-    public function createUser(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, ValidatorInterface $validator, UserOptionsResolver $userOptionsResolver): JsonResponse
-    {
-        $params = json_decode($request->getContent(), true);
+    public function createUser(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $passwordHasher,
+        ValidatorInterface $validator,
+        RequestPayloadService $requestPayloadService
+    ): JsonResponse {
 
-        try {
-            $fields = $userOptionsResolver
-                ->configureEmail(true)
-                ->configureUsername(true)
-                ->configurePassword(true)
-                ->configureRoles(true)
-                ->resolve($params);
-        } catch (\Exception $e) {
-            throw new InvalidRequestParameterException($e->getMessage());
-        }
+        $userDTO = $requestPayloadService->getRequestPayload($request, UserDTO::class);
 
-        $user = new User();
-        $user
-            ->setEmail($fields['email'])
-            ->setUsername($fields['username'])
-            ->setRawPassword($fields['password']);
+        dd($userDTO);
 
-        $user->setPassword($passwordHasher->hashPassword($user, $fields['password']));
+        // // Temporarly create the user
+        // $user = new User();
+        // $user
+        //     ->setEmail($userDto->email)
+        //     ->setUsername($userDto->username)
+        //     ->setRoles($userDto->roles)
+        //     ->setRawPassword($userDto->password);
 
-        $errors = $validator->validate($user);
-        if (count($errors) > 0) {
-            throw new InvalidRequestParameterException((string) $errors[0]->getMessage());
-        }
+        // $user->setPassword($passwordHasher->hashPassword($user, $userDto->password));
 
-        $em->persist($user);
-        $em->flush();
+        // // Second validation using the validation constraints
+        // $errors = $validator->validate($user);
+        // if (count($errors) > 0) {
+        //     throw new ApiException(
+        //         (string) $errors[0]->getMessage(),
+        //         ExceptionCode::INVALID_REQUEST_PARAMETER,
+        //         Response::HTTP_BAD_REQUEST
+        //     );
+        // }
 
-        return $this->json($user, status: Response::HTTP_CREATED);
+        // // Save the new user
+        // $em->persist($user);
+        // $em->flush();
+
+        // // Return the user with the the status 201 (Created)
+        // return $this->json($user, status: Response::HTTP_CREATED);
     }
 }
