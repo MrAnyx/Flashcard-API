@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use App\Exception\ExceptionMessage;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -13,8 +14,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['email'], message: 'This email is already used')]
-#[UniqueEntity(fields: ['username'], message: 'This username is already used')]
+#[UniqueEntity(fields: ['email'], message: ExceptionMessage::EMAIL_DUPLICATION)]
+#[UniqueEntity(fields: ['username'], message: ExceptionMessage::USERNAME_DUPLICATION)]
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
@@ -23,15 +24,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
-    #[Assert\NotBlank]
-    #[Assert\Email]
-    #[Assert\Length(max: 180)]
+    #[Assert\NotBlank(message: 'Your email can not be blank')]
+    #[Assert\Email(message: 'Your email is invalid and doesn\'t respect the email format')]
+    #[Assert\Length(max: 180, maxMessage: 'Your email can not exceed {{ limit }} characters')]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 30, unique: true)]
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 30)]
-    #[Assert\Regex(pattern: '/^[\w\-\.]*$/')]
+    #[Assert\NotBlank(message: 'Your username can not be blank', payload: ['code' => 'test'])]
+    #[Assert\Length(max: 30, maxMessage: 'Your username can not exceed {{ limit }} characters')]
+    #[Assert\Regex(pattern: '/^[\w\-\.]*$/', message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::JSON)]
@@ -45,9 +46,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Assert\NotCompromisedPassword]
-    #[Assert\PasswordStrength(minScore: PasswordStrength::STRENGTH_VERY_STRONG)]
-    #[Assert\NotEqualTo(propertyPath: 'username')]
+    #[Assert\NotCompromisedPassword(message: 'This password has been compromised. Please choose another password')]
+    #[Assert\PasswordStrength(minScore: PasswordStrength::STRENGTH_VERY_STRONG, message: 'You must choose a stronger password')]
+    #[Assert\NotEqualTo(propertyPath: 'username', message: 'You must choose a stronger password')]
+    #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password')]
     #[Ignore]
     private ?string $rawPassword = null;
 

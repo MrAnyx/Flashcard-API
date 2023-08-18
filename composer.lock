@@ -4078,7 +4078,7 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Provides a structured process for converting a Request into a Response",
+            "description": "Provides a structured process for converting a Request into a ExceptionStatus",
             "homepage": "https://symfony.com",
             "support": {
                 "source": "https://github.com/symfony/http-kernel/tree/v6.3.1"
@@ -6907,7 +6907,7 @@
             },
             "suggest": {
                 "symfony/var-dumper": "Pretty print complex values better with var-dumper available",
-                "whoops/soap": "Formats errors as SOAP responses"
+                "whoops/soap": "Formats errors as SOAP ExceptionStatuss"
             },
             "type": "library",
             "extra": {

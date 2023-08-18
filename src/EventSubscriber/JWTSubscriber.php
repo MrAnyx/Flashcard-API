@@ -2,21 +2,24 @@
 
 namespace App\EventSubscriber;
 
+use App\Exception\ApiException;
+use App\Exception\ExceptionCode;
+use App\Exception\ExceptionStatus;
+use App\Exception\ExceptionMessage;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTExpiredEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTInvalidEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTNotFoundEvent;
+use Gesdinet\JWTRefreshTokenBundle\Event\RefreshTokenNotFoundEvent;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
-use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
+use Gesdinet\JWTRefreshTokenBundle\Event\RefreshAuthenticationFailureEvent;
 
+/**
+ * This subscriber allows the application to return custom exception, not the json ExceptionStatus from the bundle that doesn't contain the required error fields
+ */
 class JWTSubscriber implements EventSubscriberInterface
 {
-    public function onLexikJwtAuthenticationOnAuthenticationSuccess(AuthenticationSuccessEvent $event): void
-    {
-        // ...
-    }
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -24,6 +27,8 @@ class JWTSubscriber implements EventSubscriberInterface
             'lexik_jwt_authentication.on_jwt_invalid' => 'onJwtInvalid',
             'lexik_jwt_authentication.on_jwt_not_found' => 'onJwtNotFound',
             'lexik_jwt_authentication.on_jwt_expired' => 'onJwtExpired',
+            'gesdinet.refresh_token_failure' => 'onJwtRefreshTokenFailure',
+            'gesdinet.refresh_token_not_found' => 'onJwtRefreshTokenNotFound',
         ];
     }
 
@@ -39,11 +44,38 @@ class JWTSubscriber implements EventSubscriberInterface
 
     public function onJwtNotFound(JWTNotFoundEvent $event)
     {
-        throw new UnauthorizedHttpException('Bearer', 'JWT token not found');
+        throw new ApiException(
+            ExceptionMessage::JWT_TOKEN_NOT_FOUND,
+            // ExceptionCode::JWT_TOKEN_NOT_FOUND,
+            ExceptionStatus::NOT_FOUND
+        );
     }
 
     public function onJwtExpired(JWTExpiredEvent $event)
     {
-        throw new UnauthorizedHttpException('Bearer', 'JWT token expired');
+        // throw new UnauthorizedHttpException('Bearer', 'JWT token expired');
+        throw new ApiException(
+            ExceptionMessage::JWT_TOKEN_EXPIRED,
+            // ExceptionCode::JWT_TOKEN_EXPIRED,
+            ExceptionStatus::UNAUTHORIZED
+        );
+    }
+
+    public function onJwtRefreshTokenFailure(RefreshAuthenticationFailureEvent $event)
+    {
+        throw new ApiException(
+            ExceptionMessage::JWT_REFRESH_TOKEN_NOT_FOUND,
+            // ExceptionCode::JWT_REFRESH_TOKEN_NOT_FOUND,
+            ExceptionStatus::NOT_FOUND
+        );
+    }
+
+    public function onJwtRefreshTokenNotFound(RefreshTokenNotFoundEvent $event)
+    {
+        throw new ApiException(
+            ExceptionMessage::JWT_REFRESH_TOKEN_FAILURE,
+            // ExceptionCode::JWT_REFRESH_TOKEN_FAILURE,
+            ExceptionStatus::INTERNAL_SERVER_ERROR
+        );
     }
 }
