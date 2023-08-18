@@ -3,7 +3,6 @@
 namespace App\EventSubscriber;
 
 use App\Exception\ApiException;
-use App\Exception\ExceptionCode;
 use App\Exception\ExceptionStatus;
 use App\Exception\ExceptionMessage;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTExpiredEvent;
@@ -35,18 +34,19 @@ class JWTSubscriber implements EventSubscriberInterface
     public function onAuthenticationFailure(AuthenticationFailureEvent $event)
     {
         throw new UnauthorizedHttpException('Bearer', 'Invalid credentials');
+        // TODO A terminer
     }
 
     public function onJwtInvalid(JWTInvalidEvent $event)
     {
         throw new UnauthorizedHttpException('Bearer', 'Invalid JWT token');
+        // TODO A terminer
     }
 
     public function onJwtNotFound(JWTNotFoundEvent $event)
     {
         throw new ApiException(
             ExceptionMessage::JWT_TOKEN_NOT_FOUND,
-            // ExceptionCode::JWT_TOKEN_NOT_FOUND,
             ExceptionStatus::NOT_FOUND
         );
     }
@@ -56,7 +56,6 @@ class JWTSubscriber implements EventSubscriberInterface
         // throw new UnauthorizedHttpException('Bearer', 'JWT token expired');
         throw new ApiException(
             ExceptionMessage::JWT_TOKEN_EXPIRED,
-            // ExceptionCode::JWT_TOKEN_EXPIRED,
             ExceptionStatus::UNAUTHORIZED
         );
     }
@@ -65,7 +64,6 @@ class JWTSubscriber implements EventSubscriberInterface
     {
         throw new ApiException(
             ExceptionMessage::JWT_REFRESH_TOKEN_NOT_FOUND,
-            // ExceptionCode::JWT_REFRESH_TOKEN_NOT_FOUND,
             ExceptionStatus::NOT_FOUND
         );
     }
@@ -74,7 +72,6 @@ class JWTSubscriber implements EventSubscriberInterface
     {
         throw new ApiException(
             ExceptionMessage::JWT_REFRESH_TOKEN_FAILURE,
-            // ExceptionCode::JWT_REFRESH_TOKEN_FAILURE,
             ExceptionStatus::INTERNAL_SERVER_ERROR
         );
     }

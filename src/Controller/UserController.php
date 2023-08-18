@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\OptionsResolver\UserOptionsResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,12 +41,24 @@ class UserController extends AbstractController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
         ValidatorInterface $validator,
-        RequestPayloadService $requestPayloadService
+        UserOptionsResolver $userOptionsResolver
     ): JsonResponse {
 
-        $userDTO = $requestPayloadService->getRequestPayload($request, UserDTO::class);
+        $requestBody = json_decode($request->getContent(), true);
 
-        dd($userDTO);
+        $constraints = new Collection([
+            'username' => new NotBlank(message: 'Test'),
+        ]);
+
+        // https://stackoverflow.com/questions/6041741/fastest-way-to-check-if-a-string-is-json-in-php
+        // On passe les informations des erreurs via les status code
+        //  De toute façon, il y aura aussi de la validation côté frontend
+
+        try {
+            $validator->validate($requestBody, $constraints);
+        } catch (\Exception $e) {
+            $this->createEr
+        }
 
         // // Temporarly create the user
         // $user = new User();
