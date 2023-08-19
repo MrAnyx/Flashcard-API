@@ -49,7 +49,7 @@ class JWTSubscriber implements EventSubscriberInterface
     {
         throw new ApiException(
             'JWT token not found. Please, provide a valid JWT token using the Bearer authentication method',
-            Response::HTTP_NOT_FOUND
+            Response::HTTP_UNAUTHORIZED
         );
     }
 
