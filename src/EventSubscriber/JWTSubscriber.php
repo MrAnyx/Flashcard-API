@@ -3,14 +3,12 @@
 namespace App\EventSubscriber;
 
 use App\Exception\ApiException;
-use App\Exception\ExceptionStatus;
-use App\Exception\ExceptionMessage;
+use Symfony\Component\HttpFoundation\Response;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTExpiredEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTInvalidEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTNotFoundEvent;
 use Gesdinet\JWTRefreshTokenBundle\Event\RefreshTokenNotFoundEvent;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Gesdinet\JWTRefreshTokenBundle\Event\RefreshAuthenticationFailureEvent;
 
@@ -33,46 +31,49 @@ class JWTSubscriber implements EventSubscriberInterface
 
     public function onAuthenticationFailure(AuthenticationFailureEvent $event)
     {
-        throw new UnauthorizedHttpException('Bearer', 'Invalid credentials');
-        // TODO A terminer
+        throw new ApiException(
+            'Invalid credentials',
+            Response::HTTP_UNAUTHORIZED
+        );
     }
 
     public function onJwtInvalid(JWTInvalidEvent $event)
     {
-        throw new UnauthorizedHttpException('Bearer', 'Invalid JWT token');
-        // TODO A terminer
+        throw new ApiException(
+            'Invalid JWT token. You must provide a valid JWT token for this request',
+            Response::HTTP_UNAUTHORIZED
+        );
     }
 
     public function onJwtNotFound(JWTNotFoundEvent $event)
     {
         throw new ApiException(
-            ExceptionMessage::JWT_TOKEN_NOT_FOUND,
-            ExceptionStatus::NOT_FOUND
+            'JWT token not found. Please, provide a valid JWT token using the Bearer authentication method',
+            Response::HTTP_NOT_FOUND
         );
     }
 
     public function onJwtExpired(JWTExpiredEvent $event)
     {
-        // throw new UnauthorizedHttpException('Bearer', 'JWT token expired');
         throw new ApiException(
-            ExceptionMessage::JWT_TOKEN_EXPIRED,
-            ExceptionStatus::UNAUTHORIZED
+            'JWT token has expired. Please, login again or refresh your token using your refresh token',
+            Response::HTTP_UNAUTHORIZED
         );
     }
 
     public function onJwtRefreshTokenFailure(RefreshAuthenticationFailureEvent $event)
     {
         throw new ApiException(
-            ExceptionMessage::JWT_REFRESH_TOKEN_NOT_FOUND,
-            ExceptionStatus::NOT_FOUND
+            'An error occured when trying to refresh you JWT token. Please try again later',
+            Response::HTTP_BAD_REQUEST
         );
     }
 
     public function onJwtRefreshTokenNotFound(RefreshTokenNotFoundEvent $event)
     {
         throw new ApiException(
-            ExceptionMessage::JWT_REFRESH_TOKEN_FAILURE,
-            ExceptionStatus::INTERNAL_SERVER_ERROR
+            'JWT refresh token not found. Please, you must provide a valid JWT refresh token in order to refresh your existing token',
+            Response::HTTP_NOT_FOUND
         );
     }
 }

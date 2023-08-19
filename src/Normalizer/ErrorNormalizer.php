@@ -15,7 +15,6 @@ class ErrorNormalizer implements NormalizerInterface
             'timestamp' => (new DateTime('now', new DateTimeZone('UTC')))->format(DateTime::ATOM),
             'message' => $exception->getMessage(),
             'status' => $exception->getStatusCode(),
-            'code' => $exception->getCode(),
             'trace' => $context['debug'] ? $exception->getTrace() : [],
         ];
     }

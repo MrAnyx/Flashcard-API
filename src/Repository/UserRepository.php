@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Model\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -53,6 +54,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         )
             ->setParameter('query', $usernameOrEmail)
             ->getOneOrNullResult();
+    }
+
+    public function findAllWithPagination(int $page): Paginator
+    {
+        $query = $this->createQueryBuilder('u')->orderBy('u.createdAt', 'ASC');
+
+        return new Paginator($query, $page);
     }
 
     //    /**

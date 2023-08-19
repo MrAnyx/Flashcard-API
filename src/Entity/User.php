@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use App\Utility\Regex;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
-use App\Exception\ExceptionMessage;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,8 +15,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['email'], message: ExceptionMessage::EMAIL_DUPLICATION)]
-#[UniqueEntity(fields: ['username'], message: ExceptionMessage::USERNAME_DUPLICATION)]
+#[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['email'], message: 'This email is already registered. Please, use this email to login or use another email')]
+#[UniqueEntity(fields: ['username'], message: 'This username is already registered. Please, use this username to login or use another username')]
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
@@ -32,8 +34,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: Types::STRING, length: 30, unique: true)]
     #[Assert\NotBlank(message: 'Your username can not be blank', payload: ['code' => 'test'])]
     #[Assert\Length(max: 30, maxMessage: 'Your username can not exceed {{ limit }} characters')]
-    #[Assert\Regex(pattern: '/^[\w\-\.]*$/', message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
+    #[Assert\Regex(pattern: Regex::USERNAME_SLASH, message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
     private ?string $username = null;
+
+    #[ORM\Column]
+    private ?DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
@@ -45,11 +53,11 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Ignore]
     private ?string $password = null;
 
-    #[Assert\NotBlank]
-    #[Assert\NotCompromisedPassword(message: 'This password has been compromised. Please choose another password')]
-    #[Assert\PasswordStrength(minScore: PasswordStrength::STRENGTH_VERY_STRONG, message: 'You must choose a stronger password')]
-    #[Assert\NotEqualTo(propertyPath: 'username', message: 'You must choose a stronger password')]
-    #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password')]
+    #[Assert\NotBlank(message: 'Your password can not be blank', groups: ['update:password'])]
+    #[Assert\NotCompromisedPassword(message: 'This password has been compromised. Please choose another password', groups: ['update:password'])]
+    #[Assert\PasswordStrength(minScore: PasswordStrength::STRENGTH_VERY_STRONG, message: 'You must choose a stronger password', groups: ['update:password'])]
+    #[Assert\NotEqualTo(propertyPath: 'username', message: 'You must choose a stronger password', groups: ['update:password'])]
+    #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password', groups: ['update:password'])]
     #[Ignore]
     private ?string $rawPassword = null;
 
@@ -89,6 +97,33 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->username;
+    }
+
+    public function getCreatedAt(): ?DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAt(): self
+    {
+        $this->createdAt = new DateTimeImmutable('now');
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): self
+    {
+        $this->updatedAt = new DateTimeImmutable('now');
+
+        return $this;
     }
 
     /**
