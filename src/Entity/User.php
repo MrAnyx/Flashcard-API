@@ -7,6 +7,8 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -60,6 +62,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password', groups: ['update:password'])]
     #[Ignore]
     private ?string $rawPassword = null;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Flashcard::class)]
+    #[Ignore]
+    private Collection $flashcards;
+
+    public function __construct()
+    {
+        $this->flashcards = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -185,6 +196,36 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setRawPassword(?string $rawPassword): self
     {
         $this->rawPassword = $rawPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Flashcard>
+     */
+    public function getFlashcards(): Collection
+    {
+        return $this->flashcards;
+    }
+
+    public function addFlashcard(Flashcard $flashcard): static
+    {
+        if (! $this->flashcards->contains($flashcard)) {
+            $this->flashcards->add($flashcard);
+            $flashcard->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFlashcard(Flashcard $flashcard): static
+    {
+        if ($this->flashcards->removeElement($flashcard)) {
+            // set the owning side to null (unless already changed)
+            if ($flashcard->getAuthor() === $this) {
+                $flashcard->setAuthor(null);
+            }
+        }
 
         return $this;
     }
