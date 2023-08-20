@@ -21,10 +21,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/api', 'api_', format: 'json')]
-#[IsGranted('ROLE_ADMIN', message: 'Access denied: You can access this ressource')]
+#[IsGranted('IS_AUTHENTICATED', message: 'Access denied: You can access this ressource')]
 class UserController extends AbstractController
 {
+    #[Route('/users/me', name: 'get_me', methods: ['GET'])]
+    public function getMe()
+    {
+        $user = $this->getUser();
+
+        if ($user === null) {
+            throw new ApiException('You must login befor using this route', Response::HTTP_UNAUTHORIZED);
+        }
+
+        return $this->json($user);
+    }
+
     #[Route('/users', name: 'get_users', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN', message: 'Access denied: You can access this ressource')]
     public function getAllUsers(
         Request $request,
         UserRepository $userRepository,
@@ -45,12 +58,22 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/{id}', name: 'get_user', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getOneUser(User $user, UserRepository $userRepository): JsonResponse
+    #[IsGranted('ROLE_ADMIN', message: 'Access denied: You can access this ressource')]
+    public function getOneUser(int $id, UserRepository $userRepository): JsonResponse
     {
+        // Retrieve the user by id
+        $user = $userRepository->find($id);
+
+        // Check if the user exists
+        if ($user === null) {
+            throw new ApiException("User with id $id was not found", Response::HTTP_NOT_FOUND);
+        }
+
         return $this->json($user);
     }
 
     #[Route('/users', name: 'create_user', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN', message: 'Access denied: You can access this ressource')]
     public function createUser(
         Request $request,
         EntityManagerInterface $em,
@@ -97,6 +120,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/{id}', name: 'delete_user', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
+    #[IsGranted('ROLE_ADMIN', message: 'Access denied: You can access this ressource')]
     public function deleteUser(int $id, UserRepository $userRepository, EntityManagerInterface $em): JsonResponse
     {
         // Retrieve the user by id
@@ -121,6 +145,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/{id}', name: 'update_user', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
+    #[IsGranted('ROLE_ADMIN', message: 'Access denied: You can access this ressource')]
     public function updateUser(
         int $id,
         UserRepository $userRepository,
@@ -187,6 +212,5 @@ class UserController extends AbstractController
 
         // Return the user
         return $this->json($user);
-
     }
 }
