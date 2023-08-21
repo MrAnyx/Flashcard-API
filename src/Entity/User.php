@@ -34,7 +34,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 30, unique: true)]
-    #[Assert\NotBlank(message: 'Your username can not be blank', payload: ['code' => 'test'])]
+    #[Assert\NotBlank(message: 'Your username can not be blank')]
     #[Assert\Length(max: 30, maxMessage: 'Your username can not exceed {{ limit }} characters')]
     #[Assert\Regex(pattern: Regex::USERNAME_SLASH, message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
     private ?string $username = null;
@@ -63,13 +63,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Ignore]
     private ?string $rawPassword = null;
 
-    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Flashcard::class)]
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Flashcard::class, cascade: ['remove'])]
     #[Ignore]
     private Collection $flashcards;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Topic::class, cascade: ['remove'])]
+    #[Ignore]
+    private Collection $topics;
 
     public function __construct()
     {
         $this->flashcards = new ArrayCollection();
+        $this->topics = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -224,6 +229,36 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             // set the owning side to null (unless already changed)
             if ($flashcard->getAuthor() === $this) {
                 $flashcard->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Topic>
+     */
+    public function getTopics(): Collection
+    {
+        return $this->topics;
+    }
+
+    public function addTopic(Topic $topic): static
+    {
+        if (! $this->topics->contains($topic)) {
+            $this->topics->add($topic);
+            $topic->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTopic(Topic $topic): static
+    {
+        if ($this->topics->removeElement($topic)) {
+            // set the owning side to null (unless already changed)
+            if ($topic->getAuthor() === $this) {
+                $topic->setAuthor(null);
             }
         }
 
