@@ -44,6 +44,7 @@ class UserController extends AbstractController
         PaginatorOptionsResolver $paginatorOptionsResolver
     ): JsonResponse {
 
+        // Retrieve pagination parameters
         try {
             $queryParams = $paginatorOptionsResolver
                 ->configurePage()
@@ -52,8 +53,10 @@ class UserController extends AbstractController
             throw new ApiException($e->getMessage());
         }
 
+        // Get data with pagination
         $users = $userRepository->findAllWithPagination($queryParams['page']);
 
+        // Return paginate data
         return $this->json($users);
     }
 
@@ -61,10 +64,10 @@ class UserController extends AbstractController
     #[IsGranted('ROLE_ADMIN', message: 'Access denied: You can access this ressource')]
     public function getOneUser(int $id, UserRepository $userRepository): JsonResponse
     {
-        // Retrieve the user by id
+        // Retrieve the element by id
         $user = $userRepository->find($id);
 
-        // Check if the user exists
+        // Check if the element exists
         if ($user === null) {
             throw new ApiException("User with id $id was not found", Response::HTTP_NOT_FOUND);
         }
@@ -93,7 +96,7 @@ class UserController extends AbstractController
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        // Temporarly create the user
+        // Temporarly create the element
         $user = new User();
         $user
             ->setEmail($data['email'])
@@ -109,11 +112,11 @@ class UserController extends AbstractController
             throw new ApiException((string) $errors[0]->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        // Save the new user
+        // Save the new element
         $em->persist($user);
         $em->flush();
 
-        // Return the user with the the status 201 (Created)
+        // Return the element with the the status 201 (Created)
         return $this->json($user, Response::HTTP_CREATED, [
             'Location' => $this->generateUrl('api_get_user', ['id' => $user->getId()]),
         ]);
