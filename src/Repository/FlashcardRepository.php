@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Model\Paginator;
 use App\Entity\Flashcard;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,9 +23,12 @@ class FlashcardRepository extends ServiceEntityRepository
         parent::__construct($registry, Flashcard::class);
     }
 
-    public function findAllWithPagination(int $page): Paginator
+    public function findAllWithPagination(int $page, User $user, string $sort, string $order): Paginator
     {
-        $query = $this->createQueryBuilder('f')->orderBy('f.createdAt', 'ASC');
+        $query = $this->createQueryBuilder('f')
+            ->where('f.author = :user')
+            ->setParameter('user', $user)
+            ->orderBy("f.$sort", $order);
 
         return new Paginator($query, $page);
     }

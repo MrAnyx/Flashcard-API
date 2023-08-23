@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use Exception;
+use App\Entity\User;
 use App\Utility\Regex;
 use App\Entity\Flashcard;
+use App\Service\EntityChecker;
 use App\Exception\ApiException;
 use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
@@ -17,35 +19,45 @@ use App\OptionsResolver\PaginatorOptionsResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/api', 'api_', format: 'json')]
-#[IsGranted('IS_AUTHENTICATED', message: 'Access denied: You can access this ressource')]
-class FlashcardController extends AbstractController
+class FlashcardController extends AbstractRestController
 {
     #[Route('/flashcards', name: 'get_flashcards', methods: ['GET'])]
-    // TODO Ajouter un voter pour filtrer les flashcard par utilisateur si pas admin
     public function getAllFlashcards(
         Request $request,
         FlashcardRepository $flashcardRepository,
-        PaginatorOptionsResolver $paginatorOptionsResolver
+        PaginatorOptionsResolver $paginatorOptionsResolver,
+        EntityChecker $entityChecker
     ): JsonResponse {
+
+        $sortableFields = $entityChecker->getSortableFields(Flashcard::class);
 
         try {
             $queryParams = $paginatorOptionsResolver
                 ->configurePage()
+                ->configureSort($sortableFields)
+                ->configureOrder()
                 ->resolve($request->query->all());
         } catch (Exception $e) {
             throw new ApiException($e->getMessage());
         }
 
-        $flashcards = $flashcardRepository->findAllWithPagination($queryParams['page']);
+        /** @var User $user Here the user is not null because we use the attribut IsGranted("IS_AUTHENTICATED") so the user must be authenticated */
+        $user = $this->getUser();
+
+        $flashcards = $flashcardRepository->findAllWithPagination(
+            $queryParams['page'],
+            $user,
+            $queryParams['sort'],
+            $queryParams['order']
+        );
 
         return $this->json($flashcards);
     }
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    // TODO Ajouter un voter pour filtrer les flashcard par utilisateur si pas admin
+    #[IsGranted('IS_AUTHENTICATED', message: 'Access denied: You can access this ressource')]
     public function getOneFlashcard(int $id, FlashcardRepository $flashcardRepository): JsonResponse
     {
         // Retrieve the flashcard by id
@@ -60,6 +72,7 @@ class FlashcardController extends AbstractController
     }
 
     #[Route('/flashcards', name: 'create_flashcard', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED', message: 'Access denied: You can access this ressource')]
     public function createFlashcard(
         Request $request,
         EntityManagerInterface $em,
@@ -107,6 +120,7 @@ class FlashcardController extends AbstractController
     }
 
     #[Route('/flashcards/{id}', name: 'delete_flashcard', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
+    #[IsGranted('IS_AUTHENTICATED', message: 'Access denied: You can access this ressource')]
     public function deleteFlashcard(int $id, FlashcardRepository $flashcardRepository, EntityManagerInterface $em): JsonResponse
     {
         // Retrieve the flashcard by id
@@ -126,6 +140,7 @@ class FlashcardController extends AbstractController
     }
 
     #[Route('/flashcards/{id}', name: 'update_flashcard', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
+    #[IsGranted('IS_AUTHENTICATED', message: 'Access denied: You can access this ressource')]
     public function updateFlashcard(
         int $id,
         FlashcardRepository $flashcardRepository,

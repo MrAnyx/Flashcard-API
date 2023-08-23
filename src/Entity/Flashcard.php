@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTimeImmutable;
+use App\Attribut\Sortable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FlashcardRepository;
 use Symfony\Component\Serializer\Annotation\Ignore;
@@ -15,12 +16,15 @@ class Flashcard
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255)]

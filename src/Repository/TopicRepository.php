@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Topic;
 use App\Model\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,9 +23,12 @@ class TopicRepository extends ServiceEntityRepository
         parent::__construct($registry, Topic::class);
     }
 
-    public function findAllWithPagination(int $page): Paginator
+    public function findAllWithPagination(int $page, User $user, string $sort, string $order): Paginator
     {
-        $query = $this->createQueryBuilder('t')->orderBy('t.createdAt', 'ASC');
+        $query = $this->createQueryBuilder('t')
+            ->where('t.author = :user')
+            ->setParameter('user', $user)
+            ->orderBy("t.$sort", $order);
 
         return new Paginator($query, $page);
     }

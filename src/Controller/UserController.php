@@ -5,6 +5,7 @@ namespace App\Controller;
 use Exception;
 use App\Entity\User;
 use App\Utility\Regex;
+use App\Service\EntityChecker;
 use App\Exception\ApiException;
 use App\Repository\UserRepository;
 use App\Service\RequestPayloadService;
@@ -17,15 +18,14 @@ use App\OptionsResolver\PaginatorOptionsResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/api', 'api_', format: 'json')]
-#[IsGranted('IS_AUTHENTICATED', message: 'Access denied: You can access this ressource')]
-class UserController extends AbstractController
+class UserController extends AbstractRestController
 {
     #[Route('/users/me', name: 'get_me', methods: ['GET'])]
-    public function getMe()
+    #[IsGranted('IS_AUTHENTICATED', message: 'Access denied: You can access this ressource')]
+    public function getMe(EntityChecker $entityChecker)
     {
         $user = $this->getUser();
 
@@ -41,13 +41,18 @@ class UserController extends AbstractController
     public function getAllUsers(
         Request $request,
         UserRepository $userRepository,
-        PaginatorOptionsResolver $paginatorOptionsResolver
+        PaginatorOptionsResolver $paginatorOptionsResolver,
+        EntityChecker $entityChecker
     ): JsonResponse {
+
+        $sortableFields = $entityChecker->getSortableFields(User::class);
 
         // Retrieve pagination parameters
         try {
             $queryParams = $paginatorOptionsResolver
                 ->configurePage()
+                ->configureSort($sortableFields)
+                ->configureOrder()
                 ->resolve($request->query->all());
         } catch (Exception $e) {
             throw new ApiException($e->getMessage());

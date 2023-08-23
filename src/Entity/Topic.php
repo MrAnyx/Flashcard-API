@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTimeImmutable;
+use App\Attribut\Sortable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TopicRepository;
 use Symfony\Component\Serializer\Annotation\Ignore;
@@ -15,17 +16,21 @@ class Topic
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a topic can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
+    #[Sortable]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'topics')]

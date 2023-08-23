@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use Exception;
+use App\Entity\User;
 use App\Entity\Topic;
 use App\Utility\Regex;
+use App\Service\EntityChecker;
 use App\Exception\ApiException;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
@@ -17,38 +19,48 @@ use App\OptionsResolver\PaginatorOptionsResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/api', 'api_', format: 'json')]
 #[IsGranted('IS_AUTHENTICATED', message: 'Access denied: You can access this ressource')]
-class TopicController extends AbstractController
+class TopicController extends AbstractRestController
 {
     #[Route('/topics', name: 'get_topics', methods: ['GET'])]
-    // TODO Ajouter un voter pour filtrer les topics par utilisateur si pas admin
     public function getAllTopics(
         Request $request,
         TopicRepository $topicRepository,
-        PaginatorOptionsResolver $paginatorOptionsResolver
+        PaginatorOptionsResolver $paginatorOptionsResolver,
+        EntityChecker $entityChecker
     ): JsonResponse {
+
+        $sortableFields = $entityChecker->getSortableFields(Topic::class);
 
         // Retrieve pagination parameters
         try {
             $queryParams = $paginatorOptionsResolver
                 ->configurePage()
+                ->configureSort($sortableFields)
+                ->configureOrder()
                 ->resolve($request->query->all());
         } catch (Exception $e) {
             throw new ApiException($e->getMessage());
         }
 
+        /** @var User $user Here the user is not null because we use the attribut IsGranted("IS_AUTHENTICATED") so the user must be authenticated */
+        $user = $this->getUser();
+
         // Get data with pagination
-        $topics = $topicRepository->findAllWithPagination($queryParams['page']);
+        $topics = $topicRepository->findAllWithPagination(
+            $queryParams['page'],
+            $user,
+            $queryParams['sort'],
+            $queryParams['order']
+        );
 
         // Return paginate data
         return $this->json($topics);
     }
 
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    // TODO Ajouter un voter pour filtrer les topics par utilisateur si pas admin
     public function getOneTopic(int $id, TopicRepository $topicRepository): JsonResponse
     {
         // Retrieve the element by id

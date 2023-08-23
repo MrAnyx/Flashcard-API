@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Utility\Regex;
 use DateTimeImmutable;
+use App\Attribut\Sortable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
@@ -25,24 +26,29 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
+    #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
     #[Assert\NotBlank(message: 'Your email can not be blank')]
     #[Assert\Email(message: 'Your email is invalid and doesn\'t respect the email format')]
     #[Assert\Length(max: 180, maxMessage: 'Your email can not exceed {{ limit }} characters')]
+    #[Sortable]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 30, unique: true)]
     #[Assert\NotBlank(message: 'Your username can not be blank')]
     #[Assert\Length(max: 30, maxMessage: 'Your username can not exceed {{ limit }} characters')]
     #[Assert\Regex(pattern: Regex::USERNAME_SLASH, message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
+    #[Sortable]
     private ?string $username = null;
 
     #[ORM\Column]
+    #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: Types::JSON)]

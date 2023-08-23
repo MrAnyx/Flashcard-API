@@ -3,10 +3,9 @@
 namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/api', 'api_', format: 'json')]
-class SecurityController extends AbstractController
+class SecurityController extends AbstractRestController
 {
     #[Route('/login', name: 'login')]
     public function login(): void

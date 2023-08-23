@@ -26,4 +26,22 @@ class PaginatorOptionsResolver extends OptionsResolver
             })
             ->setNormalizer('page', fn (Options $options, $page) => (int) $page);
     }
+
+    public function configureOrder(): self
+    {
+        return $this
+            ->setDefined('order')
+            ->setDefault('order', 'ASC')
+            ->setAllowedTypes('order', 'string')
+            ->setAllowedValues('order', ['ASC', 'DESC']);
+    }
+
+    public function configureSort(array $sortableFields): self
+    {
+        return $this
+            ->setDefined('sort')
+            ->setDefault('sort', 'id')
+            ->setAllowedTypes('sort', 'string')
+            ->setAllowedValues('sort', $sortableFields);
+    }
 }
