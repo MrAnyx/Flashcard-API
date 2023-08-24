@@ -23,12 +23,17 @@ class FlashcardRepository extends ServiceEntityRepository
         parent::__construct($registry, Flashcard::class);
     }
 
-    public function findAllWithPagination(int $page, User $user, string $sort, string $order): Paginator
+    public function findAllWithPagination(int $page, string $sort, string $order, ?User $user): Paginator
     {
-        $query = $this->createQueryBuilder('f')
-            ->where('f.author = :user')
-            ->setParameter('user', $user)
-            ->orderBy("f.$sort", $order);
+        $query = $this->createQueryBuilder('f');
+
+        if ($user !== null) {
+            $query
+                ->where('f.author = :user')
+                ->setParameter('user', $user);
+        }
+
+        $query->orderBy("f.$sort", $order);
 
         return new Paginator($query, $page);
     }
