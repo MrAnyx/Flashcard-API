@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api', 'api_', format: 'json')]
+#[Route('/api/auth', 'api_', format: 'json')]
 class SecurityController extends AbstractRestController
 {
     #[Route('/login', name: 'login')]
