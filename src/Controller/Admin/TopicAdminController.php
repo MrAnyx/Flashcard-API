@@ -1,58 +1,38 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use Exception;
-use App\Entity\User;
 use App\Entity\Topic;
 use App\Utility\Regex;
-use App\Service\EntityChecker;
 use App\Exception\ApiException;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\AbstractRestController;
 use App\OptionsResolver\TopicOptionsResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\OptionsResolver\PaginatorOptionsResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/api', 'api_', format: 'json')]
-class TopicController extends AbstractRestController
+#[Route('/api/admin', 'api_admin_', format: 'json')]
+class TopicAdminController extends AbstractRestController
 {
     #[Route('/topics', name: 'get_topics', methods: ['GET'])]
     public function getAllTopics(
         Request $request,
-        TopicRepository $topicRepository,
-        PaginatorOptionsResolver $paginatorOptionsResolver,
-        EntityChecker $entityChecker
+        TopicRepository $topicRepository
     ): JsonResponse {
 
-        $sortableFields = $entityChecker->getSortableFields(Topic::class);
-
-        // Retrieve pagination parameters
-        try {
-            $queryParams = $paginatorOptionsResolver
-                ->configurePage()
-                ->configureSort($sortableFields)
-                ->configureOrder()
-                ->resolve($request->query->all());
-        } catch (Exception $e) {
-            throw new ApiException($e->getMessage());
-        }
-
-        /** @var User $user Here the user is not null because we use the attribut IsGranted("IS_AUTHENTICATED") so the user must be authenticated */
-        $user = $this->getUser();
+        $pagination = $this->getPaginationParameter(Topic::class, $request);
 
         // Get data with pagination
         $topics = $topicRepository->findAllWithPagination(
-            $queryParams['page'],
-            $user,
-            $queryParams['sort'],
-            $queryParams['order']
+            $pagination['page'],
+            $pagination['sort'],
+            $pagination['order'],
+            null
         );
 
         // Return paginate data
@@ -77,7 +57,6 @@ class TopicController extends AbstractRestController
     public function createTopic(
         Request $request,
         EntityManagerInterface $em,
-        ValidatorInterface $validator,
         TopicOptionsResolver $topicOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
@@ -88,7 +67,7 @@ class TopicController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $topicOptionsResolver
-                ->configureName(true)
+                ->configureAll(true)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
@@ -98,13 +77,10 @@ class TopicController extends AbstractRestController
         $topic = new Topic();
         $topic
             ->setName($data['name'])
-            ->setAuthor($this->getUser());
+            ->setAuthor($data['author']);
 
         // Second validation using the validation constraints
-        $errors = $validator->validate($topic, groups: ['Default']);
-        if (count($errors) > 0) {
-            throw new ApiException((string) $errors[0]->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $this->validateEntity($topic);
 
         // Save the new element
         $em->persist($topic);
@@ -112,7 +88,7 @@ class TopicController extends AbstractRestController
 
         // Return the element with the the status 201 (Created)
         return $this->json($topic, Response::HTTP_CREATED, [
-            'Location' => $this->generateUrl('api_get_topic', ['id' => $topic->getId()]),
+            'Location' => $this->generateUrl('api_admin_get_topic', ['id' => $topic->getId()]),
         ]);
     }
 
@@ -143,7 +119,6 @@ class TopicController extends AbstractRestController
         RequestPayloadService $requestPayloadService,
         Request $request,
         TopicOptionsResolver $flashcardOptionsResolver,
-        ValidatorInterface $validator
     ): JsonResponse {
 
         // Retrieve the element by id
@@ -164,7 +139,7 @@ class TopicController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
-                ->configureName($mandatoryParameters)
+                ->configureAll($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
@@ -176,17 +151,14 @@ class TopicController extends AbstractRestController
                 case 'name':
                     $topic->setName($value);
                     break;
-                    // case 'author':
-                    //     $flashcard->setAuthor($value);
-                    //     break;
+                case 'author':
+                    $topic->setAuthor($value);
+                    break;
             }
         }
 
         // Second validation using the validation constraints
-        $errors = $validator->validate($topic, groups: ['Default']);
-        if (count($errors) > 0) {
-            throw new ApiException((string) $errors[0]->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+         $this->validateEntity($topic);
 
         // Save the element information
         $em->flush();

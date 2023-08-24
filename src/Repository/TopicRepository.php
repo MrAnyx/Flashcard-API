@@ -23,12 +23,17 @@ class TopicRepository extends ServiceEntityRepository
         parent::__construct($registry, Topic::class);
     }
 
-    public function findAllWithPagination(int $page, User $user, string $sort, string $order): Paginator
+    public function findAllWithPagination(int $page, string $sort, string $order, ?User $user): Paginator
     {
-        $query = $this->createQueryBuilder('t')
-            ->where('t.author = :user')
-            ->setParameter('user', $user)
-            ->orderBy("t.$sort", $order);
+        $query = $this->createQueryBuilder('t');
+
+        if ($user !== null) {
+            $query
+                ->where('t.author = :user')
+                ->setParameter('user', $user);
+        }
+
+        $query->orderBy("t.$sort", $order);
 
         return new Paginator($query, $page);
     }
