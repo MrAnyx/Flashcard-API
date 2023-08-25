@@ -50,9 +50,9 @@ class TopicController extends AbstractRestController
         // Get data with pagination
         $topics = $topicRepository->findAllWithPagination(
             $queryParams['page'],
-            $user,
             $queryParams['sort'],
-            $queryParams['order']
+            $queryParams['order'],
+            $user
         );
 
         // Return paginate data

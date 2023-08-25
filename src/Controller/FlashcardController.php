@@ -47,9 +47,9 @@ class FlashcardController extends AbstractRestController
 
         $flashcards = $flashcardRepository->findAllWithPagination(
             $queryParams['page'],
-            $user,
             $queryParams['sort'],
-            $queryParams['order']
+            $queryParams['order'],
+            $user
         );
 
         return $this->json($flashcards);
