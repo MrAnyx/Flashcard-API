@@ -37,7 +37,7 @@ class UserAdminController extends AbstractRestController
         );
 
         // Return paginate data
-        return $this->json($users);
+        return $this->json($users, context: ['groups' => ['read:user:admin']]);
     }
 
     #[Route('/users/{id}', name: 'get_user', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -51,7 +51,7 @@ class UserAdminController extends AbstractRestController
             throw new ApiException("User with id $id was not found", Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($user);
+        return $this->json($user, context: ['groups' => ['read:user:admin']]);
     }
 
     #[Route('/users', name: 'create_user', methods: ['POST'])]
@@ -87,16 +87,19 @@ class UserAdminController extends AbstractRestController
         $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
 
         // Second validation using the validation constraints
-        $this->validateEntity($user, ['Default', 'update:password']);
+        $this->validateEntity($user, ['Default', 'edit:user:password']);
 
         // Save the new element
         $em->persist($user);
         $em->flush();
 
         // Return the element with the the status 201 (Created)
-        return $this->json($user, Response::HTTP_CREATED, [
-            'Location' => $this->generateUrl('api_admin_get_user', ['id' => $user->getId()]),
-        ]);
+        return $this->json(
+            $user,
+            Response::HTTP_CREATED,
+            ['Location' => $this->generateUrl('api_admin_get_user', ['id' => $user->getId()])],
+            ['groups' => ['read:user:admin']]
+        );
     }
 
     #[Route('/users/{id}', name: 'delete_user', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
@@ -167,7 +170,7 @@ class UserAdminController extends AbstractRestController
                 case 'password':
                     $user->setRawPassword($value);
                     $user->setPassword($passwordHasher->hashPassword($user, $value));
-                    $validationGroups[] = 'update:password';
+                    $validationGroups[] = 'edit:user:password';
                     break;
                 case 'roles':
                     $user->setRoles($value);
@@ -182,6 +185,6 @@ class UserAdminController extends AbstractRestController
         $em->flush();
 
         // Return the user
-        return $this->json($user);
+        return $this->json($user, context: ['groups' => ['read:user:admin']]);
     }
 }

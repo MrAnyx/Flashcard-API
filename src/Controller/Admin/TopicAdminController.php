@@ -36,7 +36,7 @@ class TopicAdminController extends AbstractRestController
         );
 
         // Return paginate data
-        return $this->json($topics);
+        return $this->json($topics, context: ['groups' => ['read:topic:admin']]);
     }
 
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -50,7 +50,7 @@ class TopicAdminController extends AbstractRestController
             throw new ApiException("Topic with id $id was not found", Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($topic);
+        return $this->json($topic, context: ['groups' => ['read:topic:admin']]);
     }
 
     #[Route('/topics', name: 'create_topic', methods: ['POST'])]
@@ -87,9 +87,12 @@ class TopicAdminController extends AbstractRestController
         $em->flush();
 
         // Return the element with the the status 201 (Created)
-        return $this->json($topic, Response::HTTP_CREATED, [
-            'Location' => $this->generateUrl('api_admin_get_topic', ['id' => $topic->getId()]),
-        ]);
+        return $this->json(
+            $topic,
+            Response::HTTP_CREATED,
+            ['Location' => $this->generateUrl('api_admin_get_topic', ['id' => $topic->getId()])],
+            ['groups' => ['read:topic:admin']]
+        );
     }
 
     #[Route('/topics/{id}', name: 'delete_topic', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
@@ -164,6 +167,6 @@ class TopicAdminController extends AbstractRestController
         $em->flush();
 
         // Return the element
-        return $this->json($topic);
+        return $this->json($topic, context: ['groups' => ['read:topic:admin']]);
     }
 }

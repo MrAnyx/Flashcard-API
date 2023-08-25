@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use App\Attribut\Sortable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FlashcardRepository;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FlashcardRepository::class)]
@@ -16,35 +16,41 @@ class Flashcard
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:flashcard:admin'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['read:flashcard:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(['read:flashcard:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'The front side of a flashcard can not be blank')]
     #[Assert\Length(max: 255, maxMessage: 'The front side of a flashcard can not exceed {{ limit }} characters')]
+    #[Groups(['read:flashcard:admin'])]
     private ?string $front = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'The back side of a flashcard can not be blank')]
     #[Assert\Length(max: 255, maxMessage: 'The back side of a flashcard can not exceed {{ limit }} characters')]
+    #[Groups(['read:flashcard:admin'])]
     private ?string $back = null;
-
-    #[ORM\ManyToOne(inversedBy: 'flashcards')]
-    #[Assert\NotBlank(message: 'You must associate a user to this flashcard')]
-    #[Ignore]
-    private ?User $author = null;
 
     #[ORM\Column(length: 1000, nullable: true)]
     #[Assert\Length(max: 1000, maxMessage: 'The details of a flashcard can not exceed {{ limit }} characters')]
+    #[Groups(['read:flashcard:admin'])]
     private ?string $details = null;
+
+    #[ORM\ManyToOne(inversedBy: 'flashcards')]
+    #[Assert\NotBlank(message: 'You must associate a user to this flashcard')]
+    #[Groups(['read:flashcard:admin'])]
+    private ?User $author = null;
 
     public function getId(): ?int
     {
@@ -102,18 +108,6 @@ class Flashcard
         return $this;
     }
 
-    public function getAuthor(): ?User
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(?User $author): self
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
     public function getDetails(): ?string
     {
         return $this->details;
@@ -122,6 +116,18 @@ class Flashcard
     public function setDetails(?string $details): self
     {
         $this->details = $details;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

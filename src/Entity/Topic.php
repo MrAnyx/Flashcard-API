@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use App\Attribut\Sortable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TopicRepository;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TopicRepository::class)]
@@ -16,26 +16,30 @@ class Topic
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:topic:admin'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a topic can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
+    #[Groups(['read:topic:admin'])]
     #[Sortable]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['read:topic:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(['read:topic:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'topics')]
     #[Assert\NotBlank(message: 'You must associate a user to this topic')]
-    #[Ignore]
+    #[Groups(['read:topic:admin'])]
     private ?User $author = null;
 
     public function getId(): ?int

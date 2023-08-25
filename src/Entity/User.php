@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
@@ -26,6 +26,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['read:user:admin', 'read:topic:admin', 'read:flashcard:admin'])]
     #[Sortable]
     private ?int $id = null;
 
@@ -33,6 +34,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotBlank(message: 'Your email can not be blank')]
     #[Assert\Email(message: 'Your email is invalid and doesn\'t respect the email format')]
     #[Assert\Length(max: 180, maxMessage: 'Your email can not exceed {{ limit }} characters')]
+    #[Groups(['read:user:admin'])]
     #[Sortable]
     private ?string $email = null;
 
@@ -40,41 +42,41 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotBlank(message: 'Your username can not be blank')]
     #[Assert\Length(max: 30, maxMessage: 'Your username can not exceed {{ limit }} characters')]
     #[Assert\Regex(pattern: Regex::USERNAME_SLASH, message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
+    #[Groups(['read:user:admin', 'read:topic:admin', 'read:flashcard:admin'])]
     #[Sortable]
     private ?string $username = null;
 
     #[ORM\Column]
+    #[Groups(['read:user:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(['read:user:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: Types::JSON)]
+    #[Groups(['read:user:admin'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column(type: Types::STRING)]
-    #[Ignore]
     private ?string $password = null;
 
-    #[Assert\NotBlank(message: 'Your password can not be blank', groups: ['update:password'])]
-    #[Assert\NotCompromisedPassword(message: 'This password has been compromised. Please choose another password', groups: ['update:password'])]
-    #[Assert\PasswordStrength(minScore: PasswordStrength::STRENGTH_VERY_STRONG, message: 'You must choose a stronger password', groups: ['update:password'])]
-    #[Assert\NotEqualTo(propertyPath: 'username', message: 'You must choose a stronger password', groups: ['update:password'])]
-    #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password', groups: ['update:password'])]
-    #[Ignore]
+    #[Assert\NotBlank(message: 'Your password can not be blank', groups: ['edit:user:password'])]
+    #[Assert\NotCompromisedPassword(message: 'This password has been compromised. Please choose another password', groups: ['edit:user:password'])]
+    #[Assert\PasswordStrength(minScore: PasswordStrength::STRENGTH_VERY_STRONG, message: 'You must choose a stronger password', groups: ['edit:user:password'])]
+    #[Assert\NotEqualTo(propertyPath: 'username', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
+    #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
     private ?string $rawPassword = null;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Flashcard::class, cascade: ['remove'])]
-    #[Ignore]
     private Collection $flashcards;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Topic::class, cascade: ['remove'])]
-    #[Ignore]
     private Collection $topics;
 
     public function __construct()
@@ -115,7 +117,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     /**
      * @see UserInterface
      */
-    #[Ignore]
     public function getUserIdentifier(): string
     {
         return (string) $this->username;

@@ -34,7 +34,7 @@ class FlashcardAdminController extends AbstractRestController
             null
         );
 
-        return $this->json($flashcards);
+        return $this->json($flashcards, context: ['groups' => ['read:flashcard:admin']]);
     }
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -48,7 +48,7 @@ class FlashcardAdminController extends AbstractRestController
             throw new ApiException("Flashcard with id $id was not found", Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($flashcard);
+        return $this->json($flashcard, context: ['groups' => ['read:flashcard:admin']]);
     }
 
     #[Route('/flashcards', name: 'create_flashcard', methods: ['POST'])]
@@ -87,9 +87,12 @@ class FlashcardAdminController extends AbstractRestController
         $em->flush();
 
         // Return the flashcard with the the status 201 (Created)
-        return $this->json($flashcard, Response::HTTP_CREATED, [
-            'Location' => $this->generateUrl('api_admin_get_flashcard', ['id' => $flashcard->getId()]),
-        ]);
+        return $this->json(
+            $flashcard,
+            Response::HTTP_CREATED,
+            ['Location' => $this->generateUrl('api_admin_get_flashcard', ['id' => $flashcard->getId()])],
+            ['groups' => ['read:flashcard:admin']]
+        );
     }
 
     #[Route('/flashcards/{id}', name: 'delete_flashcard', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
@@ -170,6 +173,6 @@ class FlashcardAdminController extends AbstractRestController
         $em->flush();
 
         // Return the flashcard
-        return $this->json($flashcard);
+        return $this->json($flashcard, context: ['groups' => ['read:flashcard:admin']]);
     }
 }
