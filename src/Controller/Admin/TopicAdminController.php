@@ -158,7 +158,7 @@ class TopicAdminController extends AbstractRestController
         }
 
         // Second validation using the validation constraints
-         $this->validateEntity($topic);
+        $this->validateEntity($topic);
 
         // Save the element information
         $em->flush();
