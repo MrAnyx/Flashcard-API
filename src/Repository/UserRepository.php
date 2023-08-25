@@ -56,9 +56,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getOneOrNullResult();
     }
 
-    public function findAllWithPagination(int $page): Paginator
+    public function findAllWithPagination(int $page, string $sort, string $order): Paginator
     {
-        $query = $this->createQueryBuilder('u')->orderBy('u.createdAt', 'ASC');
+        $query = $this->createQueryBuilder('u')->orderBy("u.$sort", $order);
 
         return new Paginator($query, $page);
     }
