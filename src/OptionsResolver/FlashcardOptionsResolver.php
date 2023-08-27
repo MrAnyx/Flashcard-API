@@ -2,7 +2,7 @@
 
 namespace App\OptionsResolver;
 
-use App\Repository\UserRepository;
+use App\Repository\UnitRepository;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 class FlashcardOptionsResolver extends OptionsResolver
 {
     public function __construct(
-        private UserRepository $userRepository
+        private UnitRepository $unitRepository
     ) {
     }
 
@@ -51,22 +51,22 @@ class FlashcardOptionsResolver extends OptionsResolver
         return $this;
     }
 
-    public function configureAuthor(bool $isRequired = true): self
+    public function configureUnit(bool $isRequired = true): self
     {
-        $this->setDefined('author')->setAllowedTypes('author', 'int');
+        $this->setDefined('unit')->setAllowedTypes('unit', 'int');
 
         if ($isRequired) {
-            $this->setRequired('author');
+            $this->setRequired('unit');
         }
 
-        $this->setNormalizer('author', function (Options $options, $value) {
-            $user = $this->userRepository->find($value);
+        $this->setNormalizer('unit', function (Options $options, $value) {
+            $unit = $this->unitRepository->find($value);
 
-            if ($user === null) {
-                throw new InvalidOptionsException("User with id $value was not found");
+            if ($unit === null) {
+                throw new InvalidOptionsException("Unit with id $value was not found");
             }
 
-            return $user;
+            return $unit;
         });
 
         return $this;
@@ -78,7 +78,7 @@ class FlashcardOptionsResolver extends OptionsResolver
             ->configureFront($isRequired)
             ->configureBack($isRequired)
             ->configureDetails($isRequired)
-            ->configureAuthor($isRequired);
+            ->configureUnit($isRequired);
 
         return $this;
     }

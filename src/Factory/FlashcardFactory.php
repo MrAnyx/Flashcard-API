@@ -63,10 +63,10 @@ final class FlashcardFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'back' => self::faker()->text(255),
             'front' => self::faker()->text(255),
+            'back' => self::faker()->text(255),
             'details' => self::faker()->text(1000),
-            'author' => UserFactory::random(),
+            'unit' => UnitFactory::random(),
         ];
     }
 

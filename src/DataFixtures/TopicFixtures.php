@@ -6,8 +6,9 @@ use App\Factory\TopicFactory;
 use Zenstruck\Foundry\Factory;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class TopicFixtures extends Fixture
+class TopicFixtures extends Fixture implements DependentFixtureInterface
 {
     public function getDependencies()
     {

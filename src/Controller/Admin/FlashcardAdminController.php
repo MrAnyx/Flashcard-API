@@ -30,8 +30,7 @@ class FlashcardAdminController extends AbstractRestController
         $flashcards = $flashcardRepository->findAllWithPagination(
             $pagination['page'],
             $pagination['sort'],
-            $pagination['order'],
-            null
+            $pagination['order']
         );
 
         return $this->json($flashcards, context: ['groups' => ['read:flashcard:admin']]);
@@ -77,7 +76,7 @@ class FlashcardAdminController extends AbstractRestController
             ->setFront($data['front'])
             ->setBack($data['back'])
             ->setDetails($data['details'])
-            ->setAuthor($data['author']); // Here we need to specify the author because the user that will use this route is an admin, so it's not necessarly his flashcard
+            ->setUnit($data['unit']);
 
         // Second validation using the validation constraints
         $this->validateEntity($flashcard);
@@ -160,8 +159,8 @@ class FlashcardAdminController extends AbstractRestController
                 case 'details':
                     $flashcard->setDetails($value);
                     break;
-                case 'author':
-                    $flashcard->setAuthor($value);
+                case 'unit':
+                    $flashcard->setUnit($value);
                     break;
             }
         }

@@ -5,51 +5,51 @@ namespace App\Entity;
 use DateTimeImmutable;
 use App\Attribut\Sortable;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\TopicRepository;
+use App\Repository\UnitRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: TopicRepository::class)]
+#[ORM\Entity(repositoryClass: UnitRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class Topic
+class Unit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:unit:admin'])]
+    #[Groups(['read:unit:admin', 'read:flashcard:admin'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
-    #[Assert\NotBlank(message: 'The name of a topic can not be blank')]
-    #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
-    #[Groups(['read:topic:admin', 'read:unit:admin'])]
+    #[Assert\NotBlank(message: 'The name of a unit can not be blank')]
+    #[Assert\Length(max: 35, maxMessage: 'The name of a unit can not exceed {{ limit }} characters')]
+    #[Groups(['read:unit:admin', 'read:flashcard:admin'])]
     #[Sortable]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Groups(['read:topic:admin'])]
+    #[Groups(['read:unit:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['read:topic:admin'])]
+    #[Groups(['read:unit:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'topics')]
-    #[Assert\NotBlank(message: 'You must associate a user to this topic')]
-    #[Groups(['read:topic:admin'])]
-    private ?User $author = null;
+    #[ORM\ManyToOne(inversedBy: 'units')]
+    #[Assert\NotBlank(message: 'You must associate a topic to this unit')]
+    #[Groups(['read:unit:admin'])]
+    private ?Topic $topic = null;
 
-    #[ORM\OneToMany(mappedBy: 'topic', targetEntity: Unit::class, cascade: ['remove'])]
-    private Collection $units;
+    #[ORM\OneToMany(mappedBy: 'unit', targetEntity: Flashcard::class, cascade: ['remove'])]
+    private Collection $flashcards;
 
     public function __construct()
     {
-        $this->units = new ArrayCollection();
+        $this->flashcards = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -62,7 +62,7 @@ class Topic
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -96,42 +96,42 @@ class Topic
         return $this;
     }
 
-    public function getAuthor(): ?User
+    public function getTopic(): ?Topic
     {
-        return $this->author;
+        return $this->topic;
     }
 
-    public function setAuthor(?User $author): self
+    public function setTopic(?Topic $topic): static
     {
-        $this->author = $author;
+        $this->topic = $topic;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Unit>
+     * @return Collection<int, Flashcard>
      */
-    public function getUnits(): Collection
+    public function getFlashcards(): Collection
     {
-        return $this->units;
+        return $this->flashcards;
     }
 
-    public function addUnit(Unit $unit): static
+    public function addFlashcard(Flashcard $flashcard): static
     {
-        if (! $this->units->contains($unit)) {
-            $this->units->add($unit);
-            $unit->setTopic($this);
+        if (! $this->flashcards->contains($flashcard)) {
+            $this->flashcards->add($flashcard);
+            $flashcard->setUnit($this);
         }
 
         return $this;
     }
 
-    public function removeUnit(Unit $unit): static
+    public function removeFlashcard(Flashcard $flashcard): static
     {
-        if ($this->units->removeElement($unit)) {
+        if ($this->flashcards->removeElement($flashcard)) {
             // set the owning side to null (unless already changed)
-            if ($unit->getTopic() === $this) {
-                $unit->setTopic(null);
+            if ($flashcard->getUnit() === $this) {
+                $flashcard->setUnit(null);
             }
         }
 

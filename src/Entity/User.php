@@ -26,7 +26,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(['read:user:admin', 'read:topic:admin', 'read:flashcard:admin'])]
+    #[Groups(['read:user:admin', 'read:topic:admin'])]
     #[Sortable]
     private ?int $id = null;
 
@@ -42,7 +42,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotBlank(message: 'Your username can not be blank')]
     #[Assert\Length(max: 30, maxMessage: 'Your username can not exceed {{ limit }} characters')]
     #[Assert\Regex(pattern: Regex::USERNAME_SLASH, message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
-    #[Groups(['read:user:admin', 'read:topic:admin', 'read:flashcard:admin'])]
+    #[Groups(['read:user:admin', 'read:topic:admin'])]
     #[Sortable]
     private ?string $username = null;
 
@@ -72,9 +72,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotEqualTo(propertyPath: 'username', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
     #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
     private ?string $rawPassword = null;
-
-    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Flashcard::class, cascade: ['remove'])]
-    private Collection $flashcards;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Topic::class, cascade: ['remove'])]
     private Collection $topics;
@@ -208,36 +205,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setRawPassword(?string $rawPassword): self
     {
         $this->rawPassword = $rawPassword;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Flashcard>
-     */
-    public function getFlashcards(): Collection
-    {
-        return $this->flashcards;
-    }
-
-    public function addFlashcard(Flashcard $flashcard): static
-    {
-        if (! $this->flashcards->contains($flashcard)) {
-            $this->flashcards->add($flashcard);
-            $flashcard->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFlashcard(Flashcard $flashcard): static
-    {
-        if ($this->flashcards->removeElement($flashcard)) {
-            // set the owning side to null (unless already changed)
-            if ($flashcard->getAuthor() === $this) {
-                $flashcard->setAuthor(null);
-            }
-        }
 
         return $this;
     }

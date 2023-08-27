@@ -48,9 +48,9 @@ class Flashcard
     private ?string $details = null;
 
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
-    #[Assert\NotBlank(message: 'You must associate a user to this flashcard')]
+    #[Assert\NotBlank(message: 'You must associate a unit to this flashcard')]
     #[Groups(['read:flashcard:admin'])]
-    private ?User $author = null;
+    private ?Unit $unit = null;
 
     public function getId(): ?int
     {
@@ -120,14 +120,14 @@ class Flashcard
         return $this;
     }
 
-    public function getAuthor(): ?User
+    public function getUnit(): ?Unit
     {
-        return $this->author;
+        return $this->unit;
     }
 
-    public function setAuthor(?User $author): self
+    public function setUnit(?Unit $unit): static
     {
-        $this->author = $author;
+        $this->unit = $unit;
 
         return $this;
     }
