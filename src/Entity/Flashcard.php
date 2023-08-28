@@ -63,7 +63,7 @@ class Flashcard
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(): self
+    public function setCreatedAt(): static
     {
         $this->createdAt = new DateTimeImmutable('now');
 
@@ -77,7 +77,7 @@ class Flashcard
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
-    public function setUpdatedAt(): self
+    public function setUpdatedAt(): static
     {
         $this->updatedAt = new DateTimeImmutable('now');
 
@@ -89,7 +89,7 @@ class Flashcard
         return $this->front;
     }
 
-    public function setFront(string $front): self
+    public function setFront(string $front): static
     {
         $this->front = $front;
 
@@ -101,7 +101,7 @@ class Flashcard
         return $this->back;
     }
 
-    public function setBack(string $back): self
+    public function setBack(string $back): static
     {
         $this->back = $back;
 
@@ -113,7 +113,7 @@ class Flashcard
         return $this->details;
     }
 
-    public function setDetails(?string $details): self
+    public function setDetails(?string $details): static
     {
         $this->details = $details;
 

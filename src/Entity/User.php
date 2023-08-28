@@ -92,7 +92,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): static
     {
         $this->email = $email;
 
@@ -104,7 +104,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->username;
     }
 
-    public function setUsername(string $username): self
+    public function setUsername(string $username): static
     {
         $this->username = $username;
 
@@ -125,7 +125,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(): self
+    public function setCreatedAt(): static
     {
         $this->createdAt = new DateTimeImmutable('now');
 
@@ -139,7 +139,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
-    public function setUpdatedAt(): self
+    public function setUpdatedAt(): static
     {
         $this->updatedAt = new DateTimeImmutable('now');
 
@@ -158,14 +158,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles(array $roles): static
     {
         $this->roles = $roles;
 
         return $this;
     }
 
-    public function addRole(string $role): self
+    public function addRole(string $role): static
     {
         $this->roles[] = $role;
         $this->roles = array_unique($this->roles);
@@ -181,7 +181,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password): static
     {
         $this->password = $password;
 
@@ -202,7 +202,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->rawPassword;
     }
 
-    public function setRawPassword(?string $rawPassword): self
+    public function setRawPassword(?string $rawPassword): static
     {
         $this->rawPassword = $rawPassword;
 

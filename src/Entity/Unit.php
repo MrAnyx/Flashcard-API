@@ -75,7 +75,7 @@ class Unit
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(): self
+    public function setCreatedAt(): static
     {
         $this->createdAt = new DateTimeImmutable('now');
 
@@ -89,7 +89,7 @@ class Unit
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
-    public function setUpdatedAt(): self
+    public function setUpdatedAt(): static
     {
         $this->updatedAt = new DateTimeImmutable('now');
 

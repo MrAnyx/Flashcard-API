@@ -62,7 +62,7 @@ class Topic
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -75,7 +75,7 @@ class Topic
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(): self
+    public function setCreatedAt(): static
     {
         $this->createdAt = new DateTimeImmutable('now');
 
@@ -89,7 +89,7 @@ class Topic
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
-    public function setUpdatedAt(): self
+    public function setUpdatedAt(): static
     {
         $this->updatedAt = new DateTimeImmutable('now');
 
@@ -101,7 +101,7 @@ class Topic
         return $this->author;
     }
 
-    public function setAuthor(?User $author): self
+    public function setAuthor(?User $author): static
     {
         $this->author = $author;
 
