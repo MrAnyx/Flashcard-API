@@ -78,7 +78,7 @@ tasks:
         aliases: ["a:d:c"]
         cmds:
             # - chmod -R 0777 public/uploads
-            - chmod -R 0777 var
+            - chmod -R 0777 var 2>/dev/null
             - cp .env.example .env.local
             - composer install --ansi --prefer-dist --no-interaction --no-progress
             - task: database:reset
