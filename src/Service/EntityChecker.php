@@ -2,30 +2,29 @@
 
 namespace App\Service;
 
-use Exception;
 use App\Attribut\Sortable;
 use InvalidArgumentException;
 
 class EntityChecker
 {
-    public function entityExists(string $classname)
+    public function entityExists(string $classname): bool
     {
         return class_exists($classname);
     }
 
-    public function fieldExists(string $classname, string $field)
+    public function fieldExists(string $classname, string $field): bool
     {
         return property_exists($classname, $field);
     }
 
     /**
-     * @throws Exception if $classname corresponds to an unknown class
+     * @throws InvalidArgumentException if $classname corresponds to an unknown class
      * @throws InvalidArgumentException if $field correspond to an unknown property of $classname
      */
-    public function isFieldSortable(string $classname, string $field)
+    public function isFieldSortable(string $classname, string $field): bool
     {
         if (! $this->entityExists($classname)) {
-            throw new Exception("Unknown class $classname");
+            throw new InvalidArgumentException("Unknown class $classname");
         }
 
         if (! $this->fieldExists($classname, $field)) {
@@ -42,12 +41,12 @@ class EntityChecker
     }
 
     /**
-     * @throws Exception if $classname corresponds to an unknown class
+     * @throws InvalidArgumentException if $classname corresponds to an unknown class
      */
-    public function getSortableFields(string $classname)
+    public function getSortableFields(string $classname): array
     {
         if (! $this->entityExists($classname)) {
-            throw new Exception("Unknown class $classname");
+            throw new InvalidArgumentException("Unknown class $classname");
         }
 
         $sortableFields = [];
