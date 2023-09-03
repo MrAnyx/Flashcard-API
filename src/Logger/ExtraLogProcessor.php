@@ -16,11 +16,17 @@ class ExtraLogProcessor
     public function __invoke(LogRecord $record)
     {
         $request = $this->requestStack->getCurrentRequest();
-        $serverParams = $request?->server ?? null;
 
-        $record['extra']['ip'] = $serverParams?->has('REMOTE_ADDR') ? IpUtils::anonymize($serverParams?->get('REMOTE_ADDR')) : '-';
-        $record['extra']['method'] = $serverParams?->has('REQUEST_METHOD') ? $serverParams?->get('REQUEST_METHOD') : '-';
-        $record['extra']['url'] = $serverParams?->has('REQUEST_URI') ? $serverParams?->get('REQUEST_URI') : '-';
+        if ($request !== null) {
+            $serverParams = $request->server;
+            $record['extra']['ip'] = $serverParams->has('REMOTE_ADDR') ? IpUtils::anonymize($serverParams->get('REMOTE_ADDR')) : '-';
+            $record['extra']['method'] = $serverParams->has('REQUEST_METHOD') ? $serverParams->get('REQUEST_METHOD') : '-';
+            $record['extra']['url'] = $serverParams->has('REQUEST_URI') ? $serverParams->get('REQUEST_URI') : '-';
+        } else {
+            $record['extra']['ip'] = '-';
+            $record['extra']['method'] = '-';
+            $record['extra']['url'] = '-';
+        }
 
         return $record;
     }
