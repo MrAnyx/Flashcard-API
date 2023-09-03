@@ -35,7 +35,7 @@ class AbstractRestController extends AbstractController
                 ->configureOrder()
                 ->resolve($request->query->all());
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage());
+            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
         return $queryParams;

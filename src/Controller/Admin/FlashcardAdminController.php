@@ -44,7 +44,7 @@ class FlashcardAdminController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException("Flashcard with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('Flashcard with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         return $this->json($flashcard, context: ['groups' => ['read:flashcard:admin']]);
@@ -102,7 +102,7 @@ class FlashcardAdminController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException("Flashcard with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('Flashcard with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         // Remove the flashcard
@@ -128,7 +128,7 @@ class FlashcardAdminController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException("Flashcard with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('Flashcard with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         try {

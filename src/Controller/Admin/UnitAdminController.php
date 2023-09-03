@@ -46,7 +46,7 @@ class UnitAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException("Unit with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         return $this->json($unit, context: ['groups' => ['read:unit:admin']]);
@@ -102,7 +102,7 @@ class UnitAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException("Unit with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         // Remove the element
@@ -128,7 +128,7 @@ class UnitAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException("Unit with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         try {

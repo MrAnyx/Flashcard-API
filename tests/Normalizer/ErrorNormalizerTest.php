@@ -43,7 +43,7 @@ class ErrorNormalizerTest extends TestCase
         $normalizer = new ErrorNormalizer();
 
         // Create a FlattenException instance
-        $exception = new ApiException('');
+        $exception = new ApiException('', Response::HTTP_BAD_REQUEST);
         $flattenException = FlattenException::createFromThrowable($exception);
 
         // Assert that supportsNormalization returns true for FlattenException

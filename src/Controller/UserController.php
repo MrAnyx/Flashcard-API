@@ -16,7 +16,7 @@ class UserController extends AbstractRestController
         $user = $this->getUser();
 
         if ($user === null) {
-            throw new ApiException('You must login before using this route', Response::HTTP_UNAUTHORIZED);
+            throw new ApiException('You must be logged in before using this route', Response::HTTP_UNAUTHORIZED);
         }
 
         return $this->json($user);

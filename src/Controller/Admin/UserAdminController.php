@@ -48,7 +48,7 @@ class UserAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($user === null) {
-            throw new ApiException("User with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('User with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         return $this->json($user, context: ['groups' => ['read:user:admin']]);
@@ -110,7 +110,7 @@ class UserAdminController extends AbstractRestController
 
         // Check if the user exists
         if ($user === null) {
-            throw new ApiException("User with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('User with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         // Remove the  user
@@ -137,7 +137,7 @@ class UserAdminController extends AbstractRestController
 
         // Check if the user exists
         if ($user === null) {
-            throw new ApiException("User with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('User with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         try {

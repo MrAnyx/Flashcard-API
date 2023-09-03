@@ -47,7 +47,7 @@ class TopicAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException("Topic with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         return $this->json($topic, context: ['groups' => ['read:topic:admin']]);
@@ -103,7 +103,7 @@ class TopicAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException("Topic with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         // Remove the element
@@ -129,7 +129,7 @@ class TopicAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException("Topic with id $id was not found", Response::HTTP_NOT_FOUND);
+            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
         try {
