@@ -82,3 +82,4 @@ tasks:
             - cp .env.example .env.local
             - composer install --ansi --prefer-dist --no-interaction --no-progress
             - task: database:reset
+            - composer run jwt:generate
