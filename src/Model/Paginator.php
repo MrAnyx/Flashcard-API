@@ -33,7 +33,7 @@ class Paginator extends DoctrinePaginator
         $this->page = $page;
 
         try {
-            $this->totalpages = ceil($this->total / self::ITEMS_PER_PAGE);
+            $this->totalpages = (int) ceil($this->total / self::ITEMS_PER_PAGE);
         } catch (\DivisionByZeroError $e) {
             $this->totalpages = 0;
         }
