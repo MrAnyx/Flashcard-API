@@ -10,7 +10,7 @@ class RequestPayloadService
     /**
      * @throws JsonException
      */
-    public function getRequestPayload(Request $request)
+    public function getRequestPayload(Request $request): mixed
     {
         $body = json_decode($request->getContent(), true);
 
@@ -21,7 +21,7 @@ class RequestPayloadService
         return $body;
     }
 
-    public function getQueryPayload(Request $request)
+    public function getQueryPayload(Request $request): array
     {
         return $request->query->all();
     }
