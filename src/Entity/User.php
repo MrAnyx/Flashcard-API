@@ -78,7 +78,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function __construct()
     {
-        $this->flashcards = new ArrayCollection();
         $this->topics = new ArrayCollection();
     }
 
