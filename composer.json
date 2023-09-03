@@ -33,7 +33,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "laravel/pint": "^1.10",
+        "laravel/pint": "^1.12",
         "pestphp/pest": "^2.16",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.2",
@@ -87,7 +87,9 @@
         "stan": "@stan:default --ansi --error-format=table",
         "stan:default": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 500M",
         "stan:github": "@stan:default --error-format=github --quiet",
-        "test": "./vendor/bin/pest"
+        "test": "./vendor/bin/pest",
+        "config": "@test --migrate-configuration",
+        "test:cov": "@test --coverage"
     },
     "conflict": {
         "symfony/symfony": "*"

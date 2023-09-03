@@ -65,19 +65,19 @@ tasks:
             - composer run stan
             - composer run cs:check
             - composer run test
+            - composer run test:cov
 
     app:test:
         desc: "Run global app tests"
         aliases: ["a:t"]
         cmds:
-            - task: database:reset
+            - task: database:reset:test
             - task: php:test
 
     app:default:config:
         desc: "Run required commands in order to make the project functional"
         aliases: ["a:d:c"]
         cmds:
-            # - chmod -R 0777 public/uploads
             - chmod -R 0777 var 2>/dev/null
             - cp .env.example .env.local
             - composer install --ansi --prefer-dist --no-interaction --no-progress

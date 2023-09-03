@@ -54,15 +54,10 @@
             "branch": "main",
             "version": "1.0",
             "ref": "13fb2b58ec6204211815eb6f4c69e4918e5af617"
-        },
-        "files": [
-            "config/packages/gesdinet_jwt_refresh_token.yaml",
-            "config/routes/gesdinet_jwt_refresh_token.yaml",
-            "src/Entity/RefreshToken.php"
-        ]
+        }
     },
     "lexik/jwt-authentication-bundle": {
-        "version": "2.19",
+        "version": "2.18",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -80,13 +75,10 @@
             "branch": "main",
             "version": "1.0",
             "ref": "d74d4d719d5f53856c9c13544aa22d44144b1819"
-        },
-        "files": [
-            "phpstan.neon"
-        ]
+        }
     },
     "phpunit/phpunit": {
-        "version": "10.2",
+        "version": "10.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -228,7 +220,7 @@
         ]
     },
     "zenstruck/foundry": {
-        "version": "1.34",
+        "version": "1.35",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
