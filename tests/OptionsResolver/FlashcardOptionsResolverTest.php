@@ -193,6 +193,17 @@ class FlashcardOptionsResolverTest extends KernelTestCase
         $this->assertSame($unit, $result['unit']);
     }
 
+    public function testConfigureUnitRequiredWithMissingParameter(): void
+    {
+        /** @var FlashcardOptionsResolver $resolver */
+        $resolver = self::getContainer()->get(FlashcardOptionsResolver::class);
+        $resolver->configureUnit(true);
+
+        $this->expectException(MissingOptionsException::class);
+
+        $result = $resolver->resolve([]);
+    }
+
     public function testConfigureUnitInvalidData(): void
     {
         /** @var FlashcardOptionsResolver $resolver */
