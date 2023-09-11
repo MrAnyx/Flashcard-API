@@ -35,9 +35,9 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "laravel/pint": "^1.12",
-        "pestphp/pest": "^2.16",
+        "pestphp/pest": "^1.23",
         "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^10.2",
+        "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "6.3.*",
         "symfony/css-selector": "6.3.*",
         "symfony/maker-bundle": "^1.50",
@@ -89,7 +89,6 @@
         "stan:default": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 500M",
         "stan:github": "@stan:default --error-format=github --quiet",
         "test": "./vendor/bin/pest",
-        "test:config": "@test --migrate-configuration",
         "test:cov": "@test --coverage",
         "jwt:generate": "bin/console lexik:jwt:generate-keypair --overwrite --no-interaction"
     },

@@ -45,7 +45,9 @@ class FlashcardOptionsResolver extends OptionsResolver
         }
 
         $this->addNormalizer('details', function (Options $options, $value) {
-            return $value === '' ? null : $value;
+            $result = trim($value);
+
+            return $result === '' ? null : $result;
         });
 
         return $this;

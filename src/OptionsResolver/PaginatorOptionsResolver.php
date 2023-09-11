@@ -18,7 +18,7 @@ class PaginatorOptionsResolver extends OptionsResolver
                     'flags' => FILTER_NULL_ON_FAILURE,
                 ]);
 
-                if (null === $validatedValue || $validatedValue < 1) {
+                if ($validatedValue === null || $validatedValue < 1) {
                     return false;
                 }
 
