@@ -66,7 +66,8 @@ class UnitAdminController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $unitOptionsResolver
-                ->configureAll(true)
+                ->configureName(true)
+                ->configureTopic(true)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
@@ -141,7 +142,8 @@ class UnitAdminController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $unitOptionsResolver
-                ->configureAll($mandatoryParameters)
+                ->configureName($mandatoryParameters)
+                ->configureTopic($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);

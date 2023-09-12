@@ -49,15 +49,4 @@ class UserOptionsResolver extends OptionsResolver
 
         return $this;
     }
-
-    public function configureAll(bool $isRequired = true): self
-    {
-        $this
-            ->configureUsername($isRequired)
-            ->configureEmail($isRequired)
-            ->configurePassword($isRequired)
-            ->configureRoles($isRequired);
-
-        return $this;
-    }
 }

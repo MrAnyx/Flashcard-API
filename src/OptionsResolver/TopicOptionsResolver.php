@@ -45,13 +45,4 @@ class TopicOptionsResolver extends OptionsResolver
 
         return $this;
     }
-
-    public function configureAll(bool $isRequired = true): self
-    {
-        $this
-            ->configureName($isRequired)
-            ->configureAuthor($isRequired);
-
-        return $this;
-    }
 }

@@ -45,13 +45,4 @@ class UnitOptionsResolver extends OptionsResolver
 
         return $this;
     }
-
-    public function configureAll(bool $isRequired = true): self
-    {
-        $this
-            ->configureName($isRequired)
-            ->configureTopic($isRequired);
-
-        return $this;
-    }
 }

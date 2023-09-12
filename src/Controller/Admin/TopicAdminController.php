@@ -67,7 +67,8 @@ class TopicAdminController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $topicOptionsResolver
-                ->configureAll(true)
+                ->configureName(true)
+                ->configureAuthor(true)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
@@ -142,7 +143,8 @@ class TopicAdminController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
-                ->configureAll($mandatoryParameters)
+                ->configureName($mandatoryParameters)
+                ->configureAuthor($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);

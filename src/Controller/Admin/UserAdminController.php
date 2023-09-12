@@ -70,7 +70,10 @@ class UserAdminController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $userOptionsResolver
-                ->configureAll(true)
+                ->configureUsername(true)
+                ->configureEmail(true)
+                ->configurePassword(true)
+                ->configureRoles(true)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
@@ -150,7 +153,10 @@ class UserAdminController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $userOptionsResolver
-                ->configureAll($mandatoryParameters)
+                ->configureUsername($mandatoryParameters)
+                ->configureEmail($mandatoryParameters)
+                ->configurePassword($mandatoryParameters)
+                ->configureRoles($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);

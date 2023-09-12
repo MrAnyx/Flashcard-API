@@ -64,7 +64,10 @@ class FlashcardAdminController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
-                ->configureAll(true)
+                ->configureFront(true)
+                ->configureBack(true)
+                ->configureDetails(true)
+                ->configureUnit(true)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
@@ -141,7 +144,10 @@ class FlashcardAdminController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
-                ->configureAll($mandatoryParameters)
+                ->configureFront($mandatoryParameters)
+                ->configureBack($mandatoryParameters)
+                ->configureDetails($mandatoryParameters)
+                ->configureUnit($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);

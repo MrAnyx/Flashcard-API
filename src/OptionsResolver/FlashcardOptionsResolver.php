@@ -73,15 +73,4 @@ class FlashcardOptionsResolver extends OptionsResolver
 
         return $this;
     }
-
-    public function configureAll(bool $isRequired = true): self
-    {
-        $this
-            ->configureFront($isRequired)
-            ->configureBack($isRequired)
-            ->configureDetails($isRequired)
-            ->configureUnit($isRequired);
-
-        return $this;
-    }
 }
