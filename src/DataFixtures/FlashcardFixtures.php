@@ -20,7 +20,7 @@ class FlashcardFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         Factory::delayFlush(function () {
-            FlashcardFactory::createMany(10);
+            FlashcardFactory::createMany(100);
         });
     }
 }
