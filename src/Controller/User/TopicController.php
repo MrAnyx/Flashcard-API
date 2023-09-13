@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\User;
 
 use Exception;
 use App\Entity\User;
@@ -11,6 +11,7 @@ use App\Exception\ApiException;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\AbstractRestController;
 use App\OptionsResolver\TopicOptionsResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

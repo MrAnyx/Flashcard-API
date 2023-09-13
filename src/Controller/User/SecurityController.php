@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\User;
 
+use App\Controller\AbstractRestController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/auth', 'api_', format: 'json')]

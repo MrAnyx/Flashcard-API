@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\User;
 
 use App\Service\EntityChecker;
 use App\Exception\ApiException;
+use App\Controller\AbstractRestController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,6 +20,6 @@ class UserController extends AbstractRestController
             throw new ApiException('You must be logged in before using this route', Response::HTTP_UNAUTHORIZED);
         }
 
-        return $this->json($user);
+        return $this->json($user, context: ['groups' => ['read:user:user']]);
     }
 }
