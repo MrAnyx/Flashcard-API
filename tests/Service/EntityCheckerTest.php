@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use App\Service\EntityChecker;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class Foo
+class __Foo__
 {
     #[Sortable]
     private string $sortable;
@@ -23,7 +23,7 @@ class EntityCheckerTest extends KernelTestCase
         /** @var EntityChecker $service */
         $checker = self::getContainer()->get(EntityChecker::class);
 
-        $this->assertTrue($checker->entityExists(Foo::class));
+        $this->assertTrue($checker->entityExists(__Foo__::class));
         $this->assertFalse($checker->entityExists('UnknownClass'));
     }
 
@@ -32,8 +32,8 @@ class EntityCheckerTest extends KernelTestCase
         /** @var EntityChecker $service */
         $checker = self::getContainer()->get(EntityChecker::class);
 
-        $this->assertTrue($checker->fieldExists(Foo::class, 'sortable'));
-        $this->assertFalse($checker->fieldExists(Foo::class, 'unknownField'));
+        $this->assertTrue($checker->fieldExists(__Foo__::class, 'sortable'));
+        $this->assertFalse($checker->fieldExists(__Foo__::class, 'unknownField'));
     }
 
     public function testIsFieldSortable()
@@ -41,8 +41,8 @@ class EntityCheckerTest extends KernelTestCase
         /** @var EntityChecker $service */
         $checker = self::getContainer()->get(EntityChecker::class);
 
-        $this->assertTrue($checker->isFieldSortable(Foo::class, 'sortable'));
-        $this->assertFalse($checker->isFieldSortable(Foo::class, 'notSortable'));
+        $this->assertTrue($checker->isFieldSortable(__Foo__::class, 'sortable'));
+        $this->assertFalse($checker->isFieldSortable(__Foo__::class, 'notSortable'));
     }
 
     public function testIsFieldSortableWithUnknownClass()
@@ -62,7 +62,7 @@ class EntityCheckerTest extends KernelTestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        $checker->isFieldSortable(Foo::class, 'unknownField');
+        $checker->isFieldSortable(__Foo__::class, 'unknownField');
     }
 
     public function testGetSortableFields()
@@ -70,7 +70,7 @@ class EntityCheckerTest extends KernelTestCase
         /** @var EntityChecker $service */
         $checker = self::getContainer()->get(EntityChecker::class);
 
-        $this->assertSame(['sortable'], $checker->getSortableFields(Foo::class));
+        $this->assertSame(['sortable'], $checker->getSortableFields(__Foo__::class));
     }
 
     public function testGetSortableFieldsWithUnknownClass()
