@@ -26,7 +26,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(['read:user:admin', 'read:topic:admin'])]
+    #[Groups(['read:user:admin', 'read:topic:admin', 'read:user:user'])]
     #[Sortable]
     private ?int $id = null;
 
@@ -34,7 +34,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotBlank(message: 'Your email can not be blank')]
     #[Assert\Email(message: 'Your email is invalid and doesn\'t respect the email format')]
     #[Assert\Length(max: 180, maxMessage: 'Your email can not exceed {{ limit }} characters')]
-    #[Groups(['read:user:admin'])]
+    #[Groups(['read:user:admin', 'read:user:user'])]
     #[Sortable]
     private ?string $email = null;
 
@@ -42,17 +42,17 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotBlank(message: 'Your username can not be blank')]
     #[Assert\Length(max: 30, maxMessage: 'Your username can not exceed {{ limit }} characters')]
     #[Assert\Regex(pattern: Regex::USERNAME_SLASH, message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
-    #[Groups(['read:user:admin', 'read:topic:admin'])]
+    #[Groups(['read:user:admin', 'read:topic:admin', 'read:user:user'])]
     #[Sortable]
     private ?string $username = null;
 
     #[ORM\Column]
-    #[Groups(['read:user:admin'])]
+    #[Groups(['read:user:admin', 'read:user:user'])]
     #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['read:user:admin'])]
+    #[Groups(['read:user:admin', 'read:user:user'])]
     #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
