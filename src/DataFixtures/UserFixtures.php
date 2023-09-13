@@ -14,6 +14,7 @@ class UserFixtures extends Fixture
         Factory::delayFlush(function () {
             UserFactory::createOne(['username' => 'admin', 'roles' => ['ROLE_ADMIN']]);
             UserFactory::createOne(['username' => 'user']);
+            UserFactory::createOne(['username' => 'test']);
         });
     }
 }
