@@ -89,7 +89,7 @@
         "stan:default": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 500M",
         "stan:github": "@stan:default --error-format=github --quiet",
         "test": "./vendor/bin/pest",
-        "test:cov": "@test --coverage",
+        "test:cov": "@test --coverage --min=70",
         "jwt:generate": "bin/console lexik:jwt:generate-keypair --overwrite --no-interaction"
     },
     "conflict": {
