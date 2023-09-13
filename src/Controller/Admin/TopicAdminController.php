@@ -31,8 +31,7 @@ class TopicAdminController extends AbstractRestController
         $topics = $topicRepository->findAllWithPagination(
             $pagination['page'],
             $pagination['sort'],
-            $pagination['order'],
-            null
+            $pagination['order']
         );
 
         // Return paginate data
