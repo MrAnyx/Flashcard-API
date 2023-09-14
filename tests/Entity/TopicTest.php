@@ -26,7 +26,6 @@ class TopicTest extends KernelTestCase
     {
         $this->em = self::getContainer()->get('doctrine')->getManager();
         $this->validator = self::getContainer()->get('validator');
-
     }
 
     public function testDefaultValues(): void
