@@ -109,6 +109,16 @@ class UserTest extends KernelTestCase
         $this->assertSame($username, $user->getUsername());
     }
 
+    public function testUserIdentifier()
+    {
+        $user = new User();
+
+        $username = 'username';
+        $user->setUsername($username);
+
+        $this->assertSame($username, $user->getUserIdentifier());
+    }
+
     public function testCreatedAt()
     {
         $user = new User();
@@ -123,6 +133,29 @@ class UserTest extends KernelTestCase
         $this->em->persist($user);
         $this->assertInstanceOf(DateTimeImmutable::class, $user->getUpdatedAt());
         $this->em->detach($user);
+    }
+
+    public function testRoles()
+    {
+        $user = new User();
+
+        $this->assertSame(['ROLE_USER'], $user->getRoles());
+
+        $user->setRoles(['ROLE_TEST']);
+        $this->assertContains('ROLE_USER', $user->getRoles());
+        $this->assertContains('ROLE_TEST', $user->getRoles());
+
+        $user->addRole('ROLE_TEST_2');
+        $this->assertContains('ROLE_USER', $user->getRoles());
+        $this->assertContains('ROLE_TEST', $user->getRoles());
+        $this->assertContains('ROLE_TEST_2', $user->getRoles());
+    }
+
+    public function testEraseCredentials()
+    {
+        $user = new User();
+        $user->eraseCredentials();
+        $this->assertTrue(true);
     }
 
     public function testRawPassword()
