@@ -3,10 +3,9 @@
 namespace App\Controller\User;
 
 use Exception;
-use App\Entity\User;
 use App\Entity\Topic;
 use App\Utility\Regex;
-use App\Service\EntityChecker;
+use App\Voter\TopicVoter;
 use App\Exception\ApiException;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
@@ -16,183 +15,163 @@ use App\OptionsResolver\TopicOptionsResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\OptionsResolver\PaginatorOptionsResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api', 'api_', format: 'json')]
 class TopicController extends AbstractRestController
 {
-    // #[Route('/topics', name: 'get_topics', methods: ['GET'])]
-    // public function getAllTopics(
-    //     Request $request,
-    //     TopicRepository $topicRepository,
-    //     PaginatorOptionsResolver $paginatorOptionsResolver,
-    //     EntityChecker $entityChecker
-    // ): JsonResponse {
+    #[Route('/topics', name: 'get_topics', methods: ['GET'])]
+    public function getAllTopics(Request $request, TopicRepository $topicRepository): JsonResponse
+    {
+        $pagination = $this->getPaginationParameter(Topic::class, $request);
 
-    //     $sortableFields = $entityChecker->getSortableFields(Topic::class);
+        $user = $this->getUser();
 
-    //     // Retrieve pagination parameters
-    //     try {
-    //         $queryParams = $paginatorOptionsResolver
-    //             ->configurePage()
-    //             ->configureSort($sortableFields)
-    //             ->configureOrder()
-    //             ->resolve($request->query->all());
-    //     } catch (Exception $e) {
-    //         throw new ApiException($e->getMessage());
-    //     }
+        // Get data with pagination
+        $topics = $topicRepository->findAllWithPagination(
+            $pagination['page'],
+            $pagination['sort'],
+            $pagination['order'],
+            $user
+        );
 
-    //     /** @var User $user Here the user is not null because we use the attribut IsGranted("IS_AUTHENTICATED") so the user must be authenticated */
-    //     $user = $this->getUser();
+        // Return paginate data
+        return $this->json($topics, context: ['groups' => ['read:topic:user']]);
+    }
 
-    //     // Get data with pagination
-    //     $topics = $topicRepository->findAllWithPagination(
-    //         $queryParams['page'],
-    //         $queryParams['sort'],
-    //         $queryParams['order'],
-    //         $user
-    //     );
+    #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
+    public function getOneTopic(int $id, TopicRepository $topicRepository): JsonResponse
+    {
+        // Retrieve the element by id
+        $topic = $topicRepository->find($id);
 
-    //     // Return paginate data
-    //     return $this->json($topics);
-    // }
+        // Check if the element exists
+        if ($topic === null) {
+            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+        }
 
-    // #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    // public function getOneTopic(int $id, TopicRepository $topicRepository): JsonResponse
-    // {
-    //     // Retrieve the element by id
-    //     $topic = $topicRepository->find($id);
+        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
 
-    //     // Check if the element exists
-    //     if ($topic === null) {
-    //         throw new ApiException("Topic with id $id was not found", Response::HTTP_NOT_FOUND);
-    //     }
+        return $this->json($topic, context: ['groups' => ['read:topic:admin']]);
+    }
 
-    //     return $this->json($topic);
-    // }
+    #[Route('/topics', name: 'create_topic', methods: ['POST'])]
+    public function createTopic(
+        Request $request,
+        EntityManagerInterface $em,
+        TopicOptionsResolver $topicOptionsResolver,
+        RequestPayloadService $requestPayloadService
+    ): JsonResponse {
 
-    // #[Route('/topics', name: 'create_topic', methods: ['POST'])]
-    // public function createTopic(
-    //     Request $request,
-    //     EntityManagerInterface $em,
-    //     ValidatorInterface $validator,
-    //     TopicOptionsResolver $topicOptionsResolver,
-    //     RequestPayloadService $requestPayloadService
-    // ): JsonResponse {
+        try {
+            // Retrieve the request body
+            $body = $requestPayloadService->getRequestPayload($request);
 
-    //     try {
-    //         // Retrieve the request body
-    //         $body = $requestPayloadService->getRequestPayload($request);
+            // Validate the content of the request body
+            $data = $topicOptionsResolver
+                ->configureName(true)
+                ->resolve($body);
+        } catch (Exception $e) {
+            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
 
-    //         // Validate the content of the request body
-    //         $data = $topicOptionsResolver
-    //             ->configureName(true)
-    //             ->resolve($body);
-    //     } catch (Exception $e) {
-    //         throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
-    //     }
+        $user = $this->getUser();
 
-    //     // Temporarly create the element
-    //     $topic = new Topic();
-    //     $topic
-    //         ->setName($data['name'])
-    //         ->setAuthor($this->getUser());
+        // Temporarly create the element
+        $topic = new Topic();
+        $topic
+            ->setName($data['name'])
+            ->setAuthor($user);
 
-    //     // Second validation using the validation constraints
-    //     $errors = $validator->validate($topic, groups: ['Default']);
-    //     if (count($errors) > 0) {
-    //         throw new ApiException((string) $errors[0]->getMessage(), Response::HTTP_BAD_REQUEST);
-    //     }
+        // Second validation using the validation constraints
+        $this->validateEntity($topic);
 
-    //     // Save the new element
-    //     $em->persist($topic);
-    //     $em->flush();
+        // Save the new element
+        $em->persist($topic);
+        $em->flush();
 
-    //     // Return the element with the the status 201 (Created)
-    //     return $this->json($topic, Response::HTTP_CREATED, [
-    //         'Location' => $this->generateUrl('api_get_topic', ['id' => $topic->getId()]),
-    //     ]);
-    // }
+        // Return the element with the the status 201 (Created)
+        return $this->json(
+            $topic,
+            Response::HTTP_CREATED,
+            ['Location' => $this->generateUrl('api_get_topic', ['id' => $topic->getId()])],
+            ['groups' => ['read:topic:user']]
+        );
+    }
 
-    // #[Route('/topics/{id}', name: 'delete_topic', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
-    // public function deleteTopic(int $id, TopicRepository $topicRepository, EntityManagerInterface $em): JsonResponse
-    // {
-    //     // Retrieve the element by id
-    //     $topic = $topicRepository->find($id);
+    #[Route('/topics/{id}', name: 'delete_topic', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
+    public function deleteTopic(int $id, TopicRepository $topicRepository, EntityManagerInterface $em): JsonResponse
+    {
+        // Retrieve the element by id
+        $topic = $topicRepository->find($id);
 
-    //     // Check if the element exists
-    //     if ($topic === null) {
-    //         throw new ApiException("Topic with id $id was not found", Response::HTTP_NOT_FOUND);
-    //     }
+        // Check if the element exists
+        if ($topic === null) {
+            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+        }
 
-    //     // Remove the element
-    //     $em->remove($topic);
-    //     $em->flush();
+        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not delete this resource');
 
-    //     // Return a response with status 204 (No Content)
-    //     return $this->json(null, Response::HTTP_NO_CONTENT);
-    // }
+        // Remove the element
+        $em->remove($topic);
+        $em->flush();
 
-    // #[Route('/topics/{id}', name: 'update_topic', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
-    // public function updateTopic(
-    //     int $id,
-    //     TopicRepository $topicRepository,
-    //     EntityManagerInterface $em,
-    //     RequestPayloadService $requestPayloadService,
-    //     Request $request,
-    //     TopicOptionsResolver $flashcardOptionsResolver,
-    //     ValidatorInterface $validator
-    // ): JsonResponse {
+        // Return a response with status 204 (No Content)
+        return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
 
-    //     // Retrieve the element by id
-    //     $topic = $topicRepository->find($id);
+    #[Route('/topics/{id}', name: 'update_topic', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
+    public function updateTopic(
+        int $id,
+        TopicRepository $topicRepository,
+        EntityManagerInterface $em,
+        RequestPayloadService $requestPayloadService,
+        Request $request,
+        TopicOptionsResolver $flashcardOptionsResolver,
+    ): JsonResponse {
 
-    //     // Check if the element exists
-    //     if ($topic === null) {
-    //         throw new ApiException("Topic with id $id was not found", Response::HTTP_NOT_FOUND);
-    //     }
+        // Retrieve the element by id
+        $topic = $topicRepository->find($id);
 
-    //     try {
-    //         // Retrieve the request body
-    //         $body = $requestPayloadService->getRequestPayload($request);
+        // Check if the element exists
+        if ($topic === null) {
+            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+        }
 
-    //         // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
-    //         // Otherwise, all parameters are optional.
-    //         $mandatoryParameters = $request->getMethod() === 'PUT';
+        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
 
-    //         // Validate the content of the request body
-    //         $data = $flashcardOptionsResolver
-    //             ->configureName($mandatoryParameters)
-    //             ->resolve($body);
-    //     } catch (Exception $e) {
-    //         throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
-    //     }
+        try {
+            // Retrieve the request body
+            $body = $requestPayloadService->getRequestPayload($request);
 
-    //     // Update each fields if necessary
-    //     foreach ($data as $field => $value) {
-    //         switch ($field) {
-    //             case 'name':
-    //                 $topic->setName($value);
-    //                 break;
-    //                 // case 'author':
-    //                 //     $flashcard->setAuthor($value);
-    //                 //     break;
-    //         }
-    //     }
+            // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
+            // Otherwise, all parameters are optional.
+            $mandatoryParameters = $request->getMethod() === 'PUT';
 
-    //     // Second validation using the validation constraints
-    //     $errors = $validator->validate($topic, groups: ['Default']);
-    //     if (count($errors) > 0) {
-    //         throw new ApiException((string) $errors[0]->getMessage(), Response::HTTP_BAD_REQUEST);
-    //     }
+            // Validate the content of the request body
+            $data = $flashcardOptionsResolver
+                ->configureName($mandatoryParameters)
+                ->resolve($body);
+        } catch (Exception $e) {
+            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
 
-    //     // Save the element information
-    //     $em->flush();
+        // Update each fields if necessary
+        foreach ($data as $field => $value) {
+            switch ($field) {
+                case 'name':
+                    $topic->setName($value);
+                    break;
+            }
+        }
 
-    //     // Return the element
-    //     return $this->json($topic);
-    // }
+        // Second validation using the validation constraints
+        $this->validateEntity($topic);
+
+        // Save the element information
+        $em->flush();
+
+        // Return the element
+        return $this->json($topic, context: ['groups' => ['read:topic:user']]);
+    }
 }
