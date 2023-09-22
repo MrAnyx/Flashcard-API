@@ -10,6 +10,7 @@ use App\Voter\TopicVoter;
 use App\Exception\ApiException;
 use App\Repository\UnitRepository;
 use App\Service\RequestPayloadService;
+use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\AbstractRestController;
 use App\OptionsResolver\UnitOptionsResolver;
@@ -183,5 +184,32 @@ class UnitController extends AbstractRestController
 
         // Return the element
         return $this->json($unit, context: ['groups' => ['read:unit:user']]);
+    }
+
+    #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
+    public function getUnitsFromTopic(int $id, Request $request, UnitRepository $unitRepository, FlashcardRepository $flashcardRepository): JsonResponse
+    {
+
+        // Retrieve the element by id
+        $unit = $unitRepository->find($id);
+
+        // Check if the element exists
+        if ($unit === null) {
+            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+        }
+
+        $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not access this resource');
+
+        $pagination = $this->getPaginationParameter(Unit::class, $request);
+
+        // Get data with pagination
+        $flashcards = $flashcardRepository->findByUnitWithPagination(
+            $pagination['page'],
+            $pagination['sort'],
+            $pagination['order'],
+            $unit
+        );
+
+        return $this->json($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 }

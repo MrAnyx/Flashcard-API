@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Unit;
 use App\Entity\User;
 use App\Model\Paginator;
 use App\Entity\Flashcard;
@@ -36,6 +37,16 @@ class FlashcardRepository extends ServiceEntityRepository
         }
 
         $query->orderBy("f.$sort", $order);
+
+        return new Paginator($query, $page);
+    }
+
+    public function findByUnitWithPagination(int $page, string $sort, string $order, Unit $unit): Paginator
+    {
+        $query = $this->createQueryBuilder('f')
+            ->where('f.unit = :unit')
+            ->setParameter('unit', $unit)
+            ->orderBy("f.$sort", $order);
 
         return new Paginator($query, $page);
     }
