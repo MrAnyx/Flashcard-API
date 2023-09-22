@@ -3,10 +3,12 @@
 namespace App\Controller\User;
 
 use Exception;
+use App\Entity\Unit;
 use App\Entity\Topic;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
 use App\Exception\ApiException;
+use App\Repository\UnitRepository;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -52,7 +54,7 @@ class TopicController extends AbstractRestController
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
 
-        return $this->json($topic, context: ['groups' => ['read:topic:admin']]);
+        return $this->json($topic, context: ['groups' => ['read:topic:user']]);
     }
 
     #[Route('/topics', name: 'create_topic', methods: ['POST'])]
@@ -173,5 +175,31 @@ class TopicController extends AbstractRestController
 
         // Return the element
         return $this->json($topic, context: ['groups' => ['read:topic:user']]);
+    }
+
+    #[Route('/topics/{id}/units', name: 'get_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
+    public function getUnitsFromTopic(int $id, Request $request, TopicRepository $topicRepository, UnitRepository $unitRepository): JsonResponse
+    {
+        // Retrieve the element by id
+        $topic = $topicRepository->find($id);
+
+        // Check if the element exists
+        if ($topic === null) {
+            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+        }
+
+        $pagination = $this->getPaginationParameter(Unit::class, $request);
+
+        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
+
+        // Get data with pagination
+        $units = $unitRepository->findByTopicWithPagination(
+            $pagination['page'],
+            $pagination['sort'],
+            $pagination['order'],
+            $topic
+        );
+
+        return $this->json($units, context: ['groups' => ['read:unit:user']]);
     }
 }
