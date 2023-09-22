@@ -51,7 +51,7 @@ class FlashcardController extends AbstractRestController
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not access this resource');
 
-        return $this->json($flashcard, context: ['groups' => ['read:flashcard:admin']]);
+        return $this->json($flashcard, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards', name: 'create_flashcard', methods: ['POST'])]
@@ -189,6 +189,6 @@ class FlashcardController extends AbstractRestController
         $em->flush();
 
         // Return the flashcard
-        return $this->json($flashcard, context: ['groups' => ['read:flashcard:admin']]);
+        return $this->json($flashcard, context: ['groups' => ['read:flashcard:user']]);
     }
 }
