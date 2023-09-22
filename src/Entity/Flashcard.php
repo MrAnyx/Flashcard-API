@@ -16,40 +16,40 @@ class Flashcard
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:flashcard:admin'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['read:flashcard:admin'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['read:flashcard:admin'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'The front side of a flashcard can not be blank')]
     #[Assert\Length(max: 255, maxMessage: 'The front side of a flashcard can not exceed {{ limit }} characters')]
-    #[Groups(['read:flashcard:admin'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?string $front = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'The back side of a flashcard can not be blank')]
     #[Assert\Length(max: 255, maxMessage: 'The back side of a flashcard can not exceed {{ limit }} characters')]
-    #[Groups(['read:flashcard:admin'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?string $back = null;
 
     #[ORM\Column(length: 1000, nullable: true)]
     #[Assert\Length(max: 1000, maxMessage: 'The details of a flashcard can not exceed {{ limit }} characters')]
-    #[Groups(['read:flashcard:admin'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?string $details = null;
 
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
     #[Assert\NotBlank(message: 'You must associate a unit to this flashcard')]
-    #[Groups(['read:flashcard:admin'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?Unit $unit = null;
 
     public function getId(): ?int

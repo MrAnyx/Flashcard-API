@@ -18,14 +18,14 @@ class Unit
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:unit:admin', 'read:flashcard:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:admin', 'read:flashcard:admin', 'read:unit:user', 'read:flashcard:user'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a unit can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a unit can not exceed {{ limit }} characters')]
-    #[Groups(['read:unit:admin', 'read:flashcard:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:admin', 'read:flashcard:admin', 'read:unit:user', 'read:flashcard:user'])]
     #[Sortable]
     private ?string $name = null;
 
