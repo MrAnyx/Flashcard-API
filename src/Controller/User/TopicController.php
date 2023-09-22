@@ -188,9 +188,9 @@ class TopicController extends AbstractRestController
             throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
         }
 
-        $pagination = $this->getPaginationParameter(Unit::class, $request);
-
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
+
+        $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         // Get data with pagination
         $units = $unitRepository->findByTopicWithPagination(
