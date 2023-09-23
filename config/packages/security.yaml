@@ -19,7 +19,7 @@ security:
             pattern: ^/api/auth/token/refresh
             stateless: true
             refresh_jwt:
-                check_path: api_token_refresh
+                check_path: api_auth_token_refresh
 
         login:
             pattern: ^/api/auth/login
@@ -28,12 +28,14 @@ security:
             json_login:
                 username_path: identifier
                 password_path: password
-                check_path: api_login
+                check_path: api_auth_login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
         api:
             pattern: ^/api
+            logout:
+                path: api_auth_logout
             stateless: true
             jwt: ~
 
