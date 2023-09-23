@@ -79,13 +79,17 @@ class SecurityController extends AbstractRestController
 
         // Save the new element
         $em->persist($user);
+
+        $refreshToken = $refreshTokenGenerator->createForUserWithTtl($user, $this->getParameter('gesdinet_jwt_refresh_token.ttl'));
+        $em->persist($refreshToken);
+
         $em->flush();
 
         // Return the element with the the status 201 (Created)
         return $this->json(
             [
                 'token' => $jwtManager->create($user),
-                'refresh_token' => $refreshTokenGenerator->createForUserWithTtl($user, $this->getParameter('gesdinet_jwt_refresh_token.ttl'))->getRefreshToken(),
+                'refresh_token' => $refreshToken->getRefreshToken(),
             ],
             Response::HTTP_CREATED,
         );
