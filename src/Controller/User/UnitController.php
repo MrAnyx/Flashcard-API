@@ -52,7 +52,7 @@ class UnitController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not access this resource');
@@ -78,7 +78,7 @@ class UnitController extends AbstractRestController
                 ->configureTopic(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $data['topic'], 'You can not use this resource');
@@ -113,7 +113,7 @@ class UnitController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not delete this resource');
@@ -141,7 +141,7 @@ class UnitController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
@@ -160,7 +160,7 @@ class UnitController extends AbstractRestController
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Update each fields if necessary
@@ -195,7 +195,7 @@ class UnitController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not access this resource');

@@ -46,7 +46,7 @@ class FlashcardController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException('Flashcard with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not access this resource');
@@ -74,7 +74,7 @@ class FlashcardController extends AbstractRestController
                 ->configureUnit(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $data['unit'], 'You can not use this resource');
@@ -111,7 +111,7 @@ class FlashcardController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException('Flashcard with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not delete this resource');
@@ -139,7 +139,7 @@ class FlashcardController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException('Flashcard with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
@@ -160,7 +160,7 @@ class FlashcardController extends AbstractRestController
                 ->configureUnit($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Update each fields if necessary

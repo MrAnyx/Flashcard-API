@@ -17,7 +17,7 @@ class ErrorNormalizerTest extends TestCase
         $exceptionDetails = 'Exception message';
         $exceptionStatusCode = Response::HTTP_NOT_FOUND;
 
-        $exception = new ApiException($exceptionDetails, $exceptionStatusCode);
+        $exception = new ApiException($exceptionStatusCode, $exceptionDetails);
 
         $context = ['debug' => true];
 
@@ -43,7 +43,7 @@ class ErrorNormalizerTest extends TestCase
         $normalizer = new ErrorNormalizer();
 
         // Create a FlattenException instance
-        $exception = new ApiException('', Response::HTTP_BAD_REQUEST);
+        $exception = new ApiException(Response::HTTP_BAD_REQUEST, '');
         $flattenException = FlattenException::createFromThrowable($exception);
 
         // Assert that supportsNormalization returns true for FlattenException

@@ -32,48 +32,48 @@ class JWTSubscriber implements EventSubscriberInterface
     public function onAuthenticationFailure(AuthenticationFailureEvent $event)
     {
         throw new ApiException(
+            Response::HTTP_UNAUTHORIZED,
             'Invalid credentials',
-            Response::HTTP_UNAUTHORIZED
         );
     }
 
     public function onJwtInvalid(JWTInvalidEvent $event)
     {
         throw new ApiException(
+            Response::HTTP_UNAUTHORIZED,
             'Invalid JWT token. You must provide a valid JWT token for this request',
-            Response::HTTP_UNAUTHORIZED
         );
     }
 
     public function onJwtNotFound(JWTNotFoundEvent $event)
     {
         throw new ApiException(
+            Response::HTTP_UNAUTHORIZED,
             'JWT token not found. Please, provide a valid JWT token using the Bearer authentication method',
-            Response::HTTP_UNAUTHORIZED
         );
     }
 
     public function onJwtExpired(JWTExpiredEvent $event)
     {
         throw new ApiException(
+            Response::HTTP_UNAUTHORIZED,
             'JWT token has expired. Please, login again or refresh your token using your refresh token',
-            Response::HTTP_UNAUTHORIZED
         );
     }
 
     public function onJwtRefreshTokenFailure(RefreshAuthenticationFailureEvent $event)
     {
         throw new ApiException(
+            Response::HTTP_BAD_REQUEST,
             'An error occured when trying to refresh you JWT token. Please try again later',
-            Response::HTTP_BAD_REQUEST
         );
     }
 
     public function onJwtRefreshTokenNotFound(RefreshTokenNotFoundEvent $event)
     {
         throw new ApiException(
+            Response::HTTP_NOT_FOUND,
             'JWT refresh token not found. Please, you must provide a valid JWT refresh token in order to refresh your existing token',
-            Response::HTTP_NOT_FOUND
         );
     }
 }

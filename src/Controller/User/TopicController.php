@@ -49,7 +49,7 @@ class TopicController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
@@ -74,7 +74,7 @@ class TopicController extends AbstractRestController
                 ->configureName(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         $user = $this->getUser();
@@ -109,7 +109,7 @@ class TopicController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not delete this resource');
@@ -137,7 +137,7 @@ class TopicController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
@@ -155,7 +155,7 @@ class TopicController extends AbstractRestController
                 ->configureName($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Update each fields if necessary
@@ -185,7 +185,7 @@ class TopicController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');

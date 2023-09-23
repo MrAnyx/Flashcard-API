@@ -62,7 +62,7 @@ class SecurityController extends AbstractRestController
                 ->configurePassword(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Temporarly create the element

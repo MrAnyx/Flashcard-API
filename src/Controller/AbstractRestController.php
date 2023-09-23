@@ -35,7 +35,7 @@ class AbstractRestController extends AbstractController
                 ->configureOrder()
                 ->resolve($request->query->all());
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         return $queryParams;
@@ -49,7 +49,7 @@ class AbstractRestController extends AbstractController
     {
         $errors = $this->validator->validate($entity, groups: $validationGroups);
         if (count($errors) > 0) {
-            throw new ApiException((string) $errors[0]->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, (string) $errors[0]->getMessage());
         }
     }
 }

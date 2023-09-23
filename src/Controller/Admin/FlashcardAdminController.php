@@ -44,7 +44,7 @@ class FlashcardAdminController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException('Flashcard with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
         }
 
         return $this->json($flashcard, context: ['groups' => ['read:flashcard:admin']]);
@@ -70,7 +70,7 @@ class FlashcardAdminController extends AbstractRestController
                 ->configureUnit(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Temporarly create the flashcard
@@ -105,7 +105,7 @@ class FlashcardAdminController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException('Flashcard with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
         }
 
         // Remove the flashcard
@@ -131,7 +131,7 @@ class FlashcardAdminController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException('Flashcard with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
         }
 
         try {
@@ -150,7 +150,7 @@ class FlashcardAdminController extends AbstractRestController
                 ->configureUnit($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Update each fields if necessary

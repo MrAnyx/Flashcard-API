@@ -46,7 +46,7 @@ class TopicAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         return $this->json($topic, context: ['groups' => ['read:topic:admin']]);
@@ -70,7 +70,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureAuthor(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Temporarly create the element
@@ -103,7 +103,7 @@ class TopicAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         // Remove the element
@@ -129,7 +129,7 @@ class TopicAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException('Topic with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         try {
@@ -146,7 +146,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureAuthor($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, e->getMessage());
         }
 
         // Update each fields if necessary

@@ -46,7 +46,7 @@ class UnitAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
         }
 
         return $this->json($unit, context: ['groups' => ['read:unit:admin']]);
@@ -70,7 +70,7 @@ class UnitAdminController extends AbstractRestController
                 ->configureTopic(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Temporarly create the element
@@ -103,7 +103,7 @@ class UnitAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
         }
 
         // Remove the element
@@ -129,7 +129,7 @@ class UnitAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException('Unit with id %d was not found', Response::HTTP_NOT_FOUND, [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
         }
 
         try {
@@ -146,7 +146,7 @@ class UnitAdminController extends AbstractRestController
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Update each fields if necessary
