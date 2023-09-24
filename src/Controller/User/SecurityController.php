@@ -90,6 +90,7 @@ class SecurityController extends AbstractRestController
             [
                 'token' => $jwtManager->create($user),
                 'refresh_token' => $refreshToken->getRefreshToken(),
+                'refresh_token_expiration' => $refreshToken->getValid()->getTimestamp(),
             ],
             Response::HTTP_CREATED,
         );
