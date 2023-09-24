@@ -18,14 +18,14 @@ class Topic
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:unit:admin', 'read:topic:user', 'read:unit:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a topic can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
-    #[Groups(['read:topic:admin', 'read:unit:admin', 'read:topic:user', 'read:unit:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user'])]
     #[Sortable]
     private ?string $name = null;
 
@@ -41,7 +41,6 @@ class Topic
 
     #[ORM\ManyToOne(inversedBy: 'topics')]
     #[Assert\NotBlank(message: 'You must associate a user to this topic')]
-    #[Groups(['read:topic:admin'])]
     private ?User $author = null;
 
     #[ORM\OneToMany(mappedBy: 'topic', targetEntity: Unit::class, cascade: ['remove'])]
