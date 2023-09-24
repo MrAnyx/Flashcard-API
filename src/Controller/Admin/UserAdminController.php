@@ -6,6 +6,7 @@ use Exception;
 use App\Entity\User;
 use App\Utility\Regex;
 use App\Exception\ApiException;
+use App\Service\TokenGenerator;
 use App\Repository\UserRepository;
 use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -61,7 +62,8 @@ class UserAdminController extends AbstractRestController
         UserPasswordHasherInterface $passwordHasher,
         ValidatorInterface $validator,
         UserOptionsResolver $userOptionsResolver,
-        RequestPayloadService $requestPayloadService
+        RequestPayloadService $requestPayloadService,
+        TokenGenerator $tokenGenerator
     ): JsonResponse {
 
         try {
@@ -84,6 +86,7 @@ class UserAdminController extends AbstractRestController
         $user
             ->setEmail($data['email'])
             ->setUsername($data['username'])
+            ->setToken($tokenGenerator->generateToken())
             ->setRoles($data['roles'])
             ->setRawPassword($data['password']);
 

@@ -2,21 +2,28 @@
 
 namespace App\Controller\User;
 
+use App\Entity\User;
+use App\Exception\ApiException;
 use App\Controller\AbstractRestController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api/auth', 'api_auth_', format: 'json')]
 class SecurityController extends AbstractRestController
 {
     #[Route('/login', name: 'login', methods: ['POST'])]
-    public function login(): void
+    public function login(): JsonResponse
     {
-        // This method is not executed
-    }
+        /** @var ?User $user */
+        $user = $this->getUser();
 
-    #[Route('/logout', name: 'logout', methods: ['POST'])]
-    public function logout(): void
-    {
-        // This method is not executed
+        if ($user === null) {
+            throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Missing credentials');
+        }
+
+        return $this->json([
+            'token' => $user->getToken(),
+        ]);
     }
 }

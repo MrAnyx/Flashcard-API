@@ -24,7 +24,6 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJson($client->getResponse()->getContent());
         $this->assertArrayHasKey('token', json_decode($client->getResponse()->getContent(), true));
-        $this->assertArrayHasKey('refresh_token', json_decode($client->getResponse()->getContent(), true));
     }
 
     public function testLoginWithUsername()
@@ -44,7 +43,6 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJson($client->getResponse()->getContent());
         $this->assertArrayHasKey('token', json_decode($client->getResponse()->getContent(), true));
-        $this->assertArrayHasKey('refresh_token', json_decode($client->getResponse()->getContent(), true));
     }
 
     public function testLoginWithBadPassword()

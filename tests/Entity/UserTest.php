@@ -109,6 +109,23 @@ class UserTest extends KernelTestCase
         $this->assertSame($username, $user->getUsername());
     }
 
+    public function testToken()
+    {
+        $user = new User();
+
+        // Test entity constraints
+        $errors = $this->validator->validateProperty($user, 'token');
+        $this->assertArrayContainsInstanceOf(NotBlank::class, $errors);
+
+        $user->setToken('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+        $errors = $this->validator->validateProperty($user, 'token');
+        $this->assertArrayContainsInstanceOf(Length::class, $errors);
+
+        $username = 'valid_token';
+        $user->setToken($username);
+        $this->assertSame($username, $user->getToken());
+    }
+
     public function testUserIdentifier()
     {
         $user = new User();
@@ -194,7 +211,7 @@ class UserTest extends KernelTestCase
         /** @var Topic $topic */
         $topic = self::getContainer()->get(TopicRepository::class)->find(1);
 
-        $this->assertEmpty($topic->getUnits());
+        $this->assertEmpty($user->getToken());
 
         $user->addTopic($topic);
         $this->assertContains($topic, $user->getTopics());

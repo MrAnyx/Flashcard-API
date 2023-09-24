@@ -6,25 +6,35 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
+        api_user_provider:
             entity:
                 class: App\Entity\User
 
+        api_user_token_provider:
+            entity:
+                class: App\Entity\User
+                property: token
+
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+        # dev:
+        #     pattern: ^/(_(profiler|wdt)|css|images|js)/
+        #     security: false
 
         login:
             pattern: ^/api/auth/login
             stateless: true
-            provider: app_user_provider
+            provider: api_user_provider
             json_login:
+                username_path: identifier
+                password_path: password
                 check_path: api_auth_login
 
         api:
             pattern: ^/api
             stateless: true
+            provider: api_user_token_provider
+            custom_authenticators:
+                - App\Security\TokenAuthenticator
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

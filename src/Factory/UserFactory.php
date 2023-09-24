@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\User;
 use Zenstruck\Foundry\Proxy;
+use App\Service\TokenGenerator;
 use App\Repository\UserRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -46,19 +47,20 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
  */
 final class UserFactory extends ModelFactory
 {
-    private $passwordHasher;
+    private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    private TokenGenerator $tokenGenerator;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher, TokenGenerator $tokenGenerator)
     {
         parent::__construct();
 
         $this->passwordHasher = $passwordHasher;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
      */
     protected function getDefaults(): array
     {
@@ -66,6 +68,7 @@ final class UserFactory extends ModelFactory
             'email' => self::faker()->email(),
             'username' => self::faker()->userName(),
             'password' => 'password',
+            'token' => $this->tokenGenerator->generateToken(),
             'roles' => ['ROLE_USER'],
         ];
     }

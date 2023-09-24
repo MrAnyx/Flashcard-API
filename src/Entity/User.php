@@ -46,6 +46,11 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Sortable]
     private ?string $username = null;
 
+    #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'The token can not be blank')]
+    #[Assert\Length(max: 100, maxMessage: 'The token can not exceed {{ limit }} characters')]
+    private ?string $token = null;
+
     #[ORM\Column]
     #[Groups(['read:user:admin', 'read:user:user'])]
     #[Sortable]
@@ -106,6 +111,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): static
+    {
+        $this->token = $token;
 
         return $this;
     }
