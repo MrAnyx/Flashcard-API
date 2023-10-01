@@ -50,23 +50,28 @@ class Flashcard
     private ?string $details = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?DateTime $nextReview = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    private ?DateTime $previousReview = null;
+
+    #[ORM\Column]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    private int $reviews = 0;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    private ?float $difficulty = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    private ?float $stability = null;
 
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
     #[Assert\NotBlank(message: 'You must associate a unit to this flashcard')]
     private ?Unit $unit = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?DateTime $previousReview = null;
-
-    #[ORM\Column]
-    private int $reviews = 0;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $difficulty = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $stability = null;
 
     public function getId(): ?int
     {
@@ -148,31 +153,19 @@ class Flashcard
         return $this;
     }
 
-    public function getUnit(): ?Unit
-    {
-        return $this->unit;
-    }
-
-    public function setUnit(?Unit $unit): static
-    {
-        $this->unit = $unit;
-
-        return $this;
-    }
-
     public function getPreviousReview(): ?DateTime
     {
         return $this->previousReview;
     }
 
-    public function setPreviousReview(?DateTime $previousReview): static
+    public function setPreviousReview(): static
     {
-        $this->previousReview = $previousReview;
+        $this->previousReview = new DateTime;
 
         return $this;
     }
 
-    public function countReviews(): int
+    public function getReviews(): int
     {
         return $this->reviews;
     }
@@ -182,6 +175,11 @@ class Flashcard
         $this->reviews++;
 
         return $this;
+    }
+
+    public function isNew(): bool
+    {
+        return $this->getReviews() === 0;
     }
 
     public function getDifficulty(): ?float
@@ -204,6 +202,18 @@ class Flashcard
     public function setStability(?float $stability): static
     {
         $this->stability = $stability;
+
+        return $this;
+    }
+
+    public function getUnit(): ?Unit
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?Unit $unit): static
+    {
+        $this->unit = $unit;
 
         return $this;
     }
