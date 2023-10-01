@@ -10,6 +10,7 @@ use App\Voter\FlashcardVoter;
 use App\Exception\ApiException;
 use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
+use App\Service\SpacedRepetitionScheduler;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\AbstractRestController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\OptionsResolver\FlashcardOptionsResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 
 #[Route('/api', 'api_', format: 'json')]
 class FlashcardController extends AbstractRestController
@@ -190,5 +192,49 @@ class FlashcardController extends AbstractRestController
 
         // Return the flashcard
         return $this->json($flashcard, context: ['groups' => ['read:flashcard:user']]);
+    }
+
+    #[Route('/flashcards/{id}/review', name: 'review_flashcard', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
+    public function reviewFlashcard(
+        int $id,
+        FlashcardRepository $flashcardRepository,
+        EntityManagerInterface $em,
+        RequestPayloadService $requestPayloadService,
+        Request $request,
+        SpacedRepetitionOptionsResolver $spacedRepetitionOptionsResolver,
+        SpacedRepetitionScheduler $SpacedRepetitionScheduler
+    ): JsonResponse {
+
+        // Retrieve the flashcard by id
+        $flashcard = $flashcardRepository->find($id);
+
+        // Check if the flashcard exists
+        if ($flashcard === null) {
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
+        }
+
+        $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
+
+        try {
+            // Retrieve the request body
+            $body = $requestPayloadService->getRequestPayload($request);
+
+            // Validate the content of the request body
+            $data = $spacedRepetitionOptionsResolver
+                ->configureQuality()
+                ->resolve($body);
+
+            $flashcard = $SpacedRepetitionScheduler->review($flashcard, $data['quality']);
+        } catch (Exception $e) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+
+        // Second validation using the validation constraints
+        $this->validateEntity($flashcard);
+
+        // Save the flashcard information
+        $em->flush();
+
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 }

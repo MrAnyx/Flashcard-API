@@ -2,7 +2,6 @@
 
 namespace App\Controller\User;
 
-use App\Service\EntityChecker;
 use App\Controller\AbstractRestController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -10,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractRestController
 {
     #[Route('/users/me', name: 'get_me', methods: ['GET'])]
-    public function getMe(EntityChecker $entityChecker)
+    public function getMe()
     {
         $user = $this->getUser();
 

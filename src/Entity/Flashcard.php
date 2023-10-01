@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use DateTime;
 use DateTimeImmutable;
 use App\Attribut\Sortable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FlashcardRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -47,9 +49,24 @@ class Flashcard
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?string $details = null;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?DateTime $nextReview = null;
+
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
     #[Assert\NotBlank(message: 'You must associate a unit to this flashcard')]
     private ?Unit $unit = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?DateTime $previousReview = null;
+
+    #[ORM\Column]
+    private int $reviews = 0;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $difficulty = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $stability = null;
 
     public function getId(): ?int
     {
@@ -119,6 +136,18 @@ class Flashcard
         return $this;
     }
 
+    public function getNextReview(): ?DateTime
+    {
+        return $this->nextReview;
+    }
+
+    public function setNextReview(?DateTime $nextReview): static
+    {
+        $this->nextReview = $nextReview;
+
+        return $this;
+    }
+
     public function getUnit(): ?Unit
     {
         return $this->unit;
@@ -127,6 +156,54 @@ class Flashcard
     public function setUnit(?Unit $unit): static
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function getPreviousReview(): ?DateTime
+    {
+        return $this->previousReview;
+    }
+
+    public function setPreviousReview(?DateTime $previousReview): static
+    {
+        $this->previousReview = $previousReview;
+
+        return $this;
+    }
+
+    public function countReviews(): int
+    {
+        return $this->reviews;
+    }
+
+    public function incrementReviews(): static
+    {
+        $this->reviews++;
+
+        return $this;
+    }
+
+    public function getDifficulty(): ?float
+    {
+        return $this->difficulty;
+    }
+
+    public function setDifficulty(?float $difficulty): static
+    {
+        $this->difficulty = $difficulty;
+
+        return $this;
+    }
+
+    public function getStability(): ?float
+    {
+        return $this->stability;
+    }
+
+    public function setStability(?float $stability): static
+    {
+        $this->stability = $stability;
 
         return $this;
     }

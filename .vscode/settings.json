@@ -3,5 +3,6 @@
     "[php]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "open-southeners.laravel-pint"
-    }
+    },
+    "php.highlight-todo.enable": false
 }
