@@ -158,7 +158,14 @@ class Flashcard
         return $this->previousReview;
     }
 
-    public function setPreviousReview(): static
+    public function setPreviousReview(?DateTime $previousReview): static
+    {
+        $this->previousReview = $previousReview;
+
+        return $this;
+    }
+
+    public function refreshPreviousReview(): static
     {
         $this->previousReview = new DateTime;
 
@@ -168,6 +175,13 @@ class Flashcard
     public function getReviews(): int
     {
         return $this->reviews;
+    }
+
+    public function setReviews(int $reviews): static
+    {
+        $this->reviews = $reviews;
+
+        return $this;
     }
 
     public function incrementReviews(): static
