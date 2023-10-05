@@ -5,6 +5,7 @@ namespace App\Controller;
 use Exception;
 use App\Service\EntityChecker;
 use App\Exception\ApiException;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\OptionsResolver\PaginatorOptionsResolver;
@@ -16,7 +17,8 @@ class AbstractRestController extends AbstractController
     public function __construct(
         private EntityChecker $entityChecker,
         private PaginatorOptionsResolver $paginatorOptionsResolver,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private EntityManagerInterface $em
     ) {
     }
 
@@ -51,5 +53,24 @@ class AbstractRestController extends AbstractController
         if (count($errors) > 0) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, (string) $errors[0]->getMessage());
         }
+    }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T> $classname
+     * @return T
+     */
+    public function getResourceById(string $classname, int $id): mixed
+    {
+        // Retrieve the resource by id
+        $resource = $this->em->find($classname, $id);
+
+        // Check if the flashcard exists
+        if ($resource === null) {
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Resource with id %d was not found', [$id]);
+        }
+
+        return $resource;
     }
 }

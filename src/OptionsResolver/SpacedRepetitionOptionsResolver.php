@@ -8,20 +8,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SpacedRepetitionOptionsResolver extends OptionsResolver
 {
-    public function configureQuality(): self
+    public function configureGrade(): self
     {
         return $this
-            ->setDefined('quality')
-            ->setRequired('quality')
-            ->setAllowedTypes('quality', 'int')
-            ->setAllowedValues('quality', function ($quality) {
-                if ($quality < 0 || $quality > 5) {
+            ->setDefined('grade')
+            ->setRequired('grade')
+            ->setAllowedTypes('grade', 'int')
+            ->setAllowedValues('grade', function ($grade) {
+                if ($grade < 1 || $grade > 4) {
                     return false;
                 }
 
                 return true;
             })
-            ->setNormalizer('quality', function (Options $options, int $value) {
+            ->setNormalizer('grade', function (Options $options, int $value) {
                 return GradeType::tryFrom($value);
             });
     }

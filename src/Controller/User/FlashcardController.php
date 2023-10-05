@@ -4,11 +4,13 @@ namespace App\Controller\User;
 
 use DateTime;
 use Exception;
+use App\Entity\Review;
 use App\Utility\Regex;
 use App\Voter\UnitVoter;
 use App\Entity\Flashcard;
 use App\Voter\FlashcardVoter;
 use App\Exception\ApiException;
+use App\Repository\ReviewRepository;
 use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,13 +46,7 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getOneFlashcard(int $id, FlashcardRepository $flashcardRepository): JsonResponse
     {
-        // Retrieve the flashcard by id
-        $flashcard = $flashcardRepository->find($id);
-
-        // Check if the flashcard exists
-        if ($flashcard === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
-        }
+        $flashcard = $this->getResourceById(Flashcard::class, $id);
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not access this resource');
 
@@ -109,13 +105,7 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/{id}', name: 'delete_flashcard', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
     public function deleteFlashcard(int $id, FlashcardRepository $flashcardRepository, EntityManagerInterface $em): JsonResponse
     {
-        // Retrieve the flashcard by id
-        $flashcard = $flashcardRepository->find($id);
-
-        // Check if the flashcard exists
-        if ($flashcard === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
-        }
+        $flashcard = $this->getResourceById(Flashcard::class, $id);
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not delete this resource');
 
@@ -137,13 +127,7 @@ class FlashcardController extends AbstractRestController
         FlashcardOptionsResolver $flashcardOptionsResolver
     ): JsonResponse {
 
-        // Retrieve the flashcard by id
-        $flashcard = $flashcardRepository->find($id);
-
-        // Check if the flashcard exists
-        if ($flashcard === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
-        }
+        $flashcard = $this->getResourceById(Flashcard::class, $id);
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
@@ -206,14 +190,7 @@ class FlashcardController extends AbstractRestController
         SpacedRepetitionScheduler $spacedRepetitionScheduler
     ): JsonResponse {
 
-        // Retrieve the flashcard by id
-        $flashcard = $flashcardRepository->find($id);
-
-        // Check if the flashcard exists
-        if ($flashcard === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
-        }
-
+        $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
         // If the next review is in the future
@@ -230,18 +207,27 @@ class FlashcardController extends AbstractRestController
 
             // Validate the content of the request body
             $data = $spacedRepetitionOptionsResolver
-                ->configureQuality()
+                ->configureGrade()
                 ->resolve($body);
         } catch (Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
-        $spacedRepetitionScheduler->review($flashcard, $data['quality']);
+        $spacedRepetitionScheduler->review($flashcard, $data['grade']);
 
         // Second validation using the validation constraints
         $this->validateEntity($flashcard);
 
-        // Save the flashcard information
+        // Create the new review element
+        $review = new Review();
+        $review
+            ->setFlashcard($flashcard)
+            ->setUser($this->getUser())
+            ->setGrade($data['grade']);
+
+        $this->validateEntity($review);
+        $em->persist($review);
+
         $em->flush();
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
@@ -252,34 +238,13 @@ class FlashcardController extends AbstractRestController
         int $id,
         FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
-        RequestPayloadService $requestPayloadService,
-        Request $request,
-        SpacedRepetitionOptionsResolver $spacedRepetitionOptionsResolver,
-        SpacedRepetitionScheduler $SpacedRepetitionScheduler
+        ReviewRepository $reviewRepository
     ): JsonResponse {
-
-        // Retrieve the flashcard by id
-        $flashcard = $flashcardRepository->find($id);
-
-        // Check if the flashcard exists
-        if ($flashcard === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
-        }
-
+        $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
-        $flashcard
-            ->setDifficulty(null)
-            ->setStability(null)
-            ->setReviews(0)
-            ->setPreviousReview(null)
-            ->setNextReview(null);
-
-        // Second validation using the validation constraints
-        $this->validateEntity($flashcard);
-
-        // Save the flashcard information
-        $em->flush();
+        $reviewRepository->resetBy($flashcard, $this->getUser());
+        $flashcardRepository->resetBy($flashcard, $this->getUser());
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }

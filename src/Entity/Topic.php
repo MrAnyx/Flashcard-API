@@ -18,29 +18,30 @@ class Topic
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a topic can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
     #[Sortable]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
     #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
     #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'topics')]
     #[Assert\NotBlank(message: 'You must associate a user to this topic')]
+    #[Groups(['read:topic:admin'])]
     private ?User $author = null;
 
     #[ORM\OneToMany(mappedBy: 'topic', targetEntity: Unit::class, cascade: ['remove'])]
@@ -76,7 +77,7 @@ class Topic
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new DateTimeImmutable('now');
+        $this->createdAt = new DateTimeImmutable();
 
         return $this;
     }
@@ -90,7 +91,7 @@ class Topic
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new DateTimeImmutable('now');
+        $this->updatedAt = new DateTimeImmutable();
 
         return $this;
     }

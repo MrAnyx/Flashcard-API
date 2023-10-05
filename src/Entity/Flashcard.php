@@ -8,6 +8,8 @@ use App\Attribut\Sortable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FlashcardRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -71,7 +73,16 @@ class Flashcard
 
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
     #[Assert\NotBlank(message: 'You must associate a unit to this flashcard')]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?Unit $unit = null;
+
+    #[ORM\OneToMany(mappedBy: 'flashcard', targetEntity: Review::class, cascade: ['remove'])]
+    private Collection $reviewHistory;
+
+    public function __construct()
+    {
+        $this->reviewHistory = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -86,7 +97,7 @@ class Flashcard
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new DateTimeImmutable('now');
+        $this->createdAt = new DateTimeImmutable();
 
         return $this;
     }
@@ -100,7 +111,7 @@ class Flashcard
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new DateTimeImmutable('now');
+        $this->updatedAt = new DateTimeImmutable();
 
         return $this;
     }
@@ -228,6 +239,36 @@ class Flashcard
     public function setUnit(?Unit $unit): static
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviewHistory(): Collection
+    {
+        return $this->reviewHistory;
+    }
+
+    public function addReviewHistory(Review $reviewHistory): static
+    {
+        if (! $this->reviewHistory->contains($reviewHistory)) {
+            $this->reviewHistory->add($reviewHistory);
+            $reviewHistory->setFlashcard($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReviewHistory(Review $reviewHistory): static
+    {
+        if ($this->reviewHistory->removeElement($reviewHistory)) {
+            // set the owning side to null (unless already changed)
+            if ($reviewHistory->getFlashcard() === $this) {
+                $reviewHistory->setFlashcard(null);
+            }
+        }
 
         return $this;
     }

@@ -18,29 +18,30 @@ class Unit
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a unit can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a unit can not exceed {{ limit }} characters')]
-    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'units')]
     #[Assert\NotBlank(message: 'You must associate a topic to this unit')]
+    #[Groups(['read:unit:admin', 'read:unit:user'])]
     private ?Topic $topic = null;
 
     #[ORM\OneToMany(mappedBy: 'unit', targetEntity: Flashcard::class, cascade: ['remove'])]
@@ -76,7 +77,7 @@ class Unit
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new DateTimeImmutable('now');
+        $this->createdAt = new DateTimeImmutable();
 
         return $this;
     }
@@ -90,7 +91,7 @@ class Unit
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new DateTimeImmutable('now');
+        $this->updatedAt = new DateTimeImmutable();
 
         return $this;
     }

@@ -9,6 +9,7 @@ use App\Voter\UnitVoter;
 use App\Voter\TopicVoter;
 use App\Exception\ApiException;
 use App\Repository\UnitRepository;
+use App\Repository\ReviewRepository;
 use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,13 +48,7 @@ class UnitController extends AbstractRestController
     #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getOneUnit(int $id, UnitRepository $unitRepository): JsonResponse
     {
-        // Retrieve the element by id
-        $unit = $unitRepository->find($id);
-
-        // Check if the element exists
-        if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
-        }
+        $unit = $this->getResourceById(Unit::class, $id);
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not access this resource');
 
@@ -108,13 +103,7 @@ class UnitController extends AbstractRestController
     #[Route('/units/{id}', name: 'delete_unit', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
     public function deleteUnit(int $id, UnitRepository $unitRepository, EntityManagerInterface $em): JsonResponse
     {
-        // Retrieve the element by id
-        $unit = $unitRepository->find($id);
-
-        // Check if the element exists
-        if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
-        }
+        $unit = $this->getResourceById(Unit::class, $id);
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not delete this resource');
 
@@ -136,13 +125,7 @@ class UnitController extends AbstractRestController
         UnitOptionsResolver $unitOptionsResolver,
     ): JsonResponse {
 
-        // Retrieve the element by id
-        $unit = $unitRepository->find($id);
-
-        // Check if the element exists
-        if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
-        }
+        $unit = $this->getResourceById(Unit::class, $id);
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
 
@@ -189,14 +172,7 @@ class UnitController extends AbstractRestController
     #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getUnitsFromTopic(int $id, Request $request, UnitRepository $unitRepository, FlashcardRepository $flashcardRepository): JsonResponse
     {
-
-        // Retrieve the element by id
-        $unit = $unitRepository->find($id);
-
-        // Check if the element exists
-        if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
-        }
+        $unit = $this->getResourceById(Unit::class, $id);
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not access this resource');
 
@@ -211,5 +187,24 @@ class UnitController extends AbstractRestController
         );
 
         return $this->json($flashcards, context: ['groups' => ['read:flashcard:user']]);
+    }
+
+    #[Route('/units/{id}/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
+    public function resetUnit(
+        int $id,
+        UnitRepository $unitRepository,
+        EntityManagerInterface $em,
+        ReviewRepository $reviewRepository,
+        FlashcardRepository $flashcardRepository
+    ): JsonResponse {
+
+        $unit = $this->getResourceById(Unit::class, $id);
+
+        $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
+
+        $reviewRepository->resetBy($unit, $this->getUser());
+        $flashcardRepository->resetBy($unit, $this->getUser());
+
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 }

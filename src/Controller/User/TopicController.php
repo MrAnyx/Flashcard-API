@@ -10,7 +10,9 @@ use App\Voter\TopicVoter;
 use App\Exception\ApiException;
 use App\Repository\UnitRepository;
 use App\Repository\TopicRepository;
+use App\Repository\ReviewRepository;
 use App\Service\RequestPayloadService;
+use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\AbstractRestController;
 use App\OptionsResolver\TopicOptionsResolver;
@@ -44,13 +46,7 @@ class TopicController extends AbstractRestController
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getOneTopic(int $id, TopicRepository $topicRepository): JsonResponse
     {
-        // Retrieve the element by id
-        $topic = $topicRepository->find($id);
-
-        // Check if the element exists
-        if ($topic === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
-        }
+        $topic = $this->getResourceById(Topic::class, $id);
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
 
@@ -104,13 +100,7 @@ class TopicController extends AbstractRestController
     #[Route('/topics/{id}', name: 'delete_topic', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
     public function deleteTopic(int $id, TopicRepository $topicRepository, EntityManagerInterface $em): JsonResponse
     {
-        // Retrieve the element by id
-        $topic = $topicRepository->find($id);
-
-        // Check if the element exists
-        if ($topic === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
-        }
+        $topic = $this->getResourceById(Topic::class, $id);
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not delete this resource');
 
@@ -132,13 +122,7 @@ class TopicController extends AbstractRestController
         TopicOptionsResolver $flashcardOptionsResolver,
     ): JsonResponse {
 
-        // Retrieve the element by id
-        $topic = $topicRepository->find($id);
-
-        // Check if the element exists
-        if ($topic === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
-        }
+        $topic = $this->getResourceById(Topic::class, $id);
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
 
@@ -180,13 +164,7 @@ class TopicController extends AbstractRestController
     #[Route('/topics/{id}/units', name: 'get_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getUnitsFromTopic(int $id, Request $request, TopicRepository $topicRepository, UnitRepository $unitRepository): JsonResponse
     {
-        // Retrieve the element by id
-        $topic = $topicRepository->find($id);
-
-        // Check if the element exists
-        if ($topic === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
-        }
+        $topic = $this->getResourceById(Topic::class, $id);
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
 
@@ -201,5 +179,24 @@ class TopicController extends AbstractRestController
         );
 
         return $this->json($units, context: ['groups' => ['read:unit:user']]);
+    }
+
+    #[Route('/topics/{id}/reset', name: 'reset_topic', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
+    public function resetUnit(
+        int $id,
+        TopicRepository $topicRepository,
+        EntityManagerInterface $em,
+        ReviewRepository $reviewRepository,
+        FlashcardRepository $flashcardRepository
+    ): JsonResponse {
+
+        $topic = $this->getResourceById(Topic::class, $id);
+
+        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
+
+        $reviewRepository->resetBy($topic, $this->getUser());
+        $flashcardRepository->resetBy($topic, $this->getUser());
+
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 }

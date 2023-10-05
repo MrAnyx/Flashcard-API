@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Unit;
 use App\Entity\User;
+use App\Entity\Topic;
 use App\Model\Paginator;
 use App\Entity\Flashcard;
 use Doctrine\Persistence\ManagerRegistry;
@@ -51,28 +52,41 @@ class FlashcardRepository extends ServiceEntityRepository
         return new Paginator($query, $page);
     }
 
-    //    /**
-    //     * @return Flashcard[] Returns an array of Flashcard objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('f.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function resetBy(Flashcard|Unit|Topic $resetBy, User $user)
+    {
+        // On met des 2 pour les alias car sinon, il y a des conflits avec la requête principale
+        $flashcardsToReset = $this->createQueryBuilder('f2')
+            ->select('f2.id')
+            ->join('f2.unit', 'u2')
+            ->join('u2.topic', 't2');
 
-    //    public function findOneBySomeField($value): ?Flashcard
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($resetBy instanceof Flashcard) {
+            $flashcardsToReset->where('f2 = :resetBy AND t2.author = :user');
+        } elseif ($resetBy instanceof Unit) {
+            $flashcardsToReset->where('u2 = :resetBy AND t2.author = :user');
+        } elseif ($resetBy instanceof Topic) {
+            $flashcardsToReset->where('u2.topic = :resetBy AND t2.author = :user');
+        }
+
+        $flashcardsToResetDQL = $flashcardsToReset->getDQL();
+
+        $qb = $this->createQueryBuilder('f');
+
+        return $qb->update()
+            ->set('f.previousReview', ':previousReview')
+            ->set('f.reviews', ':reviews')
+            ->set('f.nextReview', ':nextReview')
+            ->set('f.difficulty', ':difficulty')
+            ->set('f.stability', ':stability')
+            ->where($qb->expr()->in('f.id', $flashcardsToResetDQL))
+            ->setParameter('resetBy', $resetBy)
+            ->setParameter('user', $user)
+            ->setParameter('previousReview', null)
+            ->setParameter('reviews', 0)
+            ->setParameter('nextReview', null)
+            ->setParameter('difficulty', null)
+            ->setParameter('stability', null)
+            ->getQuery()
+            ->execute();
+    }
 }

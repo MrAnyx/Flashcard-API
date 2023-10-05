@@ -26,7 +26,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(['read:user:admin', 'read:user:user'])]
+    #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
     private ?int $id = null;
 
@@ -34,7 +34,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotBlank(message: 'Your email can not be blank')]
     #[Assert\Email(message: 'Your email is invalid and doesn\'t respect the email format')]
     #[Assert\Length(max: 180, maxMessage: 'Your email can not exceed {{ limit }} characters')]
-    #[Groups(['read:user:admin', 'read:user:user'])]
+    #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
     private ?string $email = null;
 
@@ -42,7 +42,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotBlank(message: 'Your username can not be blank')]
     #[Assert\Length(max: 30, maxMessage: 'Your username can not exceed {{ limit }} characters')]
     #[Assert\Regex(pattern: Regex::USERNAME_SLASH, message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
-    #[Groups(['read:user:admin', 'read:user:user'])]
+    #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
     private ?string $username = null;
 
@@ -52,12 +52,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?string $token = null;
 
     #[ORM\Column]
-    #[Groups(['read:user:admin', 'read:user:user'])]
+    #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['read:user:admin', 'read:user:user'])]
+    #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
     private ?DateTimeImmutable $updatedAt = null;
 
@@ -81,9 +81,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Topic::class, cascade: ['remove'])]
     private Collection $topics;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class, cascade: ['remove'])]
+    private Collection $reviewHistory;
+
     public function __construct()
     {
         $this->topics = new ArrayCollection();
+        $this->reviewHistory = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,7 +147,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new DateTimeImmutable('now');
+        $this->createdAt = new DateTimeImmutable();
 
         return $this;
     }
@@ -157,7 +161,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new DateTimeImmutable('now');
+        $this->updatedAt = new DateTimeImmutable();
 
         return $this;
     }
@@ -249,6 +253,36 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             // set the owning side to null (unless already changed)
             if ($topic->getAuthor() === $this) {
                 $topic->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviewHistory(): Collection
+    {
+        return $this->reviewHistory;
+    }
+
+    public function addReviewHistory(Review $reviewHistory): static
+    {
+        if (! $this->reviewHistory->contains($reviewHistory)) {
+            $this->reviewHistory->add($reviewHistory);
+            $reviewHistory->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReviewHistory(Review $reviewHistory): static
+    {
+        if ($this->reviewHistory->removeElement($reviewHistory)) {
+            // set the owning side to null (unless already changed)
+            if ($reviewHistory->getUser() === $this) {
+                $reviewHistory->setUser(null);
             }
         }
 

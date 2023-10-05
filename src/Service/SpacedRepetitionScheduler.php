@@ -4,6 +4,7 @@ namespace App\Service;
 
 use DateTime;
 use App\Enum\GradeType;
+use App\Utility\Random;
 use App\Entity\Flashcard;
 
 class SpacedRepetitionScheduler
@@ -66,6 +67,9 @@ class SpacedRepetitionScheduler
     private function nextInterval(Flashcard $flashcard): int
     {
         $interval = 9 * $flashcard->getStability() * ((1 / self::REQUEST_RETENTION) - 1);
+
+        // To prevent card that are review are the same date to appear at the same day every time
+        // $interval *= Random::getFloat(0.95, 1.05);
 
         return min(max((int) round($interval), 1), self::MAX_INTERVAL);
     }
