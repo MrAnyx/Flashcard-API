@@ -25,7 +25,7 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
-    public function resetAllReview(User $user)
+    public function resetAll(User $user)
     {
         $query = $this->createQueryBuilder('r')
             ->update()

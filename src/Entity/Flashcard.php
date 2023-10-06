@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use DateTimeImmutable;
+use App\Enum\StateType;
 use App\Attribut\Sortable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -59,12 +60,18 @@ class Flashcard
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?DateTime $previousReview = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::INTEGER, enumType: StateType::class)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
-    private int $reviews = 0;
+    #[Assert\NotBlank(message: 'The state of a flashcard can not be blank')]
+    private StateType $state = StateType::New;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Assert\Range(
+        min: 1,
+        max: 10,
+        notInRangeMessage: 'The difficulty must be between {{ min }} and {{ max }}',
+    )]
     private ?float $difficulty = null;
 
     #[ORM\Column(nullable: true)]
@@ -183,28 +190,16 @@ class Flashcard
         return $this;
     }
 
-    public function getReviews(): int
+    public function getState(): StateType
     {
-        return $this->reviews;
+        return $this->state;
     }
 
-    public function setReviews(int $reviews): static
+    public function setState(StateType $state): static
     {
-        $this->reviews = $reviews;
+        $this->state = $state;
 
         return $this;
-    }
-
-    public function incrementReviews(): static
-    {
-        $this->reviews++;
-
-        return $this;
-    }
-
-    public function isNew(): bool
-    {
-        return $this->getReviews() === 0;
     }
 
     public function getDifficulty(): ?float

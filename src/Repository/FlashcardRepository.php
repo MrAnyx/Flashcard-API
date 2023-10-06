@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Entity\Topic;
+use App\Enum\StateType;
 use App\Model\Paginator;
 use App\Entity\Flashcard;
 use Doctrine\Persistence\ManagerRegistry;
@@ -52,6 +53,35 @@ class FlashcardRepository extends ServiceEntityRepository
         return new Paginator($query, $page);
     }
 
+    public function resetAll(User $user)
+    {
+        // On met des 2 pour les alias car sinon, il y a des conflits avec la requête principale
+        $flashcardsToReset = $this->createQueryBuilder('f2')
+            ->select('f2.id')
+            ->join('f2.unit', 'u2')
+            ->join('u2.topic', 't2')
+            ->where('t2.author = :user')
+            ->getDQL();
+
+        $qb = $this->createQueryBuilder('f');
+
+        return $qb->update()
+            ->set('f.previousReview', ':previousReview')
+            ->set('f.state', ':state')
+            ->set('f.nextReview', ':nextReview')
+            ->set('f.difficulty', ':difficulty')
+            ->set('f.stability', ':stability')
+            ->where($qb->expr()->in('f.id', $flashcardsToReset))
+            ->setParameter('user', $user)
+            ->setParameter('previousReview', null)
+            ->setParameter('state', StateType::New)
+            ->setParameter('nextReview', null)
+            ->setParameter('difficulty', null)
+            ->setParameter('stability', null)
+            ->getQuery()
+            ->execute();
+    }
+
     public function resetBy(Flashcard|Unit|Topic $resetBy, User $user)
     {
         // On met des 2 pour les alias car sinon, il y a des conflits avec la requête principale
@@ -74,7 +104,7 @@ class FlashcardRepository extends ServiceEntityRepository
 
         return $qb->update()
             ->set('f.previousReview', ':previousReview')
-            ->set('f.reviews', ':reviews')
+            ->set('f.state', ':state')
             ->set('f.nextReview', ':nextReview')
             ->set('f.difficulty', ':difficulty')
             ->set('f.stability', ':stability')
@@ -82,7 +112,7 @@ class FlashcardRepository extends ServiceEntityRepository
             ->setParameter('resetBy', $resetBy)
             ->setParameter('user', $user)
             ->setParameter('previousReview', null)
-            ->setParameter('reviews', 0)
+            ->setParameter('state', StateType::New)
             ->setParameter('nextReview', null)
             ->setParameter('difficulty', null)
             ->setParameter('stability', null)

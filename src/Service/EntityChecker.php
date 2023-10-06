@@ -4,9 +4,16 @@ namespace App\Service;
 
 use App\Attribut\Sortable;
 use InvalidArgumentException;
+use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EntityChecker
 {
+    public function __construct(
+        private ValidatorInterface $validator
+    ) {
+    }
+
     public function entityExists(string $classname): bool
     {
         return class_exists($classname);
@@ -62,5 +69,13 @@ class EntityChecker
         }
 
         return $sortableFields;
+    }
+
+    public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void
+    {
+        $errors = $this->validator->validate($entity, groups: $validationGroups);
+        if (count($errors) > 0) {
+            throw new ValidatorException((string) $errors[0]->getMessage());
+        }
     }
 }

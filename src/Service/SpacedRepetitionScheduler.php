@@ -4,6 +4,7 @@ namespace App\Service;
 
 use DateTime;
 use App\Enum\GradeType;
+use App\Enum\StateType;
 use App\Utility\Random;
 use App\Entity\Flashcard;
 
@@ -21,7 +22,7 @@ class SpacedRepetitionScheduler
             return;
         }
 
-        if ($flashcard->isNew()) {
+        if ($flashcard->getState() === StateType::New) {
             $flashcard->setStability($this->initStability($grade));
             $flashcard->setDifficulty($this->initDifficulty($grade));
         } else {
@@ -32,7 +33,7 @@ class SpacedRepetitionScheduler
         $interval = $this->nextInterval($flashcard);
         $flashcard->setNextReview((new DateTime)->modify("+$interval days")->setTime(0, 0, 0));
         $flashcard->refreshPreviousReview();
-        $flashcard->incrementReviews();
+        $flashcard->setState(StateType::Learning);
     }
 
     private function initStability(GradeType $grade): float

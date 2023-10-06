@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\OptionsResolver\PaginatorOptionsResolver;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AbstractRestController extends AbstractController
@@ -17,7 +17,6 @@ class AbstractRestController extends AbstractController
     public function __construct(
         private EntityChecker $entityChecker,
         private PaginatorOptionsResolver $paginatorOptionsResolver,
-        private ValidatorInterface $validator,
         private EntityManagerInterface $em
     ) {
     }
@@ -43,15 +42,12 @@ class AbstractRestController extends AbstractController
         return $queryParams;
     }
 
-    /**
-     * @param mixed $entity Entity to validate
-     * @param array $validationGroups Validation groups (default: ["Default"])
-     */
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void
     {
-        $errors = $this->validator->validate($entity, groups: $validationGroups);
-        if (count($errors) > 0) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, (string) $errors[0]->getMessage());
+        try {
+            $this->entityChecker->validateEntity($entity, $validationGroups);
+        } catch (ValidatorException $e) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
     }
 
