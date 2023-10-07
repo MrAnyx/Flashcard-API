@@ -7,12 +7,11 @@ use App\Entity\Unit;
 use App\Entity\Topic;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
+use App\Service\ReviewManager;
 use App\Exception\ApiException;
 use App\Repository\UnitRepository;
 use App\Repository\TopicRepository;
-use App\Repository\ReviewRepository;
 use App\Service\RequestPayloadService;
-use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\AbstractRestController;
 use App\OptionsResolver\TopicOptionsResolver;
@@ -29,6 +28,7 @@ class TopicController extends AbstractRestController
     {
         $pagination = $this->getPaginationParameter(Topic::class, $request);
 
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
         // Get data with pagination
@@ -73,6 +73,7 @@ class TopicController extends AbstractRestController
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
         // Temporarly create the element
@@ -181,21 +182,20 @@ class TopicController extends AbstractRestController
         return $this->json($units, context: ['groups' => ['read:unit:user']]);
     }
 
-    #[Route('/topics/{id}/reset', name: 'reset_topic', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
+    #[Route('/topics/{id}/flashcards/reset', name: 'reset_topic', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetUnit(
         int $id,
         TopicRepository $topicRepository,
         EntityManagerInterface $em,
-        ReviewRepository $reviewRepository,
-        FlashcardRepository $flashcardRepository
+        ReviewManager $reviewManager
     ): JsonResponse {
 
         $topic = $this->getResourceById(Topic::class, $id);
-
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
 
-        $reviewRepository->resetBy($topic, $this->getUser());
-        $flashcardRepository->resetBy($topic, $this->getUser());
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $reviewManager->resetFlashcards($topic, $user);
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }

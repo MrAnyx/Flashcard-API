@@ -5,7 +5,7 @@ namespace App\Tests\Service;
 use Exception;
 use App\Attribut\Sortable;
 use InvalidArgumentException;
-use App\Service\EntityChecker;
+use App\Service\SortableEntityChecker;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class __Foo__
@@ -16,12 +16,12 @@ class __Foo__
     private string $notSortable;
 }
 
-class EntityCheckerTest extends KernelTestCase
+class SortableEntityCheckerTest extends KernelTestCase
 {
     public function testEntityExists()
     {
-        /** @var EntityChecker $service */
-        $checker = self::getContainer()->get(EntityChecker::class);
+        /** @var SortableEntityChecker $service */
+        $checker = self::getContainer()->get(SortableEntityChecker::class);
 
         $this->assertTrue($checker->entityExists(__Foo__::class));
         $this->assertFalse($checker->entityExists('UnknownClass'));
@@ -29,8 +29,8 @@ class EntityCheckerTest extends KernelTestCase
 
     public function testFieldExists()
     {
-        /** @var EntityChecker $service */
-        $checker = self::getContainer()->get(EntityChecker::class);
+        /** @var SortableEntityChecker $service */
+        $checker = self::getContainer()->get(SortableEntityChecker::class);
 
         $this->assertTrue($checker->fieldExists(__Foo__::class, 'sortable'));
         $this->assertFalse($checker->fieldExists(__Foo__::class, 'unknownField'));
@@ -38,8 +38,8 @@ class EntityCheckerTest extends KernelTestCase
 
     public function testIsFieldSortable()
     {
-        /** @var EntityChecker $service */
-        $checker = self::getContainer()->get(EntityChecker::class);
+        /** @var SortableEntityChecker $service */
+        $checker = self::getContainer()->get(SortableEntityChecker::class);
 
         $this->assertTrue($checker->isFieldSortable(__Foo__::class, 'sortable'));
         $this->assertFalse($checker->isFieldSortable(__Foo__::class, 'notSortable'));
@@ -47,8 +47,8 @@ class EntityCheckerTest extends KernelTestCase
 
     public function testIsFieldSortableWithUnknownClass()
     {
-        /** @var EntityChecker $service */
-        $checker = self::getContainer()->get(EntityChecker::class);
+        /** @var SortableEntityChecker $service */
+        $checker = self::getContainer()->get(SortableEntityChecker::class);
 
         $this->expectException(Exception::class);
 
@@ -57,8 +57,8 @@ class EntityCheckerTest extends KernelTestCase
 
     public function testIsFieldSortableWithUnknownField()
     {
-        /** @var EntityChecker $service */
-        $checker = self::getContainer()->get(EntityChecker::class);
+        /** @var SortableEntityChecker $service */
+        $checker = self::getContainer()->get(SortableEntityChecker::class);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -67,16 +67,16 @@ class EntityCheckerTest extends KernelTestCase
 
     public function testGetSortableFields()
     {
-        /** @var EntityChecker $service */
-        $checker = self::getContainer()->get(EntityChecker::class);
+        /** @var SortableEntityChecker $service */
+        $checker = self::getContainer()->get(SortableEntityChecker::class);
 
         $this->assertSame(['sortable'], $checker->getSortableFields(__Foo__::class));
     }
 
     public function testGetSortableFieldsWithUnknownClass()
     {
-        /** @var EntityChecker $service */
-        $checker = self::getContainer()->get(EntityChecker::class);
+        /** @var SortableEntityChecker $service */
+        $checker = self::getContainer()->get(SortableEntityChecker::class);
 
         $this->expectException(InvalidArgumentException::class);
         $checker->getSortableFields('UnknownClass');

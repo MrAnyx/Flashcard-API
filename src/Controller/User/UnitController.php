@@ -7,9 +7,9 @@ use App\Entity\Unit;
 use App\Utility\Regex;
 use App\Voter\UnitVoter;
 use App\Voter\TopicVoter;
+use App\Service\ReviewManager;
 use App\Exception\ApiException;
 use App\Repository\UnitRepository;
-use App\Repository\ReviewRepository;
 use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,6 +31,7 @@ class UnitController extends AbstractRestController
 
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
         // Get data with pagination
@@ -189,21 +190,20 @@ class UnitController extends AbstractRestController
         return $this->json($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 
-    #[Route('/units/{id}/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
+    #[Route('/units/{id}/flashcards/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetUnit(
         int $id,
         UnitRepository $unitRepository,
         EntityManagerInterface $em,
-        ReviewRepository $reviewRepository,
-        FlashcardRepository $flashcardRepository
+        ReviewManager $reviewManager
     ): JsonResponse {
 
         $unit = $this->getResourceById(Unit::class, $id);
-
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
 
-        $reviewRepository->resetBy($unit, $this->getUser());
-        $flashcardRepository->resetBy($unit, $this->getUser());
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $reviewManager->resetFlashcards($unit, $user);
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }

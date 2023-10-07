@@ -146,7 +146,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureAuthor($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Update each fields if necessary

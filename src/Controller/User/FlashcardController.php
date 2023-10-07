@@ -11,7 +11,6 @@ use App\Entity\Flashcard;
 use App\Voter\FlashcardVoter;
 use App\Service\ReviewManager;
 use App\Exception\ApiException;
-use App\Repository\ReviewRepository;
 use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +31,7 @@ class FlashcardController extends AbstractRestController
     {
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
 
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
         $flashcards = $flashcardRepository->findAllWithPagination(
@@ -216,7 +216,10 @@ class FlashcardController extends AbstractRestController
         $spacedRepetitionScheduler->review($flashcard, $data['grade']);
         $this->validateEntity($flashcard);
 
-        $review = $reviewManager->createReview($flashcard, $this->getUser(), $data['grade']);
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        $review = $reviewManager->createReview($flashcard, $user, $data['grade']);
         $this->validateEntity($review);
         $em->persist($review);
 
@@ -227,13 +230,12 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/reset', name: 'reset_all_flashcard', methods: ['PATCH'])]
     public function resetAllFlashcards(
-        FlashcardRepository $flashcardRepository,
-        ReviewRepository $reviewRepository
+        ReviewManager $reviewManager
     ): JsonResponse {
 
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        $reviewRepository->resetAll($user);
-        $flashcardRepository->resetAll($user);
+        $reviewManager->resetAllFlashcards($user);
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }
@@ -241,17 +243,15 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/{id}/reset', name: 'reset_flashcard', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetFlashcard(
         int $id,
-        FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
-        ReviewRepository $reviewRepository
+        ReviewManager $reviewManager
     ): JsonResponse {
-
         $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        $reviewRepository->resetBy($flashcard, $user);
-        $flashcardRepository->resetBy($flashcard, $user);
+        $reviewManager->resetFlashcard($flashcard, $user);
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }

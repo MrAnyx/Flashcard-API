@@ -3,8 +3,9 @@
 namespace App\Controller;
 
 use Exception;
-use App\Service\EntityChecker;
 use App\Exception\ApiException;
+use App\Service\EntityValidator;
+use App\Service\SortableEntityChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,9 +16,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AbstractRestController extends AbstractController
 {
     public function __construct(
-        private EntityChecker $entityChecker,
+        private SortableEntityChecker $sortableEntityChecker,
         private PaginatorOptionsResolver $paginatorOptionsResolver,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private EntityValidator $entityValidator
     ) {
     }
 
@@ -27,7 +29,7 @@ class AbstractRestController extends AbstractController
      */
     public function getPaginationParameter(string $classname, Request $request): array
     {
-        $sortableFields = $this->entityChecker->getSortableFields($classname);
+        $sortableFields = $this->sortableEntityChecker->getSortableFields($classname);
 
         try {
             $queryParams = $this->paginatorOptionsResolver
@@ -45,7 +47,7 @@ class AbstractRestController extends AbstractController
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void
     {
         try {
-            $this->entityChecker->validateEntity($entity, $validationGroups);
+            $this->entityValidator->validateEntity($entity, $validationGroups);
         } catch (ValidatorException $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }

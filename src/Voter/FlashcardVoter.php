@@ -38,6 +38,7 @@ class FlashcardVoter extends Voter
 
         return match ($attribute) {
             self::OWNER => $this->canView($flashcard, $user),
+            default => false
         };
     }
 
