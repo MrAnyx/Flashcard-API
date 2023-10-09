@@ -14,6 +14,7 @@ use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\AbstractRestController;
+use App\Service\SpacedRepetitionScheduler;
 use App\OptionsResolver\UnitOptionsResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -171,7 +172,7 @@ class UnitController extends AbstractRestController
     }
 
     #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getUnitsFromTopic(int $id, Request $request, UnitRepository $unitRepository, FlashcardRepository $flashcardRepository): JsonResponse
+    public function getUnitsFromTopic(int $id, Request $request, FlashcardRepository $flashcardRepository): JsonResponse
     {
         $unit = $this->getResourceById(Unit::class, $id);
 
@@ -193,8 +194,6 @@ class UnitController extends AbstractRestController
     #[Route('/units/{id}/flashcards/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetUnit(
         int $id,
-        UnitRepository $unitRepository,
-        EntityManagerInterface $em,
         ReviewManager $reviewManager
     ): JsonResponse {
 
@@ -206,5 +205,22 @@ class UnitController extends AbstractRestController
         $reviewManager->resetFlashcards($unit, $user);
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/units/{id}/session', name: 'session_unit', methods: ['GET'])]
+    public function getFlashcardSession(
+        int $id,
+        FlashcardRepository $flashcardRepository
+    ): JsonResponse {
+        $unit = $this->getResourceById(Unit::class, $id);
+        $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, SpacedRepetitionScheduler::SESSION_SIZE);
+        shuffle($cardsToReview);
+
+        return $this->json($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
     }
 }

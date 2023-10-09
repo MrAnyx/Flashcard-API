@@ -12,8 +12,10 @@ use App\Exception\ApiException;
 use App\Repository\UnitRepository;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
+use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\AbstractRestController;
+use App\Service\SpacedRepetitionScheduler;
 use App\OptionsResolver\TopicOptionsResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -198,5 +200,22 @@ class TopicController extends AbstractRestController
         $reviewManager->resetFlashcards($topic, $user);
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/topics/{id}/session', name: 'session_topic', methods: ['GET'])]
+    public function getFlashcardSession(
+        int $id,
+        FlashcardRepository $flashcardRepository
+    ): JsonResponse {
+        $topic = $this->getResourceById(Topic::class, $id);
+        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($topic, $user, SpacedRepetitionScheduler::SESSION_SIZE);
+        shuffle($cardsToReview);
+
+        return $this->json($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
     }
 }

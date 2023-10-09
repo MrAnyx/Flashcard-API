@@ -42,14 +42,15 @@ class ReviewRepository extends ServiceEntityRepository
         $reviewsToUpdate = $this->createQueryBuilder('r2')
             ->select('r2.id')
             ->join('r2.flashcard', 'f2')
-            ->join('f2.unit', 'u2');
+            ->join('f2.unit', 'u2')
+            ->where('r2.user = :user');
 
         if ($resetBy instanceof Flashcard) {
-            $reviewsToUpdate->where('f2 = :resetBy AND r2.user = :user');
+            $reviewsToUpdate->andWhere('f2 = :resetBy');
         } elseif ($resetBy instanceof Unit) {
-            $reviewsToUpdate->where('u2 = :resetBy AND r2.user = :user');
+            $reviewsToUpdate->andWhere('u2 = :resetBy');
         } elseif ($resetBy instanceof Topic) {
-            $reviewsToUpdate->where('u2.topic = :resetBy AND r2.user = :user');
+            $reviewsToUpdate->andWhere('u2.topic = :resetBy');
         }
 
         $reviewsToUpdateDQL = $reviewsToUpdate->getDQL();
@@ -58,7 +59,7 @@ class ReviewRepository extends ServiceEntityRepository
 
         return $qb->update()
             ->set('r.reset', true)
-            ->where($qb->expr()->in('r.id', $reviewsToUpdateDQL))
+            ->andWhere($qb->expr()->in('r.id', $reviewsToUpdateDQL))
             ->setParameter('resetBy', $resetBy)
             ->setParameter('user', $user)
             ->getQuery()

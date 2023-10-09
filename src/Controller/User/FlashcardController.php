@@ -256,7 +256,7 @@ class FlashcardController extends AbstractRestController
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('/flashcards/session', name: 'reset_flashcard', methods: ['GET'])]
+    #[Route('/flashcards/session', name: 'session_flashcard', methods: ['GET'])]
     public function getFlashcardSession(
         EntityManagerInterface $em,
         ReviewManager $reviewManager,

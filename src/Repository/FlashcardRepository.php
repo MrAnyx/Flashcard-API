@@ -72,7 +72,7 @@ class FlashcardRepository extends ServiceEntityRepository
             ->set('f.nextReview', ':nextReview')
             ->set('f.difficulty', ':difficulty')
             ->set('f.stability', ':stability')
-            ->where($qb->expr()->in('f.id', $flashcardsToReset))
+            ->andWhere($qb->expr()->in('f.id', $flashcardsToReset))
             ->setParameter('user', $user)
             ->setParameter('previousReview', null)
             ->setParameter('state', StateType::New)
@@ -89,14 +89,15 @@ class FlashcardRepository extends ServiceEntityRepository
         $flashcardsToReset = $this->createQueryBuilder('f2')
             ->select('f2.id')
             ->join('f2.unit', 'u2')
-            ->join('u2.topic', 't2');
+            ->join('u2.topic', 't2')
+            ->where('t2.author = :user');
 
         if ($resetBy instanceof Flashcard) {
-            $flashcardsToReset->where('f2 = :resetBy AND t2.author = :user');
+            $flashcardsToReset->andWhere('f2 = :resetBy');
         } elseif ($resetBy instanceof Unit) {
-            $flashcardsToReset->where('u2 = :resetBy AND t2.author = :user');
+            $flashcardsToReset->andWhere('u2 = :resetBy');
         } elseif ($resetBy instanceof Topic) {
-            $flashcardsToReset->where('u2.topic = :resetBy AND t2.author = :user');
+            $flashcardsToReset->andWhere('u2.topic = :resetBy');
         }
 
         $flashcardsToResetDQL = $flashcardsToReset->getDQL();
@@ -109,7 +110,7 @@ class FlashcardRepository extends ServiceEntityRepository
             ->set('f.nextReview', ':nextReview')
             ->set('f.difficulty', ':difficulty')
             ->set('f.stability', ':stability')
-            ->where($qb->expr()->in('f.id', $flashcardsToResetDQL))
+            ->andWhere($qb->expr()->in('f.id', $flashcardsToResetDQL))
             ->setParameter('resetBy', $resetBy)
             ->setParameter('user', $user)
             ->setParameter('previousReview', null)
@@ -126,14 +127,38 @@ class FlashcardRepository extends ServiceEntityRepository
         $result = $this->createQueryBuilder('f')
             ->join('f.unit', 'u')
             ->join('u.topic', 't')
-            ->where('(t.author = :user AND f.nextReview <= :today) OR f.nextReview IS NULL')
+            ->where('t.author = :user')
+            ->andWhere('f.nextReview <= :today OR f.nextReview IS NULL')
             ->orderBy('f.nextReview', 'ASC')
             ->setMaxResults($cardsToReview)
             ->setParameter('user', $user)
-            ->setParameter('today', (new DateTime())->format('Y-m-d'))
+            ->setParameter('today', new DateTime())
             ->getQuery()
             ->getResult();
 
         return $result;
+    }
+
+    public function findFlashcardToReviewBy(Unit|Topic $reviewBy, User $user, int $cardsToReview)
+    {
+        $qb = $this->createQueryBuilder('f')
+            ->join('f.unit', 'u')
+            ->join('u.topic', 't')
+            ->where('t.author = :user')
+            ->andWhere('f.nextReview <= :today OR f.nextReview IS NULL');
+
+        if ($reviewBy instanceof Unit) {
+            $qb->andWhere('f.unit = :reviewBy');
+        } elseif ($reviewBy instanceof Topic) {
+            $qb->andWhere('u.topic = :reviewBy');
+        }
+
+        $qb->orderBy('f.nextReview', 'ASC')
+            ->setMaxResults($cardsToReview)
+            ->setParameter('user', $user)
+            ->setParameter('today', (new DateTime())->format('Y-m-d'))
+            ->setParameter('reviewBy', $reviewBy);
+
+        return $qb->getQuery()->getResult();
     }
 }
