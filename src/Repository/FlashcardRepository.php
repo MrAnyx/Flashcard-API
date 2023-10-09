@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Entity\Topic;
@@ -118,5 +119,21 @@ class FlashcardRepository extends ServiceEntityRepository
             ->setParameter('stability', null)
             ->getQuery()
             ->execute();
+    }
+
+    public function findFlashcardToReview(User $user, int $cardsToReview)
+    {
+        $result = $this->createQueryBuilder('f')
+            ->join('f.unit', 'u')
+            ->join('u.topic', 't')
+            ->where('(t.author = :user AND f.nextReview <= :today) OR f.nextReview IS NULL')
+            ->orderBy('f.nextReview', 'ASC')
+            ->setMaxResults($cardsToReview)
+            ->setParameter('user', $user)
+            ->setParameter('today', (new DateTime())->format('Y-m-d'))
+            ->getQuery()
+            ->getResult();
+
+        return $result;
     }
 }

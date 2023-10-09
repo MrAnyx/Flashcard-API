@@ -10,6 +10,8 @@ use App\Entity\Flashcard;
 
 class SpacedRepetitionScheduler
 {
+    public const SESSION_SIZE = 20;
+
     public const REQUEST_RETENTION = 0.9;
 
     public const MAX_INTERVAL = 36500;

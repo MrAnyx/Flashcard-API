@@ -255,4 +255,19 @@ class FlashcardController extends AbstractRestController
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }
+
+    #[Route('/flashcards/session', name: 'reset_flashcard', methods: ['GET'])]
+    public function getFlashcardSession(
+        EntityManagerInterface $em,
+        ReviewManager $reviewManager,
+        FlashcardRepository $flashcardRepository
+    ): JsonResponse {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        $cardsToReview = $flashcardRepository->findFlashcardToReview($user, SpacedRepetitionScheduler::SESSION_SIZE);
+        shuffle($cardsToReview);
+
+        return $this->json($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
+    }
 }
