@@ -16,12 +16,9 @@ class ReviewController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
-        $actualReviews = $reviewRepository->countReviews($user, false);
-        $totalReviews = $reviewRepository->countReviews($user, true);
-
         return $this->json([
-            'actual' => $actualReviews,
-            'total' => $totalReviews,
+            'actual' => $reviewRepository->countReviews($user, false),
+            'total' => $reviewRepository->countReviews($user, true),
         ]);
     }
 }
