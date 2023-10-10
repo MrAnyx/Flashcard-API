@@ -65,4 +65,20 @@ class ReviewRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function countReviews(User $user, bool $withReset = false)
+    {
+        $query = $this->createQueryBuilder('r')
+            ->select('count(r.id)')
+            ->where('r.user = :user')
+            ->setParameter('user', $user);
+
+        if (! $withReset) {
+            $query
+                ->andWhere('r.reset = :withReset')
+                ->setParameter('withReset', false);
+        }
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
 }
