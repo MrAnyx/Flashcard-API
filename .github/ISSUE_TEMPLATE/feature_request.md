@@ -1,72 +1,63 @@
----
 name: Feature request
-about: Suggest an idea for this project
-Status: "Incomplete"
-Priority: "Low"
-Type: "Bug"
----
-
-name: "💡 Feature Request"
-description: Create a new ticket for a new feature request
-title: "💡 [REQUEST] - <title>"
-labels: [
-"question"
-]
+description: Feature request
+title: "[Bug]: "
+projects: ["MrAnyx/8"]
+assignees:
+  - MrAnyx
 body:
-
-- type: input
-  id: start_date
-  attributes:
-  label: "Start Date"
-  description: Start of development
-  placeholder: "month/day/year"
-  validations:
-  required: false
-- type: textarea
-  id: implementation_pr
-  attributes:
-  label: "Implementation PR"
-  description: Pull request used
-  placeholder: "#Pull Request ID"
-  validations:
-  required: false
-- type: textarea
-  id: reference_issues
-  attributes:
-  label: "Reference Issues"
-  description: Common issues
-  placeholder: "#Issues IDs"
-  validations:
-  required: false
-- type: textarea
-  id: summary
-  attributes:
-  label: "Summary"
-  description: Provide a brief explanation of the feature
-  placeholder: Describe in a few lines your feature request
-  validations:
-  required: true
-- type: textarea
-  id: basic_example
-  attributes:
-  label: "Basic Example"
-  description: Indicate here some basic examples of your feature.
-  placeholder: A few specific words about your feature request.
-  validations:
-  required: true
-- type: textarea
-  id: drawbacks
-  attributes:
-  label: "Drawbacks"
-  description: What are the drawbacks/impacts of your feature request ?
-  placeholder: Identify the drawbacks and impacts while being neutral on your feature request
-  validations:
-  required: true
-- type: textarea
-  id: unresolved_question
-  attributes:
-  label: "Unresolved questions"
-  description: What questions still remain unresolved ?
-  placeholder: Identify any unresolved issues.
-  validations:
-  required: false
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of our software are you running?
+      options:
+        - 1.0.2 (Default)
+        - 1.0.3 (Edge)
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
