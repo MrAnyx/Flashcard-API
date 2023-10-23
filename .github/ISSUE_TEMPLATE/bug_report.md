@@ -4,6 +4,7 @@ about: Create a bug report to help us improve the application
 Status: "Incomplete"
 Priority: "Low"
 Type: "Bug"
+Project: Flashcard
 ---
 
 ## Description
