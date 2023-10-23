@@ -1,3 +1,4 @@
+---
 name: Feature request
 description: Feature request
 title: "[Bug]: "
@@ -61,3 +62,4 @@ body:
       options:
         - label: I agree to follow this project's Code of Conduct
           required: true
+---
