@@ -1,0 +1,99 @@
+name: Feature request
+description: Suggest an idea for this project
+title: "Feat: "
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Thanks for taking the time to fill out this feature request! Before creating this issue, make sure there isn't already an issue created.
+    - type: input
+      id: feature-name
+      attributes:
+          label: Feature Name
+          description: "Provide a concise name for the feature you're requesting."
+          placeholder: "E.g., Dark Mode"
+      validations:
+          required: true
+
+    - type: textarea
+      id: feature-description
+      attributes:
+          label: Feature Description
+          description: "Please describe the new feature in detail. What problem does it solve?"
+          placeholder: "Explain the feature here..."
+      validations:
+          required: true
+
+    - type: markdown
+      attributes:
+          value: "## Use Case"
+    - type: textarea
+      id: use-case
+      attributes:
+          label: Use Case
+          description: "Describe the specific use case or scenario where this feature would be valuable."
+          placeholder: "Provide a use case..."
+      validations:
+          required: true
+
+    - type: markdown
+      attributes:
+          value: "## Proposed Solution"
+    - type: textarea
+      id: proposed-solution
+      attributes:
+          label: Proposed Solution
+          description: "If you have a specific solution or implementation in mind, please describe it here."
+          placeholder: "Describe your proposed solution..."
+      validations:
+          required: false
+
+    - type: markdown
+      attributes:
+          value: "## Alternatives"
+    - type: textarea
+      id: alternatives
+      attributes:
+          label: Alternatives
+          description: "Are there any alternative solutions or workarounds you've considered?"
+          placeholder: "List any alternatives..."
+      validations:
+          required: false
+
+    - type: markdown
+      attributes:
+          value: "## Benefits"
+    - type: textarea
+      id: benefits
+      attributes:
+          label: Benefits
+          description: "Explain how this feature would benefit the project, users, or contributors."
+          placeholder: "List the benefits..."
+      validations:
+          required: false
+
+    - type: markdown
+      attributes:
+          value: "## Additional Context"
+    - type: textarea
+      id: additional-context
+      attributes:
+          label: Additional Context
+          description: "Add any additional context, screenshots, or examples that can help clarify your feature request."
+          placeholder: "Include any additional context..."
+      validations:
+          required: false
+
+    - type: markdown
+      attributes:
+          value: "## Checklist"
+    - type: checkboxes
+      id: feature-request-checklist
+      attributes:
+          label: Checklist
+          description: "Please check the following before submitting your feature request:"
+          options:
+              - label: "I have searched for existing feature requests and confirmed that this is not a duplicate."
+              - label: "I have read and understood the project's contribution guidelines."
+              - label: "I have discussed this feature request with the community or maintainers (if applicable)."
+              - label: "I have provided clear and detailed information."
