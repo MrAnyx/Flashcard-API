@@ -1,18 +1,13 @@
 name: Feature request
 description: Feature request
-title: "[Bug]: "
-projects: "MrAnyx/8"
-assignees:
-  - MrAnyx
+title: "[Feat]: "
+projects: ["MrAnyx/8"]
+assignees: ["MrAnyx"]
 body:
   - type: markdown
     attributes:
       value: |
         Before opening a bug report, please search for the behaviour in the existing issues. 
-        
-        ---
-        
-        Thank you for taking the time to file a bug report. To address this bug as fast as possible, we need some information.
   - type: input
     id: os
     attributes:
