@@ -10,15 +10,6 @@ body:
           value: |
               Thanks for taking the time to fill out this bug report! Before creating this report, make sure there isn't already an issue created.
 
-    - type: input
-      id: bug-title
-      attributes:
-          label: Bug Title
-          description: "Provide a concise title for the bug report."
-          placeholder: "E.g., Application crashes when opening settings"
-      validations:
-          required: true
-
     - type: textarea
       id: bug-description
       attributes:
