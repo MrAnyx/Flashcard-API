@@ -9,6 +9,7 @@ body:
       attributes:
           value: |
               Thanks for taking the time to fill out this bug report! Before creating this report, make sure there isn't already an issue created.
+
     - type: input
       id: bug-title
       attributes:
@@ -27,9 +28,6 @@ body:
       validations:
           required: true
 
-    - type: markdown
-      attributes:
-          value: "## Reproduction Steps"
     - type: textarea
       id: reproduction-steps
       attributes:
@@ -43,9 +41,6 @@ body:
       validations:
           required: true
 
-    - type: markdown
-      attributes:
-          value: "## Expected Behavior"
     - type: textarea
       id: expected-behavior
       attributes:
@@ -55,9 +50,6 @@ body:
       validations:
           required: true
 
-    - type: markdown
-      attributes:
-          value: "## Actual Behavior"
     - type: textarea
       id: actual-behavior
       attributes:
@@ -66,10 +58,6 @@ body:
           placeholder: "Describe the actual behavior..."
       validations:
           required: true
-
-    - type: markdown
-      attributes:
-          value: "## Screenshots (if applicable)"
 
     - type: textarea
       id: logs
@@ -81,9 +69,6 @@ body:
               Tip: You can attach images or log files by clicking this area to highlight it and
           render: shell
 
-    - type: markdown
-      attributes:
-          value: "## Checklist"
     - type: checkboxes
       id: bug-report-checklist
       attributes:
@@ -91,8 +76,11 @@ body:
           description: "Please check the following before submitting your bug report:"
           options:
               - label: "I have searched for existing bug reports and confirmed that this is not a duplicate."
+                required: true
               - label: "I have read and understood the project's contribution guidelines."
+                required: true
               - label: "I have included clear reproduction steps and expected/actual behavior details."
+                required: true
 
     - type: checkboxes
       id: terms

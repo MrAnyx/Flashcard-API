@@ -6,14 +6,6 @@ body:
       attributes:
           value: |
               Thanks for taking the time to fill out this feature request! Before creating this issue, make sure there isn't already an issue created.
-    - type: input
-      id: feature-name
-      attributes:
-          label: Feature Name
-          description: "Provide a concise name for the feature you're requesting."
-          placeholder: "E.g., Dark Mode"
-      validations:
-          required: true
 
     - type: textarea
       id: feature-description
@@ -24,9 +16,6 @@ body:
       validations:
           required: true
 
-    - type: markdown
-      attributes:
-          value: "## Use Case"
     - type: textarea
       id: use-case
       attributes:
@@ -34,11 +23,8 @@ body:
           description: "Describe the specific use case or scenario where this feature would be valuable."
           placeholder: "Provide a use case..."
       validations:
-          required: true
+          required: false
 
-    - type: markdown
-      attributes:
-          value: "## Proposed Solution"
     - type: textarea
       id: proposed-solution
       attributes:
@@ -48,9 +34,6 @@ body:
       validations:
           required: false
 
-    - type: markdown
-      attributes:
-          value: "## Alternatives"
     - type: textarea
       id: alternatives
       attributes:
@@ -60,9 +43,6 @@ body:
       validations:
           required: false
 
-    - type: markdown
-      attributes:
-          value: "## Benefits"
     - type: textarea
       id: benefits
       attributes:
@@ -72,9 +52,6 @@ body:
       validations:
           required: false
 
-    - type: markdown
-      attributes:
-          value: "## Additional Context"
     - type: textarea
       id: additional-context
       attributes:
@@ -84,9 +61,6 @@ body:
       validations:
           required: false
 
-    - type: markdown
-      attributes:
-          value: "## Checklist"
     - type: checkboxes
       id: feature-request-checklist
       attributes:
@@ -94,6 +68,17 @@ body:
           description: "Please check the following before submitting your feature request:"
           options:
               - label: "I have searched for existing feature requests and confirmed that this is not a duplicate."
+                required: true
               - label: "I have read and understood the project's contribution guidelines."
-              - label: "I have discussed this feature request with the community or maintainers (if applicable)."
+                required: true
               - label: "I have provided clear and detailed information."
+                required: true
+
+    - type: checkboxes
+      id: terms
+      attributes:
+          label: Code of Conduct
+          description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+          options:
+              - label: I agree to follow this project's Code of Conduct
+                required: true
