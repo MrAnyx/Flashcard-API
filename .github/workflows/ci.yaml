@@ -57,6 +57,9 @@ jobs:
             - name: Install dependencies
               run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
+            - name: Display env variables
+              run: php bin/console debug:container --env-vars
+
             - name: Run PHP static tests
               run: composer run stan:github
 
@@ -66,7 +69,7 @@ jobs:
             - name: Check the Symfony console
               run: php bin/console about
 
-            - name: Create Database
+            - name: Create Database file
               run: |
                   mkdir -p data
                   touch data/database.sqlite
