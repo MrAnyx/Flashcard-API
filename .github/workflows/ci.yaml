@@ -69,7 +69,7 @@ jobs:
             - name: Create Database file
               run: |
                   mkdir -p data
-                  touch data/database.sqlite
+                  touch data/database.db
 
             - name: Doctrine cache clear
               run: php bin/console doctrine:cache:clear-metadata
