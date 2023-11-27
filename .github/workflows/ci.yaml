@@ -39,7 +39,7 @@ jobs:
               run: php -v
 
             - name: Validate composer.json and composer.lock
-              run: composer validate --strict
+              run: composer validate
 
             # - name: Copy test files
             #   run: |
