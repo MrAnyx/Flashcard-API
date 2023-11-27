@@ -41,10 +41,9 @@ jobs:
             - name: Validate composer.json and composer.lock
               run: composer validate
 
-            # - name: Copy test files
-            #   run: |
-            #       cp .ci/.env.test .env
-            #       cp .ci/.env.test .env.test
+            - name: Copy test files
+              run: |
+                  cp .env.test .env
 
             - name: Cache Composer packages
               id: composer-cache
