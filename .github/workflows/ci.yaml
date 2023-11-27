@@ -13,13 +13,13 @@ jobs:
         strategy:
             fail-fast: true
 
-        # services:
-        #     database:
-        #         image: mariadb
-        #         env:
-        #             MYSQL_ROOT_PASSWORD: password
-        #         ports:
-        #             - 3306:3306
+        services:
+            database:
+                image: mariadb
+                env:
+                    MYSQL_ROOT_PASSWORD: password
+                ports:
+                    - 3306:3306
 
         steps:
             - uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: "8.2"
-                  extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, json, opcache, zip, pcov, sqlite3
+                  extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, json, opcache, zip, pcov
               env:
                   update: true
 
@@ -54,6 +54,9 @@ jobs:
             - name: Install dependencies
               run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
+            - name: Check the Symfony console
+              run: php bin/console about
+
             - name: Display env variables
               run: php bin/console debug:container --env-vars
 
@@ -62,14 +65,6 @@ jobs:
 
             - name: Run PHP CS tests
               run: composer run cs:check
-
-            - name: Check the Symfony console
-              run: php bin/console about
-
-            - name: Create Database file
-              run: |
-                  mkdir -p data
-                  touch data/database.db
 
             - name: Doctrine cache clear
               run: php bin/console doctrine:cache:clear-metadata
