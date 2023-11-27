@@ -1,0 +1,88 @@
+name: CI
+
+on:
+    push:
+        branches: [master, dev]
+    pull_request:
+        branches: [master, dev]
+    workflow_call:
+
+jobs:
+    php:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: true
+
+        services:
+            database:
+                image: mariadb
+                env:
+                    MYSQL_ROOT_PASSWORD: password
+                ports:
+                    - 3306:3306
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "8.2"
+                  extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, json, opcache, zip, pcov
+              env:
+                  update: true
+
+            - name: Check php version
+              run: php -v
+
+            - name: Validate composer.json and composer.lock
+              run: composer validate
+
+            - name: Copy test files
+              run: |
+                  cp .env.test .env
+
+            - name: Cache Composer packages
+              id: composer-cache
+              uses: actions/cache@v2
+              with:
+                  path: vendor
+                  key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-php-
+
+            - name: Install dependencies
+              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+            - name: Check the Symfony console
+              run: php bin/console about
+
+            - name: Display env variables
+              run: php bin/console debug:container --env-vars
+
+            - name: Run PHP static tests
+              run: composer run stan:github
+
+            - name: Run PHP CS tests
+              run: composer run cs:check
+
+            - name: Doctrine cache clear
+              run: php bin/console doctrine:cache:clear-metadata
+
+            - name: Drop previous database
+              run: php bin/console doctrine:database:drop --force --if-exists --env=test --no-interaction
+
+            - name: Create database
+              run: php bin/console doctrine:database:create --if-not-exists --env=test --no-interaction
+
+            - name: Load migrations
+              run: php bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration
+
+            - name: Validate database schema
+              run: php bin/console doctrine:schema:validate --env=test --no-interaction
+
+            - name: Load fixtures
+              run: php bin/console doctrine:fixtures:load --env=test --no-interaction
+
+            - name: Run PHP unit tests
+              run: composer run test

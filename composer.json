@@ -1,4 +1,6 @@
 {
+    "name": "mranyx/flashcard-api",
+    "description": "Flashcard API backend",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",

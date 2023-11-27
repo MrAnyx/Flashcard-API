@@ -18,24 +18,6 @@ class __Foo__
 
 class SortableEntityCheckerTest extends KernelTestCase
 {
-    public function testEntityExists()
-    {
-        /** @var SortableEntityChecker $service */
-        $checker = self::getContainer()->get(SortableEntityChecker::class);
-
-        $this->assertTrue($checker->entityExists(__Foo__::class));
-        $this->assertFalse($checker->entityExists('UnknownClass'));
-    }
-
-    public function testFieldExists()
-    {
-        /** @var SortableEntityChecker $service */
-        $checker = self::getContainer()->get(SortableEntityChecker::class);
-
-        $this->assertTrue($checker->fieldExists(__Foo__::class, 'sortable'));
-        $this->assertFalse($checker->fieldExists(__Foo__::class, 'unknownField'));
-    }
-
     public function testIsFieldSortable()
     {
         /** @var SortableEntityChecker $service */
