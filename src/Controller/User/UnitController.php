@@ -9,6 +9,7 @@ use App\Voter\UnitVoter;
 use App\Voter\TopicVoter;
 use App\Service\ReviewManager;
 use App\Exception\ApiException;
+use App\Exception\ExceptionCode;
 use App\Repository\UnitRepository;
 use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
@@ -75,7 +76,7 @@ class UnitController extends AbstractRestController
                 ->configureTopic(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $data['topic'], 'You can not use this resource');
@@ -145,7 +146,7 @@ class UnitController extends AbstractRestController
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         // Update each fields if necessary

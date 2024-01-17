@@ -6,6 +6,7 @@ use Exception;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\Service\TokenGenerator;
+use App\Exception\ExceptionCode;
 use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\AbstractRestController;
@@ -21,18 +22,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class SecurityController extends AbstractRestController
 {
     #[Route('/login', name: 'login', methods: ['POST'])]
-    public function login(): JsonResponse
+    public function login()
     {
-        /** @var ?User $user */
-        $user = $this->getUser();
-
-        if ($user === null) {
-            throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Missing credentials');
-        }
-
-        return $this->json([
-            'token' => $user->getToken(),
-        ]);
     }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
@@ -56,7 +47,7 @@ class SecurityController extends AbstractRestController
                 ->configurePassword(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         // Temporarly create the element
