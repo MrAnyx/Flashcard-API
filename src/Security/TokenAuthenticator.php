@@ -47,6 +47,6 @@ class TokenAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        throw new ApiException(Response::HTTP_UNAUTHORIZED, $exception->getMessageData(), [], ExceptionCode::AUTHENTICATION_FAILURE);
+        throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Authentication failure', [], ExceptionCode::AUTHENTICATION_FAILURE);
     }
 }

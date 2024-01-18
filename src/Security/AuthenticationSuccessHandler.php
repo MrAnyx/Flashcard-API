@@ -14,7 +14,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
 {
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): JsonResponse
     {
-        /** @var \App\Entity\User $user */
+        /** @var \App\Entity\User | null $user */
         $user = $token->getUser();
 
         if ($user === null) {
