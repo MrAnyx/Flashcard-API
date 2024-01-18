@@ -4,13 +4,13 @@ namespace App\Controller\User;
 
 use DateTime;
 use Exception;
-use App\Entity\Review;
 use App\Utility\Regex;
 use App\Voter\UnitVoter;
 use App\Entity\Flashcard;
 use App\Voter\FlashcardVoter;
 use App\Service\ReviewManager;
 use App\Exception\ApiException;
+use App\Exception\ExceptionCode;
 use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -74,7 +74,7 @@ class FlashcardController extends AbstractRestController
                 ->configureUnit(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $data['unit'], 'You can not use this resource');
@@ -148,7 +148,7 @@ class FlashcardController extends AbstractRestController
                 ->configureUnit($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         // Update each fields if necessary
@@ -197,10 +197,10 @@ class FlashcardController extends AbstractRestController
 
         // If the next review is in the future
         if ($flashcard->getNextReview() > (new DateTime)) {
-            throw new ApiException(Response::HTTP_NOT_ACCEPTABLE, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [
+            throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [
                 $flashcard->getId(),
                 $flashcard->getNextReview()->format('jS \of F Y'),
-            ]);
+            ], ExceptionCode::UNUSABLE_RESOURCE);
         }
 
         try {
@@ -210,7 +210,7 @@ class FlashcardController extends AbstractRestController
                 ->configureGrade()
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         $spacedRepetitionScheduler->review($flashcard, $data['grade']);

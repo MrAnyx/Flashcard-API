@@ -6,6 +6,7 @@ use Exception;
 use App\Utility\Regex;
 use App\Entity\Flashcard;
 use App\Exception\ApiException;
+use App\Exception\ExceptionCode;
 use App\Service\RequestPayloadService;
 use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,7 +45,7 @@ class FlashcardAdminController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
         }
 
         return $this->json($flashcard, context: ['groups' => ['read:flashcard:admin']]);
@@ -70,7 +71,7 @@ class FlashcardAdminController extends AbstractRestController
                 ->configureUnit(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         // Temporarly create the flashcard
@@ -105,7 +106,7 @@ class FlashcardAdminController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
         }
 
         // Remove the flashcard
@@ -131,7 +132,7 @@ class FlashcardAdminController extends AbstractRestController
 
         // Check if the flashcard exists
         if ($flashcard === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
         }
 
         try {
@@ -150,7 +151,7 @@ class FlashcardAdminController extends AbstractRestController
                 ->configureUnit($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         // Update each fields if necessary

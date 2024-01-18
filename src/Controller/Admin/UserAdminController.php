@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Utility\Regex;
 use App\Exception\ApiException;
 use App\Service\TokenGenerator;
+use App\Exception\ExceptionCode;
 use App\Repository\UserRepository;
 use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +50,7 @@ class UserAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($user === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'User with id %d was not found', [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'User with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
         }
 
         return $this->json($user, context: ['groups' => ['read:user:admin']]);
@@ -78,7 +79,7 @@ class UserAdminController extends AbstractRestController
                 ->configureRoles(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         // Temporarly create the element
@@ -116,7 +117,7 @@ class UserAdminController extends AbstractRestController
 
         // Check if the user exists
         if ($user === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'User with id %d was not found', [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'User with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
         }
 
         // Remove the  user
@@ -143,7 +144,7 @@ class UserAdminController extends AbstractRestController
 
         // Check if the user exists
         if ($user === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'User with id %d was not found', [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'User with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
         }
 
         try {
@@ -162,7 +163,7 @@ class UserAdminController extends AbstractRestController
                 ->configureRoles($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         $validationGroups = ['Default'];

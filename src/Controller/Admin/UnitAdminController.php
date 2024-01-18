@@ -6,6 +6,7 @@ use Exception;
 use App\Entity\Unit;
 use App\Utility\Regex;
 use App\Exception\ApiException;
+use App\Exception\ExceptionCode;
 use App\Repository\UnitRepository;
 use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,7 +47,7 @@ class UnitAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
         }
 
         return $this->json($unit, context: ['groups' => ['read:unit:admin']]);
@@ -70,7 +71,7 @@ class UnitAdminController extends AbstractRestController
                 ->configureTopic(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         // Temporarly create the element
@@ -103,7 +104,7 @@ class UnitAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
         }
 
         // Remove the element
@@ -129,7 +130,7 @@ class UnitAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
         }
 
         try {
@@ -146,7 +147,7 @@ class UnitAdminController extends AbstractRestController
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
         }
 
         // Update each fields if necessary

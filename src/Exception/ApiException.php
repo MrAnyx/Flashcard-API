@@ -10,9 +10,10 @@ class ApiException extends HttpException
         int $statusCode,
         string $message,
         array $messageParams = [],
+        ExceptionCode $exceptionCode = ExceptionCode::GENERIC_ERROR,
         \Throwable $previous = null,
         array $headers = []
     ) {
-        parent::__construct($statusCode, vsprintf($message, $messageParams), $previous, $headers);
+        parent::__construct($statusCode, vsprintf($message, $messageParams), $previous, $headers, $exceptionCode->value);
     }
 }

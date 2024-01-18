@@ -28,6 +28,8 @@ security:
                 username_path: identifier
                 password_path: password
                 check_path: api_auth_login
+                success_handler: App\Security\AuthenticationSuccessHandler
+                failure_handler: App\Security\AuthenticationFailureHandler
 
         api:
             pattern: ^/api
