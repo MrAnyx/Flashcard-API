@@ -3,7 +3,6 @@
 namespace App\Security;
 
 use App\Exception\ApiException;
-use App\Exception\ExceptionCode;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +13,6 @@ class AuthenticationFailureHandler implements AuthenticationFailureHandlerInterf
 {
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
-        throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Invalid credentials', [], ExceptionCode::INVALID_CREDENTIALS);
+        throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Invalid credentials');
     }
 }

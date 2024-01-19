@@ -6,7 +6,6 @@ use Exception;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\Service\TokenGenerator;
-use App\Exception\ExceptionCode;
 use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\AbstractRestController;
@@ -47,7 +46,7 @@ class SecurityController extends AbstractRestController
                 ->configurePassword(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Temporarly create the element

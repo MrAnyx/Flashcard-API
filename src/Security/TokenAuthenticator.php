@@ -3,7 +3,6 @@
 namespace App\Security;
 
 use App\Exception\ApiException;
-use App\Exception\ExceptionCode;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
@@ -33,7 +32,7 @@ class TokenAuthenticator extends AbstractAuthenticator
 
         if (empty($token)) {
             // Code 401 "Unauthorized"
-            throw new ApiException(Response::HTTP_UNAUTHORIZED, 'No API token provided', [], ExceptionCode::AUTHENTICATION_FAILURE);
+            throw new ApiException(Response::HTTP_UNAUTHORIZED, 'No API token provided');
         }
 
         return new SelfValidatingPassport(new UserBadge($token));
@@ -47,6 +46,6 @@ class TokenAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Authentication failure', [], ExceptionCode::AUTHENTICATION_FAILURE);
+        throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Invalid API token');
     }
 }

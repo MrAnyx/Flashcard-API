@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use Exception;
 use App\Exception\ApiException;
-use App\Exception\ExceptionCode;
 use App\Service\EntityValidator;
 use App\Service\SortableEntityChecker;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,7 +38,7 @@ class AbstractRestController extends AbstractController
                 ->configureOrder()
                 ->resolve($request->query->all());
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_PAGINATION);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         return $queryParams;
@@ -50,7 +49,7 @@ class AbstractRestController extends AbstractController
         try {
             $this->entityValidator->validateEntity($entity, $validationGroups);
         } catch (ValidatorException $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::VALIDATION_FAILURE);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
     }
 
@@ -67,7 +66,7 @@ class AbstractRestController extends AbstractController
 
         // Check if the flashcard exists
         if ($resource === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Resource with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Resource with id %d was not found', [$id]);
         }
 
         return $resource;
