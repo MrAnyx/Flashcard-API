@@ -9,7 +9,6 @@ use App\Utility\Regex;
 use App\Voter\TopicVoter;
 use App\Service\ReviewManager;
 use App\Exception\ApiException;
-use App\Exception\ExceptionCode;
 use App\Repository\UnitRepository;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
@@ -73,7 +72,7 @@ class TopicController extends AbstractRestController
                 ->configureName(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         /** @var \App\Entity\User $user */
@@ -143,7 +142,7 @@ class TopicController extends AbstractRestController
                 ->configureName($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Update each fields if necessary

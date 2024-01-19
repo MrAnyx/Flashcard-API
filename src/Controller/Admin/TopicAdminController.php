@@ -6,7 +6,6 @@ use Exception;
 use App\Entity\Topic;
 use App\Utility\Regex;
 use App\Exception\ApiException;
-use App\Exception\ExceptionCode;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,7 +46,7 @@ class TopicAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         return $this->json($topic, context: ['groups' => ['read:topic:admin']]);
@@ -71,7 +70,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureAuthor(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Temporarly create the element
@@ -104,7 +103,7 @@ class TopicAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         // Remove the element
@@ -130,7 +129,7 @@ class TopicAdminController extends AbstractRestController
 
         // Check if the element exists
         if ($topic === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id], ExceptionCode::RESOURCE_NOT_FOUND);
+            throw new ApiException(Response::HTTP_NOT_FOUND, 'Topic with id %d was not found', [$id]);
         }
 
         try {
@@ -147,7 +146,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureAuthor($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Update each fields if necessary

@@ -22,8 +22,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\OptionsResolver\FlashcardOptionsResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\OptionsResolver\SpacedRepetitionOptionsResolver;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api', 'api_', format: 'json')]
+// #[IsGranted('IS_AUTHENTICATED', exceptionCode: 450)] --> Marche pas
 class FlashcardController extends AbstractRestController
 {
     #[Route('/flashcards', name: 'get_flashcards', methods: ['GET'])]
@@ -74,7 +76,7 @@ class FlashcardController extends AbstractRestController
                 ->configureUnit(true)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $data['unit'], 'You can not use this resource');
@@ -148,7 +150,7 @@ class FlashcardController extends AbstractRestController
                 ->configureUnit($mandatoryParameters)
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         // Update each fields if necessary
@@ -200,7 +202,7 @@ class FlashcardController extends AbstractRestController
             throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [
                 $flashcard->getId(),
                 $flashcard->getNextReview()->format('jS \of F Y'),
-            ], ExceptionCode::UNUSABLE_RESOURCE);
+            ]);
         }
 
         try {
@@ -210,7 +212,7 @@ class FlashcardController extends AbstractRestController
                 ->configureGrade()
                 ->resolve($body);
         } catch (Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage(), [], ExceptionCode::INVALID_REQUEST_BODY);
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         $spacedRepetitionScheduler->review($flashcard, $data['grade']);
