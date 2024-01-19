@@ -24,7 +24,7 @@ class UnitRepository extends ServiceEntityRepository
         parent::__construct($registry, Unit::class);
     }
 
-    public function findAllWithPagination(int $page, string $sort, string $order, User $user = null): Paginator
+    public function findAllWithPagination(int $page, string $sort, string $order, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('u');
 

@@ -10,7 +10,7 @@ class ApiException extends HttpException
         int $statusCode,
         string $message,
         array $messageParams = [],
-        \Throwable $previous = null,
+        ?\Throwable $previous = null,
         array $headers = []
     ) {
         parent::__construct($statusCode, vsprintf($message, $messageParams), $previous, $headers);
