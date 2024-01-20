@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use Exception;
+use App\Model\Page;
+use App\Service\ObjectFactory;
 use App\Exception\ApiException;
 use App\Service\EntityValidator;
 use App\Service\SortableEntityChecker;
@@ -27,7 +29,7 @@ class AbstractRestController extends AbstractController
      * @param string $classname This classname is used to retrieve the sortable fields
      * @param Request $request Request to retrieve the query parameters
      */
-    public function getPaginationParameter(string $classname, Request $request): array
+    public function getPaginationParameter(string $classname, Request $request): Page
     {
         $sortableFields = $this->sortableEntityChecker->getSortableFields($classname);
 
@@ -41,7 +43,14 @@ class AbstractRestController extends AbstractController
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
-        return $queryParams;
+        try {
+            /** @var Page $page */
+            $page = ObjectFactory::create(Page::class, $queryParams);
+        } catch (Exception $e) {
+            throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
+        }
+
+        return $page;
     }
 
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void

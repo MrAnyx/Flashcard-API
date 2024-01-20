@@ -37,9 +37,9 @@ class UnitController extends AbstractRestController
 
         // Get data with pagination
         $units = $unitRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $user
         );
 
@@ -182,9 +182,9 @@ class UnitController extends AbstractRestController
 
         // Get data with pagination
         $flashcards = $flashcardRepository->findByUnitWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $unit
         );
 

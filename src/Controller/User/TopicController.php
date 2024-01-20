@@ -35,9 +35,9 @@ class TopicController extends AbstractRestController
 
         // Get data with pagination
         $topics = $topicRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $user
         );
 
@@ -175,9 +175,9 @@ class TopicController extends AbstractRestController
 
         // Get data with pagination
         $units = $unitRepository->findByTopicWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $topic
         );
 

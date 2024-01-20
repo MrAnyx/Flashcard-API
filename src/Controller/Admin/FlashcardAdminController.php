@@ -28,9 +28,9 @@ class FlashcardAdminController extends AbstractRestController
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
 
         $flashcards = $flashcardRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order']
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order
         );
 
         return $this->json($flashcards, context: ['groups' => ['read:flashcard:admin']]);

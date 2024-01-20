@@ -37,9 +37,9 @@ class FlashcardController extends AbstractRestController
         $user = $this->getUser();
 
         $flashcards = $flashcardRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $user
         );
 
