@@ -13,6 +13,6 @@ class AuthenticationFailureHandler implements AuthenticationFailureHandlerInterf
 {
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
-        throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Invalid credentials');
+        throw new ApiException(Response::HTTP_BAD_REQUEST, 'Invalid credentials');
     }
 }

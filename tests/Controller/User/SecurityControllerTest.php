@@ -59,7 +59,7 @@ class SecurityControllerTest extends WebTestCase
 
         $client->request('POST', '/api/auth/login', content: json_encode($content));
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
     public function testLoginWithBadIdentifier()
@@ -76,6 +76,6 @@ class SecurityControllerTest extends WebTestCase
 
         $client->request('POST', '/api/auth/login', content: json_encode($content));
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 }

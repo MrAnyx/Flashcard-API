@@ -49,6 +49,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: 'The token can not be blank')]
     #[Assert\Length(max: 100, maxMessage: 'The token can not exceed {{ limit }} characters')]
+    #[Groups(['read:user:user'])]
     private ?string $token = null;
 
     #[ORM\Column]
@@ -62,7 +63,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: Types::JSON)]
-    #[Groups(['read:user:admin'])]
+    #[Groups(['read:user:user', 'read:user:admin'])]
     private array $roles = [];
 
     /**

@@ -23,6 +23,13 @@ class SecurityController extends AbstractRestController
     #[Route('/login', name: 'login', methods: ['POST'])]
     public function login()
     {
+        $user = $this->getUser();
+
+        if ($user === null) {
+            throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Unauthenticated user');
+        }
+
+        return $this->json($user, context: ['groups' => ['read:user:user']]);
     }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
