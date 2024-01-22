@@ -73,12 +73,6 @@ class SecurityController extends AbstractRestController
         $em->persist($user);
         $em->flush();
 
-        // Return the element with the the status 201 (Created)
-        return $this->json(
-            [
-                'token' => $user->getToken(),
-            ],
-            Response::HTTP_CREATED,
-        );
+        return $this->json($user, Response::HTTP_CREATED, context: ['groups' => ['read:user:user']]);
     }
 }
