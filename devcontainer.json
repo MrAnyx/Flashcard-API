@@ -20,14 +20,6 @@
     "service": "api",
     "workspaceFolder": "/var/www",
     "postCreateCommand": "task app:default:config",
-    // "remoteUser": "vscode",
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "php.executablePath": "/usr/local/bin/php"
-            }
-        }
-    },
     "features": {
         "ghcr.io/devcontainers/features/github-cli:1": {
             "version": "latest"
