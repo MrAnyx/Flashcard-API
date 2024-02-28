@@ -6,7 +6,7 @@ services:
         container_name: flashcard-database
         image: mariadb
         ports:
-            - 3306:3306 # To access the database through the mysql extension in vscode
+            - "3306:3306"
         environment:
             MYSQL_ROOT_PASSWORD: password
             MYSQL_DATABASE: flashcard
@@ -17,20 +17,18 @@ services:
         networks:
             - dev
 
-    maildev:
-        image: maildev/maildev
-        container_name: flashcard-mail
-        command: bin/maildev --web 80 --smtp 25 --hide-extensions STARTTLS
-        ports:
-            - 8082:80
-        networks:
-            - dev
+#    maildev:
+#        image: maildev/maildev
+#        container_name: flashcard-mail
+#        command: bin/maildev --web 80 --smtp 25 --hide-extensions STARTTLS
+#        ports:
+#            - "8082:80"
+#        networks:
+#            - dev
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         container_name: flashcard-phpmyadmin
-        links:
-            - database
         environment:
             PMA_HOST: database
             PMA_PORT: 3306
@@ -40,7 +38,7 @@ services:
         networks:
             - dev
         ports:
-            - 8081:80
+            - "8081:80"
 
     api:
         container_name: flashcard-api
@@ -50,9 +48,9 @@ services:
             args:
                 - VARIANT=8.2.8-apache
         ports:
-            - 8080:80
+            - "8080:80"
         volumes:
-            - ../:/var/www
+            - ./:/var/www
         networks:
             - dev
         depends_on:
