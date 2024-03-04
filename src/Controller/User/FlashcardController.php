@@ -4,6 +4,7 @@ namespace App\Controller\User;
 
 use DateTime;
 use Exception;
+use App\Entity\User;
 use App\Utility\Regex;
 use App\Voter\UnitVoter;
 use App\Entity\Flashcard;
@@ -33,7 +34,7 @@ class FlashcardController extends AbstractRestController
     {
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $flashcards = $flashcardRepository->findAllWithPagination(
@@ -218,7 +219,7 @@ class FlashcardController extends AbstractRestController
         $spacedRepetitionScheduler->review($flashcard, $data['grade']);
         $this->validateEntity($flashcard);
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $review = $reviewManager->createReview($flashcard, $user, $data['grade']);
@@ -235,7 +236,7 @@ class FlashcardController extends AbstractRestController
         ReviewManager $reviewManager
     ): JsonResponse {
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $reviewManager->resetAllFlashcards($user);
 
@@ -251,7 +252,7 @@ class FlashcardController extends AbstractRestController
         $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $reviewManager->resetFlashcard($flashcard, $user);
 
@@ -264,7 +265,7 @@ class FlashcardController extends AbstractRestController
         ReviewManager $reviewManager,
         FlashcardRepository $flashcardRepository
     ): JsonResponse {
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $cardsToReview = $flashcardRepository->findFlashcardToReview($user, SpacedRepetitionScheduler::SESSION_SIZE);

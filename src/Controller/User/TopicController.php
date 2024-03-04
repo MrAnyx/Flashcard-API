@@ -4,6 +4,7 @@ namespace App\Controller\User;
 
 use Exception;
 use App\Entity\Unit;
+use App\Entity\User;
 use App\Entity\Topic;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
@@ -30,7 +31,7 @@ class TopicController extends AbstractRestController
     {
         $pagination = $this->getPaginationParameter(Topic::class, $request);
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         // Get data with pagination
@@ -75,7 +76,7 @@ class TopicController extends AbstractRestController
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         // Temporarly create the element
@@ -195,7 +196,7 @@ class TopicController extends AbstractRestController
         $topic = $this->getResourceById(Topic::class, $id);
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $reviewManager->resetFlashcards($topic, $user);
 
@@ -210,7 +211,7 @@ class TopicController extends AbstractRestController
         $topic = $this->getResourceById(Topic::class, $id);
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($topic, $user, SpacedRepetitionScheduler::SESSION_SIZE);

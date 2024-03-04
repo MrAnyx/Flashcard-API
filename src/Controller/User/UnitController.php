@@ -4,6 +4,7 @@ namespace App\Controller\User;
 
 use Exception;
 use App\Entity\Unit;
+use App\Entity\User;
 use App\Utility\Regex;
 use App\Voter\UnitVoter;
 use App\Voter\TopicVoter;
@@ -32,7 +33,7 @@ class UnitController extends AbstractRestController
 
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         // Get data with pagination
@@ -200,7 +201,7 @@ class UnitController extends AbstractRestController
         $unit = $this->getResourceById(Unit::class, $id);
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $reviewManager->resetFlashcards($unit, $user);
 
@@ -215,7 +216,7 @@ class UnitController extends AbstractRestController
         $unit = $this->getResourceById(Unit::class, $id);
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, SpacedRepetitionScheduler::SESSION_SIZE);

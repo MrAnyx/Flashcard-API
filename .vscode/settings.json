@@ -1,8 +1,12 @@
 {
-    "php.version": "8.2",
+    "php.validate.executablePath": "/usr/local/bin/php",
+    "php.suggest.basic": false,
     "[php]": {
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "open-southeners.laravel-pint"
+        "editor.defaultFormatter": "DEVSENSE.phptools-vscode"
     },
-    "php.highlight-todo.enable": false
+    "[yaml][json][jsonc]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }
