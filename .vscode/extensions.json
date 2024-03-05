@@ -8,9 +8,9 @@
         "bmewburn.vscode-intelephense-client",
         "neilbrayfield.php-docblocker",
         "mikestead.dotenv",
-        "open-southeners.laravel-pint",
         "MehediDracula.php-namespace-resolver",
         "mikestead.dotenv",
-        "EditorConfig.EditorConfig"
+        "EditorConfig.EditorConfig",
+        "junstyle.php-cs-fixer"
     ]
 }

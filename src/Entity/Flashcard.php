@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use DateTime;
-use DateTimeImmutable;
 use App\Enum\StateType;
 use App\Attribut\Sortable;
 use Doctrine\DBAL\Types\Types;
@@ -28,12 +26,12 @@ class Flashcard
     #[ORM\Column]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
-    private ?DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
-    private ?DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'The front side of a flashcard can not be blank')]
@@ -54,11 +52,11 @@ class Flashcard
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
-    private ?DateTime $nextReview = null;
+    private ?\DateTime $nextReview = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
-    private ?DateTime $previousReview = null;
+    private ?\DateTime $previousReview = null;
 
     #[ORM\Column(type: Types::INTEGER, enumType: StateType::class)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
@@ -96,7 +94,7 @@ class Flashcard
         return $this->id;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -104,12 +102,12 @@ class Flashcard
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -118,7 +116,7 @@ class Flashcard
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -159,24 +157,24 @@ class Flashcard
         return $this;
     }
 
-    public function getNextReview(): ?DateTime
+    public function getNextReview(): ?\DateTime
     {
         return $this->nextReview;
     }
 
-    public function setNextReview(?DateTime $nextReview): static
+    public function setNextReview(?\DateTime $nextReview): static
     {
         $this->nextReview = $nextReview;
 
         return $this;
     }
 
-    public function getPreviousReview(): ?DateTime
+    public function getPreviousReview(): ?\DateTime
     {
         return $this->previousReview;
     }
 
-    public function setPreviousReview(?DateTime $previousReview): static
+    public function setPreviousReview(?\DateTime $previousReview): static
     {
         $this->previousReview = $previousReview;
 
@@ -185,7 +183,7 @@ class Flashcard
 
     public function refreshPreviousReview(): static
     {
-        $this->previousReview = new DateTime;
+        $this->previousReview = new \DateTime();
 
         return $this;
     }
@@ -248,7 +246,7 @@ class Flashcard
 
     public function addReviewHistory(Review $reviewHistory): static
     {
-        if (! $this->reviewHistory->contains($reviewHistory)) {
+        if (!$this->reviewHistory->contains($reviewHistory)) {
             $this->reviewHistory->add($reviewHistory);
             $reviewHistory->setFlashcard($this);
         }

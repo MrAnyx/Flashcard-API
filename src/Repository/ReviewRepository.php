@@ -73,7 +73,7 @@ class ReviewRepository extends ServiceEntityRepository
             ->where('r.user = :user')
             ->setParameter('user', $user);
 
-        if (! $withReset) {
+        if (!$withReset) {
             $query
                 ->andWhere('r.reset = :withReset')
                 ->setParameter('withReset', false);

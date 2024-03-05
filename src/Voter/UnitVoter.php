@@ -13,11 +13,11 @@ class UnitVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (! in_array($attribute, [self::OWNER])) {
+        if (!in_array($attribute, [self::OWNER])) {
             return false;
         }
 
-        if (! $subject instanceof Unit) {
+        if (!$subject instanceof Unit) {
             return false;
         }
 
@@ -29,7 +29,7 @@ class UnitVoter extends Voter
         $user = $token->getUser();
 
         // the user must be logged in; if not, deny access
-        if (! $user instanceof User) {
+        if (!$user instanceof User) {
             return false;
         }
 

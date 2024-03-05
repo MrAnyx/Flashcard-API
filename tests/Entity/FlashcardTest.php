@@ -3,7 +3,6 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Topic;
-use DateTimeImmutable;
 use App\Entity\Flashcard;
 use Doctrine\ORM\EntityManager;
 use App\Repository\UnitRepository;
@@ -50,7 +49,7 @@ class FlashcardTest extends KernelTestCase
     {
         $flashcard = new Flashcard();
         $this->em->persist($flashcard);
-        $this->assertInstanceOf(DateTimeImmutable::class, $flashcard->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $flashcard->getCreatedAt());
         $this->em->detach($flashcard);
     }
 
@@ -58,7 +57,7 @@ class FlashcardTest extends KernelTestCase
     {
         $flashcard = new Flashcard();
         $this->em->persist($flashcard);
-        $this->assertInstanceOf(DateTimeImmutable::class, $flashcard->getUpdatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $flashcard->getUpdatedAt());
         $this->em->detach($flashcard);
     }
 

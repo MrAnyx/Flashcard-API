@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use Exception;
 use App\Utility\Regex;
 use App\Entity\Flashcard;
 use App\Exception\ApiException;
@@ -24,7 +23,6 @@ class FlashcardAdminController extends AbstractRestController
         Request $request,
         FlashcardRepository $flashcardRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
 
         $flashcards = $flashcardRepository->findAllWithPagination(
@@ -57,7 +55,6 @@ class FlashcardAdminController extends AbstractRestController
         FlashcardOptionsResolver $flashcardOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -69,7 +66,7 @@ class FlashcardAdminController extends AbstractRestController
                 ->configureDetails(true)
                 ->configureUnit(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -125,7 +122,6 @@ class FlashcardAdminController extends AbstractRestController
         Request $request,
         FlashcardOptionsResolver $flashcardOptionsResolver
     ): JsonResponse {
-
         // Retrieve the flashcard by id
         $flashcard = $flashcardRepository->find($id);
 
@@ -149,7 +145,7 @@ class FlashcardAdminController extends AbstractRestController
                 ->configureDetails($mandatoryParameters)
                 ->configureUnit($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 

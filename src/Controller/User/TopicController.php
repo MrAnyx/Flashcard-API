@@ -2,7 +2,6 @@
 
 namespace App\Controller\User;
 
-use Exception;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Entity\Topic;
@@ -63,7 +62,6 @@ class TopicController extends AbstractRestController
         TopicOptionsResolver $topicOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -72,7 +70,7 @@ class TopicController extends AbstractRestController
             $data = $topicOptionsResolver
                 ->configureName(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -125,7 +123,6 @@ class TopicController extends AbstractRestController
         Request $request,
         TopicOptionsResolver $flashcardOptionsResolver,
     ): JsonResponse {
-
         $topic = $this->getResourceById(Topic::class, $id);
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
@@ -142,7 +139,7 @@ class TopicController extends AbstractRestController
             $data = $flashcardOptionsResolver
                 ->configureName($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -192,7 +189,6 @@ class TopicController extends AbstractRestController
         EntityManagerInterface $em,
         ReviewManager $reviewManager
     ): JsonResponse {
-
         $topic = $this->getResourceById(Topic::class, $id);
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
 

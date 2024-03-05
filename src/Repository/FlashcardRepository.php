@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use DateTime;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Entity\Topic;
@@ -132,7 +131,7 @@ class FlashcardRepository extends ServiceEntityRepository
             ->orderBy('f.nextReview', 'ASC')
             ->setMaxResults($cardsToReview)
             ->setParameter('user', $user)
-            ->setParameter('today', new DateTime())
+            ->setParameter('today', new \DateTime())
             ->getQuery()
             ->getResult();
 
@@ -156,7 +155,7 @@ class FlashcardRepository extends ServiceEntityRepository
         $qb->orderBy('f.nextReview', 'ASC')
             ->setMaxResults($cardsToReview)
             ->setParameter('user', $user)
-            ->setParameter('today', (new DateTime())->format('Y-m-d'))
+            ->setParameter('today', (new \DateTime())->format('Y-m-d'))
             ->setParameter('reviewBy', $reviewBy);
 
         return $qb->getQuery()->getResult();

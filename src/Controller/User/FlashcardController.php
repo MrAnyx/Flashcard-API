@@ -2,8 +2,6 @@
 
 namespace App\Controller\User;
 
-use DateTime;
-use Exception;
 use App\Entity\User;
 use App\Utility\Regex;
 use App\Voter\UnitVoter;
@@ -64,7 +62,6 @@ class FlashcardController extends AbstractRestController
         FlashcardOptionsResolver $flashcardOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -76,7 +73,7 @@ class FlashcardController extends AbstractRestController
                 ->configureDetails(true)
                 ->configureUnit(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -130,7 +127,6 @@ class FlashcardController extends AbstractRestController
         Request $request,
         FlashcardOptionsResolver $flashcardOptionsResolver
     ): JsonResponse {
-
         $flashcard = $this->getResourceById(Flashcard::class, $id);
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
@@ -150,7 +146,7 @@ class FlashcardController extends AbstractRestController
                 ->configureDetails($mandatoryParameters)
                 ->configureUnit($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -194,16 +190,12 @@ class FlashcardController extends AbstractRestController
         SpacedRepetitionScheduler $spacedRepetitionScheduler,
         ReviewManager $reviewManager
     ): JsonResponse {
-
         $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
         // If the next review is in the future
-        if ($flashcard->getNextReview() > (new DateTime)) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [
-                $flashcard->getId(),
-                $flashcard->getNextReview()->format('jS \of F Y'),
-            ]);
+        if ($flashcard->getNextReview() > (new \DateTime())) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [$flashcard->getId(), $flashcard->getNextReview()->format('jS \of F Y')]);
         }
 
         try {
@@ -212,7 +204,7 @@ class FlashcardController extends AbstractRestController
             $data = $spacedRepetitionOptionsResolver
                 ->configureGrade()
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -235,7 +227,6 @@ class FlashcardController extends AbstractRestController
     public function resetAllFlashcards(
         ReviewManager $reviewManager
     ): JsonResponse {
-
         /** @var User $user */
         $user = $this->getUser();
         $reviewManager->resetAllFlashcards($user);

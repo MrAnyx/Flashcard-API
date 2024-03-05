@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use DateTimeImmutable;
 use App\Attribut\Sortable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UnitRepository;
@@ -32,12 +31,12 @@ class Unit
     #[ORM\Column]
     #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
-    private ?DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
-    private ?DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'units')]
     #[Assert\NotBlank(message: 'You must associate a topic to this unit')]
@@ -69,7 +68,7 @@ class Unit
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -77,12 +76,12 @@ class Unit
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -91,7 +90,7 @@ class Unit
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -118,7 +117,7 @@ class Unit
 
     public function addFlashcard(Flashcard $flashcard): static
     {
-        if (! $this->flashcards->contains($flashcard)) {
+        if (!$this->flashcards->contains($flashcard)) {
             $this->flashcards->add($flashcard);
             $flashcard->setUnit($this);
         }

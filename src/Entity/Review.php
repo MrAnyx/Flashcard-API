@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use DateTimeImmutable;
 use App\Enum\GradeType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,7 +26,7 @@ class Review
     private ?User $user = null;
 
     #[ORM\Column]
-    private ?DateTimeImmutable $date = null;
+    private ?\DateTimeImmutable $date = null;
 
     #[ORM\Column(type: Types::INTEGER, enumType: GradeType::class)]
     #[Assert\NotBlank(message: 'The grade of a review can not be blank')]
@@ -65,7 +64,7 @@ class Review
         return $this;
     }
 
-    public function getDate(): ?DateTimeImmutable
+    public function getDate(): ?\DateTimeImmutable
     {
         return $this->date;
     }
@@ -73,7 +72,7 @@ class Review
     #[ORM\PrePersist]
     public function setDate(): static
     {
-        $this->date = new DateTimeImmutable('now');
+        $this->date = new \DateTimeImmutable('now');
 
         return $this;
     }

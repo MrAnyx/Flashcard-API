@@ -2,9 +2,7 @@
 
 namespace App\Tests\Service;
 
-use Exception;
 use App\Attribut\Sortable;
-use InvalidArgumentException;
 use App\Service\SortableEntityChecker;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -32,7 +30,7 @@ class SortableEntityCheckerTest extends KernelTestCase
         /** @var SortableEntityChecker $service */
         $checker = self::getContainer()->get(SortableEntityChecker::class);
 
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
 
         $checker->isFieldSortable('UnknownClass', 'sortable');
     }
@@ -42,7 +40,7 @@ class SortableEntityCheckerTest extends KernelTestCase
         /** @var SortableEntityChecker $service */
         $checker = self::getContainer()->get(SortableEntityChecker::class);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $checker->isFieldSortable(__Foo__::class, 'unknownField');
     }
@@ -60,7 +58,7 @@ class SortableEntityCheckerTest extends KernelTestCase
         /** @var SortableEntityChecker $service */
         $checker = self::getContainer()->get(SortableEntityChecker::class);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $checker->getSortableFields('UnknownClass');
     }
 }

@@ -1,9 +1,10 @@
 {
     "php.validate.executablePath": "/usr/local/bin/php",
     "php.suggest.basic": false,
+    "php-cs-fixer.allowRisky": false,
     "[php]": {
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "DEVSENSE.phptools-vscode"
+        "editor.defaultFormatter": "junstyle.php-cs-fixer"
     },
     "[yaml][json][jsonc]": {
         "editor.formatOnSave": true,

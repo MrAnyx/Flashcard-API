@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use Exception;
 use App\Model\Page;
 use App\Attribut\Sortable;
 use App\Exception\ApiException;
@@ -75,7 +74,7 @@ class AbstractRestControllerTest extends KernelTestCase
         try {
             $abstractController->validateEntity($entity, ['special_group']);
             $this->assertTrue(true);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e);
         }
     }

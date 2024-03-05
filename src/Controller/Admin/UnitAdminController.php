@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use Exception;
 use App\Entity\Unit;
 use App\Utility\Regex;
 use App\Exception\ApiException;
@@ -24,7 +23,6 @@ class UnitAdminController extends AbstractRestController
         Request $request,
         UnitRepository $unitRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         // Get data with pagination
@@ -59,7 +57,6 @@ class UnitAdminController extends AbstractRestController
         UnitOptionsResolver $unitOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -69,7 +66,7 @@ class UnitAdminController extends AbstractRestController
                 ->configureName(true)
                 ->configureTopic(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -123,7 +120,6 @@ class UnitAdminController extends AbstractRestController
         Request $request,
         UnitOptionsResolver $unitOptionsResolver,
     ): JsonResponse {
-
         // Retrieve the element by id
         $unit = $unitRepository->find($id);
 
@@ -145,7 +141,7 @@ class UnitAdminController extends AbstractRestController
                 ->configureName($mandatoryParameters)
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 

@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use DateTime;
 use App\Enum\GradeType;
 use App\Enum\StateType;
 use App\Utility\Random;
@@ -20,7 +19,7 @@ class SpacedRepetitionScheduler
 
     public function review(Flashcard &$flashcard, GradeType $grade): void
     {
-        if ($flashcard->getNextReview() > (new DateTime)) {
+        if ($flashcard->getNextReview() > (new \DateTime())) {
             return;
         }
 
@@ -33,7 +32,7 @@ class SpacedRepetitionScheduler
         }
 
         $interval = $this->nextInterval($flashcard);
-        $flashcard->setNextReview((new DateTime)->modify("+$interval days")->setTime(0, 0, 0));
+        $flashcard->setNextReview((new \DateTime())->modify("+$interval days")->setTime(0, 0, 0));
         $flashcard->refreshPreviousReview();
         $flashcard->setState(StateType::Learning);
     }
@@ -62,7 +61,7 @@ class SpacedRepetitionScheduler
 
     private function getRetrievability(Flashcard $flashcard): float
     {
-        $elapsedDays = (int) $flashcard->getPreviousReview()->diff(new DateTime)->format('%a');
+        $elapsedDays = (int) $flashcard->getPreviousReview()->diff(new \DateTime())->format('%a');
 
         return pow(1 + ($elapsedDays / (9 * $flashcard->getStability())), -1);
     }

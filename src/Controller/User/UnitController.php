@@ -2,7 +2,6 @@
 
 namespace App\Controller\User;
 
-use Exception;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Utility\Regex;
@@ -30,7 +29,6 @@ class UnitController extends AbstractRestController
         Request $request,
         UnitRepository $unitRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         /** @var User $user */
@@ -65,7 +63,6 @@ class UnitController extends AbstractRestController
         UnitOptionsResolver $unitOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -75,7 +72,7 @@ class UnitController extends AbstractRestController
                 ->configureName(true)
                 ->configureTopic(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -127,7 +124,6 @@ class UnitController extends AbstractRestController
         Request $request,
         UnitOptionsResolver $unitOptionsResolver,
     ): JsonResponse {
-
         $unit = $this->getResourceById(Unit::class, $id);
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
@@ -145,7 +141,7 @@ class UnitController extends AbstractRestController
                 ->configureName($mandatoryParameters)
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -197,7 +193,6 @@ class UnitController extends AbstractRestController
         int $id,
         ReviewManager $reviewManager
     ): JsonResponse {
-
         $unit = $this->getResourceById(Unit::class, $id);
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
 

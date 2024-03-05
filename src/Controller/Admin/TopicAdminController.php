@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use Exception;
 use App\Entity\Topic;
 use App\Utility\Regex;
 use App\Exception\ApiException;
@@ -24,7 +23,6 @@ class TopicAdminController extends AbstractRestController
         Request $request,
         TopicRepository $topicRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(Topic::class, $request);
 
         // Get data with pagination
@@ -59,7 +57,6 @@ class TopicAdminController extends AbstractRestController
         TopicOptionsResolver $topicOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -69,7 +66,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureName(true)
                 ->configureAuthor(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -123,7 +120,6 @@ class TopicAdminController extends AbstractRestController
         Request $request,
         TopicOptionsResolver $flashcardOptionsResolver,
     ): JsonResponse {
-
         // Retrieve the element by id
         $topic = $topicRepository->find($id);
 
@@ -145,7 +141,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureName($mandatoryParameters)
                 ->configureAuthor($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 

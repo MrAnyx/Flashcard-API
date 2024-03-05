@@ -4,7 +4,6 @@ namespace App\Tests\Entity;
 
 use App\Entity\User;
 use App\Entity\Topic;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManager;
 use App\Repository\UserRepository;
 use App\Repository\TopicRepository;
@@ -140,7 +139,7 @@ class UserTest extends KernelTestCase
     {
         $user = new User();
         $this->em->persist($user);
-        $this->assertInstanceOf(DateTimeImmutable::class, $user->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $user->getCreatedAt());
         $this->em->detach($user);
     }
 
@@ -148,7 +147,7 @@ class UserTest extends KernelTestCase
     {
         $user = new User();
         $this->em->persist($user);
-        $this->assertInstanceOf(DateTimeImmutable::class, $user->getUpdatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $user->getUpdatedAt());
         $this->em->detach($user);
     }
 

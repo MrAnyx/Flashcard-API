@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use Exception;
 use App\Model\Page;
 use App\Service\ObjectFactory;
 use App\Exception\ApiException;
@@ -39,14 +38,14 @@ class AbstractRestController extends AbstractController
                 ->configureSort($sortableFields)
                 ->configureOrder()
                 ->resolve($request->query->all());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         try {
             /** @var Page $page */
             $page = ObjectFactory::create(Page::class, $queryParams);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
         }
 
@@ -66,6 +65,7 @@ class AbstractRestController extends AbstractController
      * @template T
      *
      * @param class-string<T> $classname
+     *
      * @return T
      */
     public function getResourceById(string $classname, int $id): mixed

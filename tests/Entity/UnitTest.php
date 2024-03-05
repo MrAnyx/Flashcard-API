@@ -4,7 +4,6 @@ namespace App\Tests\Entity;
 
 use App\Entity\Unit;
 use App\Entity\Topic;
-use DateTimeImmutable;
 use App\Entity\Flashcard;
 use Doctrine\ORM\EntityManager;
 use App\Repository\UnitRepository;
@@ -70,7 +69,7 @@ class UnitTest extends KernelTestCase
     {
         $unit = new Unit();
         $this->em->persist($unit);
-        $this->assertInstanceOf(DateTimeImmutable::class, $unit->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $unit->getCreatedAt());
         $this->em->detach($unit);
     }
 
@@ -78,7 +77,7 @@ class UnitTest extends KernelTestCase
     {
         $unit = new Unit();
         $this->em->persist($unit);
-        $this->assertInstanceOf(DateTimeImmutable::class, $unit->getUpdatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $unit->getUpdatedAt());
         $this->em->detach($unit);
     }
 

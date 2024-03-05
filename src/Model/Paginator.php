@@ -2,7 +2,6 @@
 
 namespace App\Model;
 
-use ArrayIterator;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
@@ -88,9 +87,9 @@ class Paginator extends DoctrinePaginator
         return false;
     }
 
-    public function getIterator(): ArrayIterator
+    public function getIterator(): \ArrayIterator
     {
-        return new ArrayIterator([
+        return new \ArrayIterator([
             'data' => $this->getData(),
             'pagination' => [
                 'total' => $this->getTotal(),

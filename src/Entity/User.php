@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Utility\Regex;
-use DateTimeImmutable;
 use App\Attribut\Sortable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -55,12 +54,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column]
     #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
-    private ?DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
-    private ?DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: Types::JSON)]
     #[Groups(['read:user:user', 'read:user:admin'])]
@@ -140,7 +139,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return (string) $this->username;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -148,12 +147,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -162,7 +161,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -240,7 +239,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function addTopic(Topic $topic): static
     {
-        if (! $this->topics->contains($topic)) {
+        if (!$this->topics->contains($topic)) {
             $this->topics->add($topic);
             $topic->setAuthor($this);
         }
@@ -270,7 +269,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function addReviewHistory(Review $reviewHistory): static
     {
-        if (! $this->reviewHistory->contains($reviewHistory)) {
+        if (!$this->reviewHistory->contains($reviewHistory)) {
             $this->reviewHistory->add($reviewHistory);
             $reviewHistory->setUser($this);
         }

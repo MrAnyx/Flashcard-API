@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use Exception;
 use App\Entity\User;
 use App\Utility\Regex;
 use App\Exception\ApiException;
@@ -27,7 +26,6 @@ class UserAdminController extends AbstractRestController
         Request $request,
         UserRepository $userRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(User::class, $request);
 
         // Get data with pagination
@@ -65,7 +63,6 @@ class UserAdminController extends AbstractRestController
         RequestPayloadService $requestPayloadService,
         TokenGenerator $tokenGenerator
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -77,7 +74,7 @@ class UserAdminController extends AbstractRestController
                 ->configurePassword(true)
                 ->configureRoles(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -137,7 +134,6 @@ class UserAdminController extends AbstractRestController
         UserOptionsResolver $userOptionsResolver,
         UserPasswordHasherInterface $passwordHasher
     ): JsonResponse {
-
         // Retrieve the user by id
         $user = $userRepository->find($id);
 
@@ -161,7 +157,7 @@ class UserAdminController extends AbstractRestController
                 ->configurePassword($mandatoryParameters)
                 ->configureRoles($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 

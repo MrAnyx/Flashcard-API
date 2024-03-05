@@ -2,7 +2,6 @@
 
 namespace App\Controller\User;
 
-use Exception;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\Service\TokenGenerator;
@@ -52,7 +51,7 @@ class SecurityController extends AbstractRestController
                 ->configureEmail(true)
                 ->configurePassword(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
