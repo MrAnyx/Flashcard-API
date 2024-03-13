@@ -1,26 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\User;
 
-use App\Entity\User;
-use App\Utility\Regex;
-use App\Voter\UnitVoter;
+use App\Controller\AbstractRestController;
 use App\Entity\Flashcard;
-use App\Voter\FlashcardVoter;
-use App\Service\ReviewManager;
+use App\Entity\User;
 use App\Exception\ApiException;
 use App\Exception\ExceptionCode;
-use App\Service\RequestPayloadService;
+use App\OptionsResolver\FlashcardOptionsResolver;
+use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 use App\Repository\FlashcardRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
+use App\Service\RequestPayloadService;
+use App\Service\ReviewManager;
 use App\Service\SpacedRepetitionScheduler;
+use App\Utility\Regex;
+use App\Voter\FlashcardVoter;
+use App\Voter\UnitVoter;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\OptionsResolver\FlashcardOptionsResolver;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api', 'api_', format: 'json')]
@@ -194,8 +196,8 @@ class FlashcardController extends AbstractRestController
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
         // If the next review is in the future
-        if ($flashcard->getNextReview() > (new \DateTime())) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [$flashcard->getId(), $flashcard->getNextReview()->format('jS \of F Y')]);
+        if ($flashcard->getNextReview() > (new \DateTimeImmutable())) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [$flashcard->getId(), $flashcard->getNextReview()->format('jS \\of F Y')]);
         }
 
         try {

@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
-use App\Model\Page;
 use App\Attribut\Sortable;
-use App\Exception\ApiException;
 use App\Controller\AbstractRestController;
+use App\Exception\ApiException;
+use App\Model\Page;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class __Foo__
 {
@@ -51,7 +53,7 @@ class AbstractRestControllerTest extends KernelTestCase
         $result = $abstractController->getPaginationParameter(__Foo__::class, $request);
     }
 
-    public function testValidateEntity()
+    public function testValidateEntity(): void
     {
         /** @var AbstractRestController $abstractController */
         $abstractController = self::getContainer()->get(AbstractRestController::class);
@@ -63,7 +65,7 @@ class AbstractRestControllerTest extends KernelTestCase
         $abstractController->validateEntity($entity);
     }
 
-    public function testValidateEntityWithValidationGroup()
+    public function testValidateEntityWithValidationGroup(): void
     {
         /** @var AbstractRestController $abstractController */
         $abstractController = self::getContainer()->get(AbstractRestController::class);

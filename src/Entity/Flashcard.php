@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Enum\StateType;
 use App\Attribut\Sortable;
+use App\Enum\StateType;
+use App\Repository\FlashcardRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\FlashcardRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -52,11 +54,11 @@ class Flashcard
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
-    private ?\DateTime $nextReview = null;
+    private ?\DateTimeImmutable $nextReview = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
-    private ?\DateTime $previousReview = null;
+    private ?\DateTimeImmutable $previousReview = null;
 
     #[ORM\Column(type: Types::INTEGER, enumType: StateType::class)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
@@ -157,24 +159,24 @@ class Flashcard
         return $this;
     }
 
-    public function getNextReview(): ?\DateTime
+    public function getNextReview(): ?\DateTimeImmutable
     {
         return $this->nextReview;
     }
 
-    public function setNextReview(?\DateTime $nextReview): static
+    public function setNextReview(?\DateTimeImmutable $nextReview): static
     {
         $this->nextReview = $nextReview;
 
         return $this;
     }
 
-    public function getPreviousReview(): ?\DateTime
+    public function getPreviousReview(): ?\DateTimeImmutable
     {
         return $this->previousReview;
     }
 
-    public function setPreviousReview(?\DateTime $previousReview): static
+    public function setPreviousReview(?\DateTimeImmutable $previousReview): static
     {
         $this->previousReview = $previousReview;
 
@@ -183,7 +185,7 @@ class Flashcard
 
     public function refreshPreviousReview(): static
     {
-        $this->previousReview = new \DateTime();
+        $this->previousReview = new \DateTimeImmutable();
 
         return $this;
     }

@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\OptionsResolver;
 
-use PHPUnit\Framework\TestCase;
 use App\OptionsResolver\PaginatorOptionsResolver;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 class PaginationOptionsResolverTest extends TestCase
 {
-    public function testConfigurePage()
+    public function testConfigurePage(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $resolver->configurePage();
@@ -20,7 +22,7 @@ class PaginationOptionsResolverTest extends TestCase
         $this->assertSame($page, $result['page']);
     }
 
-    public function testConfigurePageDefault()
+    public function testConfigurePageDefault(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $resolver->configurePage();
@@ -30,7 +32,7 @@ class PaginationOptionsResolverTest extends TestCase
         $this->assertSame(1, $result['page']);
     }
 
-    public function testConfigurePageInvalidType()
+    public function testConfigurePageInvalidType(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $resolver->configurePage();
@@ -40,7 +42,7 @@ class PaginationOptionsResolverTest extends TestCase
         $resolver->resolve(['page' => 'invalid']);
     }
 
-    public function testConfigurePageInvalidValue()
+    public function testConfigurePageInvalidValue(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $resolver->configurePage();
@@ -50,7 +52,7 @@ class PaginationOptionsResolverTest extends TestCase
         $resolver->resolve(['page' => 0]);
     }
 
-    public function testConfigureOrder()
+    public function testConfigureOrder(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $resolver->configureOrder();
@@ -62,7 +64,7 @@ class PaginationOptionsResolverTest extends TestCase
         $this->assertSame($order, $result['order']);
     }
 
-    public function testConfigureOrderDefault()
+    public function testConfigureOrderDefault(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $resolver->configureOrder();
@@ -72,7 +74,7 @@ class PaginationOptionsResolverTest extends TestCase
         $this->assertSame('ASC', $result['order']);
     }
 
-    public function testConfigureOrderInvalidType()
+    public function testConfigureOrderInvalidType(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $resolver->configureOrder();
@@ -82,7 +84,7 @@ class PaginationOptionsResolverTest extends TestCase
         $resolver->resolve(['order' => 123]);
     }
 
-    public function testConfigureOrderInvalidValue()
+    public function testConfigureOrderInvalidValue(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $resolver->configureOrder();
@@ -92,7 +94,7 @@ class PaginationOptionsResolverTest extends TestCase
         $resolver->resolve(['order' => 'INVALID']);
     }
 
-    public function testConfigureSort()
+    public function testConfigureSort(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $sortableFields = ['id', 'name', 'created_at'];
@@ -105,7 +107,7 @@ class PaginationOptionsResolverTest extends TestCase
         $this->assertSame($sort, $result['sort']);
     }
 
-    public function testConfigureSortDefault()
+    public function testConfigureSortDefault(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $sortableFields = ['id', 'name', 'created_at'];
@@ -116,7 +118,7 @@ class PaginationOptionsResolverTest extends TestCase
         $this->assertSame('id', $result['sort']);
     }
 
-    public function testConfigureSortInvalidType()
+    public function testConfigureSortInvalidType(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $sortableFields = ['id', 'name', 'created_at'];
@@ -127,7 +129,7 @@ class PaginationOptionsResolverTest extends TestCase
         $resolver->resolve(['sort' => 123]);
     }
 
-    public function testConfigureSortInvalidValue()
+    public function testConfigureSortInvalidValue(): void
     {
         $resolver = new PaginatorOptionsResolver();
         $sortableFields = ['id', 'name', 'created_at'];

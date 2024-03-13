@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\OptionsResolver;
 
 use Symfony\Component\OptionsResolver\Options;
@@ -14,8 +16,8 @@ class PaginatorOptionsResolver extends OptionsResolver
             ->setDefault('page', 1)
             ->setAllowedTypes('page', 'numeric')
             ->setAllowedValues('page', function ($page) {
-                $validatedValue = filter_var($page, FILTER_VALIDATE_INT, [
-                    'flags' => FILTER_NULL_ON_FAILURE,
+                $validatedValue = filter_var($page, \FILTER_VALIDATE_INT, [
+                    'flags' => \FILTER_NULL_ON_FAILURE,
                 ]);
 
                 if ($validatedValue === null || $validatedValue < 1) {

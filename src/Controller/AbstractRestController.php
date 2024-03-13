@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Model\Page;
-use App\Service\ObjectFactory;
 use App\Exception\ApiException;
+use App\Model\Page;
+use App\OptionsResolver\PaginatorOptionsResolver;
 use App\Service\EntityValidator;
+use App\Service\ObjectFactory;
 use App\Service\SortableEntityChecker;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\OptionsResolver\PaginatorOptionsResolver;
 use Symfony\Component\Validator\Exception\ValidatorException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AbstractRestController extends AbstractController
 {

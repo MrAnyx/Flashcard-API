@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\OptionsResolver;
 
 use App\Repository\TopicRepository;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 class UnitOptionsResolver extends OptionsResolver
 {
@@ -37,7 +39,7 @@ class UnitOptionsResolver extends OptionsResolver
             $topic = $this->topicRepository->find($value);
 
             if ($topic === null) {
-                throw new InvalidOptionsException("Topic with id $value was not found");
+                throw new InvalidOptionsException("Topic with id {$value} was not found");
             }
 
             return $topic;

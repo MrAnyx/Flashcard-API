@@ -1,26 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\User;
 
+use App\Controller\AbstractRestController;
+use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
-use App\Entity\Topic;
+use App\Exception\ApiException;
+use App\OptionsResolver\TopicOptionsResolver;
+use App\Repository\FlashcardRepository;
+use App\Repository\TopicRepository;
+use App\Repository\UnitRepository;
+use App\Service\RequestPayloadService;
+use App\Service\ReviewManager;
+use App\Service\SpacedRepetitionScheduler;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
-use App\Service\ReviewManager;
-use App\Exception\ApiException;
-use App\Repository\UnitRepository;
-use App\Repository\TopicRepository;
-use App\Service\RequestPayloadService;
-use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
-use App\Service\SpacedRepetitionScheduler;
-use App\OptionsResolver\TopicOptionsResolver;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api', 'api_', format: 'json')]
 class TopicController extends AbstractRestController

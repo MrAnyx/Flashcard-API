@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Voter;
 
-use App\Entity\User;
 use App\Entity\Topic;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class TopicVoter extends Voter
 {
@@ -13,7 +15,7 @@ class TopicVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!in_array($attribute, [self::OWNER])) {
+        if (!\in_array($attribute, [self::OWNER])) {
             return false;
         }
 

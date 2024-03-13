@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractRestController;
 use App\Entity\Topic;
-use App\Utility\Regex;
 use App\Exception\ApiException;
+use App\OptionsResolver\TopicOptionsResolver;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
+use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
-use App\OptionsResolver\TopicOptionsResolver;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api/admin', 'api_admin_', format: 'json')]
 class TopicAdminController extends AbstractRestController

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\OptionsResolver;
 
 use App\Repository\UserRepository;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 class TopicOptionsResolver extends OptionsResolver
 {
@@ -37,7 +39,7 @@ class TopicOptionsResolver extends OptionsResolver
             $user = $this->userRepository->find($value);
 
             if ($user === null) {
-                throw new InvalidOptionsException("User with id $value was not found");
+                throw new InvalidOptionsException("User with id {$value} was not found");
             }
 
             return $user;

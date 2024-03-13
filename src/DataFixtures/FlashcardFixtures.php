@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
-use Zenstruck\Foundry\Factory;
 use App\Factory\FlashcardFactory;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
+use Zenstruck\Foundry\Factory;
 
 class FlashcardFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -19,7 +21,7 @@ class FlashcardFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
-        Factory::delayFlush(function () {
+        Factory::delayFlush(function (): void {
             FlashcardFactory::createMany(100);
         });
     }

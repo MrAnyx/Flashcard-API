@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
+use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
-use App\Entity\Topic;
 use App\Model\Paginator;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Unit>
@@ -35,7 +37,7 @@ class UnitRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        $query->orderBy("u.$sort", $order);
+        $query->orderBy("u.{$sort}", $order);
 
         return new Paginator($query, $page);
     }
@@ -45,7 +47,7 @@ class UnitRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('u')
             ->where('u.topic = :topic')
             ->setParameter('topic', $topic)
-            ->orderBy("u.$sort", $order);
+            ->orderBy("u.{$sort}", $order);
 
         return new Paginator($query, $page);
     }

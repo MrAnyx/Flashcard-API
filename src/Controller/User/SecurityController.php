@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\User;
 
+use App\Controller\AbstractRestController;
 use App\Entity\User;
 use App\Exception\ApiException;
-use App\Service\TokenGenerator;
-use App\Service\RequestPayloadService;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
 use App\OptionsResolver\UserOptionsResolver;
+use App\Service\RequestPayloadService;
+use App\Service\TokenGenerator;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/auth', 'api_auth_', format: 'json')]
 class SecurityController extends AbstractRestController

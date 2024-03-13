@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
-use App\Utility\Regex;
+use App\Controller\AbstractRestController;
 use App\Entity\Flashcard;
 use App\Exception\ApiException;
-use App\Service\RequestPayloadService;
+use App\OptionsResolver\FlashcardOptionsResolver;
 use App\Repository\FlashcardRepository;
+use App\Service\RequestPayloadService;
+use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\OptionsResolver\FlashcardOptionsResolver;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api/admin', 'api_admin_', format: 'json')]
 class FlashcardAdminController extends AbstractRestController

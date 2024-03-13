@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\Flashcard;
-use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\ModelFactory;
-use Zenstruck\Foundry\RepositoryProxy;
 use App\Repository\FlashcardRepository;
+use Zenstruck\Foundry\ModelFactory;
+use Zenstruck\Foundry\Proxy;
+use Zenstruck\Foundry\RepositoryProxy;
 
 /**
  * @extends ModelFactory<Flashcard>

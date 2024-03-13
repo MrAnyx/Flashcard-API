@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\User;
 use App\Model\Paginator;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -46,7 +48,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $entityManager->createQuery(
             'SELECT u
-                FROM App\Entity\User u
+                FROM App\\Entity\\User u
                 WHERE u.username = :query
                 OR u.email = :query'
         )
@@ -56,7 +58,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function findAllWithPagination(int $page, string $sort, string $order): Paginator
     {
-        $query = $this->createQueryBuilder('u')->orderBy("u.$sort", $order);
+        $query = $this->createQueryBuilder('u')->orderBy("u.{$sort}", $order);
 
         return new Paginator($query, $page);
     }

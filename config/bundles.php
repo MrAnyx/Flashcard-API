@@ -1,14 +1,16 @@
 <?php
 
-use Nelmio\CorsBundle\NelmioCorsBundle;
-use Symfony\Bundle\MakerBundle\MakerBundle;
-use Zenstruck\Foundry\ZenstruckFoundryBundle;
-use Symfony\Bundle\MonologBundle\MonologBundle;
-use Symfony\Bundle\SecurityBundle\SecurityBundle;
+declare(strict_types=1);
+
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use Nelmio\CorsBundle\NelmioCorsBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\MakerBundle\MakerBundle;
+use Symfony\Bundle\MonologBundle\MonologBundle;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
+use Zenstruck\Foundry\ZenstruckFoundryBundle;
 
 return [
     FrameworkBundle::class => ['all' => true],

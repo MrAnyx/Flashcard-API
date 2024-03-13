@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service;
 
 use App\Attribut\Sortable;
@@ -16,7 +18,7 @@ class __Foo__
 
 class SortableEntityCheckerTest extends KernelTestCase
 {
-    public function testIsFieldSortable()
+    public function testIsFieldSortable(): void
     {
         /** @var SortableEntityChecker $service */
         $checker = self::getContainer()->get(SortableEntityChecker::class);
@@ -25,7 +27,7 @@ class SortableEntityCheckerTest extends KernelTestCase
         $this->assertFalse($checker->isFieldSortable(__Foo__::class, 'notSortable'));
     }
 
-    public function testIsFieldSortableWithUnknownClass()
+    public function testIsFieldSortableWithUnknownClass(): void
     {
         /** @var SortableEntityChecker $service */
         $checker = self::getContainer()->get(SortableEntityChecker::class);
@@ -35,7 +37,7 @@ class SortableEntityCheckerTest extends KernelTestCase
         $checker->isFieldSortable('UnknownClass', 'sortable');
     }
 
-    public function testIsFieldSortableWithUnknownField()
+    public function testIsFieldSortableWithUnknownField(): void
     {
         /** @var SortableEntityChecker $service */
         $checker = self::getContainer()->get(SortableEntityChecker::class);
@@ -45,7 +47,7 @@ class SortableEntityCheckerTest extends KernelTestCase
         $checker->isFieldSortable(__Foo__::class, 'unknownField');
     }
 
-    public function testGetSortableFields()
+    public function testGetSortableFields(): void
     {
         /** @var SortableEntityChecker $service */
         $checker = self::getContainer()->get(SortableEntityChecker::class);
@@ -53,7 +55,7 @@ class SortableEntityCheckerTest extends KernelTestCase
         $this->assertSame(['sortable'], $checker->getSortableFields(__Foo__::class));
     }
 
-    public function testGetSortableFieldsWithUnknownClass()
+    public function testGetSortableFieldsWithUnknownClass(): void
     {
         /** @var SortableEntityChecker $service */
         $checker = self::getContainer()->get(SortableEntityChecker::class);

@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\User;
-use Zenstruck\Foundry\Proxy;
-use App\Service\TokenGenerator;
 use App\Repository\UserRepository;
-use Zenstruck\Foundry\ModelFactory;
-use Zenstruck\Foundry\RepositoryProxy;
+use App\Service\TokenGenerator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Zenstruck\Foundry\ModelFactory;
+use Zenstruck\Foundry\Proxy;
+use Zenstruck\Foundry\RepositoryProxy;
 
 /**
  * @extends ModelFactory<User>
@@ -79,7 +81,7 @@ final class UserFactory extends ModelFactory
     protected function initialize(): self
     {
         return $this
-            ->afterInstantiate(function (User $user) {
+            ->afterInstantiate(function (User $user): void {
                 $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
             });
     }

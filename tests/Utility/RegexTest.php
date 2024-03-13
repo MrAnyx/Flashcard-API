@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Utility;
 
 use App\Utility\Regex;
@@ -9,16 +11,16 @@ class RegexTest extends TestCase
 {
     public function testInteger(): void
     {
-        $this->assertEquals("\d+", Regex::INTEGER);
+        $this->assertEquals('\\d+', Regex::INTEGER);
     }
 
     public function testUsername(): void
     {
-        $this->assertEquals("^[\w\-\.]*$", Regex::USERNAME);
+        $this->assertEquals('^[\\w\\-\\.]*$', Regex::USERNAME);
     }
 
     public function testUsernameSlash(): void
     {
-        $this->assertEquals("/^[\w\-\.]*$/", Regex::USERNAME_SLASH);
+        $this->assertEquals('/^[\\w\\-\\.]*$/', Regex::USERNAME_SLASH);
     }
 }

@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Logger\ExtraLogProcessor;
+use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
-use Monolog\Handler\TestHandler;
-use App\Logger\ExtraLogProcessor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ExtraLogProcessorTest extends TestCase
 {
-    public function testProcessorAddsExtraFieldsToLogRecord()
+    public function testProcessorAddsExtraFieldsToLogRecord(): void
     {
         // Create a RequestStack mock and set it up to return a Request object
         $request = Request::create('/example', 'GET');
@@ -45,7 +47,7 @@ class ExtraLogProcessorTest extends TestCase
         $this->assertSame('/example', $logRecord['extra']['url']);
     }
 
-    public function testProcessorHandlesNullRequest()
+    public function testProcessorHandlesNullRequest(): void
     {
         // Create a RequestStack mock and set it up to return null
         $requestStack = $this->createMock(RequestStack::class);

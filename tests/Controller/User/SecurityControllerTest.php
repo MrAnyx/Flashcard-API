@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class SecurityControllerTest extends WebTestCase
 {
-    public function testLoginWithEmail()
+    public function testLoginWithEmail(): void
     {
         $client = static::createClient();
 
@@ -26,7 +28,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertArrayHasKey('token', json_decode($client->getResponse()->getContent(), true));
     }
 
-    public function testLoginWithUsername()
+    public function testLoginWithUsername(): void
     {
         $client = static::createClient();
 
@@ -45,7 +47,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertArrayHasKey('token', json_decode($client->getResponse()->getContent(), true));
     }
 
-    public function testLoginWithBadPassword()
+    public function testLoginWithBadPassword(): void
     {
         $client = static::createClient();
 
@@ -62,7 +64,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testLoginWithBadIdentifier()
+    public function testLoginWithBadIdentifier(): void
     {
         $client = static::createClient();
 

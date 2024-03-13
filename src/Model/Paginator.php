@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Doctrine\ORM\Query;
@@ -28,7 +30,7 @@ class Paginator extends DoctrinePaginator
         parent::__construct($query, $fetchJoinCollection);
         $this->total = $this->count();
         $this->data = iterator_to_array(parent::getIterator());
-        $this->count = count($this->data);
+        $this->count = \count($this->data);
         $this->page = $page;
 
         $this->totalpages = (int) ceil($this->total / self::ITEMS_PER_PAGE);

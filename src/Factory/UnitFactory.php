@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\Unit;
-use Zenstruck\Foundry\Proxy;
 use App\Repository\UnitRepository;
 use Zenstruck\Foundry\ModelFactory;
+use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**

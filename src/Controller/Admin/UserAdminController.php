@@ -1,22 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractRestController;
 use App\Entity\User;
-use App\Utility\Regex;
 use App\Exception\ApiException;
-use App\Service\TokenGenerator;
+use App\OptionsResolver\UserOptionsResolver;
 use App\Repository\UserRepository;
 use App\Service\RequestPayloadService;
+use App\Service\TokenGenerator;
+use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
-use App\OptionsResolver\UserOptionsResolver;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/admin', 'api_admin_', format: 'json')]
 class UserAdminController extends AbstractRestController

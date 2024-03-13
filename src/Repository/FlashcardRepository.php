@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
+use App\Entity\Flashcard;
+use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
-use App\Entity\Topic;
 use App\Enum\StateType;
 use App\Model\Paginator;
-use App\Entity\Flashcard;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Flashcard>
@@ -38,7 +40,7 @@ class FlashcardRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        $query->orderBy("f.$sort", $order);
+        $query->orderBy("f.{$sort}", $order);
 
         return new Paginator($query, $page);
     }
@@ -48,7 +50,7 @@ class FlashcardRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('f')
             ->where('f.unit = :unit')
             ->setParameter('unit', $unit)
-            ->orderBy("f.$sort", $order);
+            ->orderBy("f.{$sort}", $order);
 
         return new Paginator($query, $page);
     }
@@ -131,7 +133,7 @@ class FlashcardRepository extends ServiceEntityRepository
             ->orderBy('f.nextReview', 'ASC')
             ->setMaxResults($cardsToReview)
             ->setParameter('user', $user)
-            ->setParameter('today', new \DateTime())
+            ->setParameter('today', new \DateTimeImmutable())
             ->getQuery()
             ->getResult();
 
@@ -155,7 +157,7 @@ class FlashcardRepository extends ServiceEntityRepository
         $qb->orderBy('f.nextReview', 'ASC')
             ->setMaxResults($cardsToReview)
             ->setParameter('user', $user)
-            ->setParameter('today', (new \DateTime())->format('Y-m-d'))
+            ->setParameter('today', (new \DateTimeImmutable())->format('Y-m-d'))
             ->setParameter('reviewBy', $reviewBy);
 
         return $qb->getQuery()->getResult();
