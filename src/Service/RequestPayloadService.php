@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Exception\JsonException;
@@ -14,7 +16,7 @@ class RequestPayloadService
     {
         $body = json_decode($request->getContent(), true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (json_last_error() !== \JSON_ERROR_NONE) {
             throw new JsonException('The request contains an invalid body that can not be parsed. Please verify the json body of the request.');
         }
 

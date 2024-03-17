@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\OptionsResolver;
 
 use App\Entity\Unit;
-use App\Repository\UnitRepository;
 use App\OptionsResolver\FlashcardOptionsResolver;
+use App\Repository\UnitRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -19,7 +21,7 @@ class FlashcardOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('front', $result));
+        $this->assertFalse(\array_key_exists('front', $result));
     }
 
     public function testConfigureFrontRequired(): void
@@ -67,7 +69,7 @@ class FlashcardOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('back', $result));
+        $this->assertFalse(\array_key_exists('back', $result));
     }
 
     public function testConfigureBackRequired(): void
@@ -115,7 +117,7 @@ class FlashcardOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('details', $result));
+        $this->assertFalse(\array_key_exists('details', $result));
     }
 
     public function testConfigureDetailsRequired(): void
@@ -165,7 +167,7 @@ class FlashcardOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve(['details' => $details]);
 
-        $this->assertSame(null, $result['details']);
+        $this->assertNull($result['details']);
     }
 
     public function testConfigureUnit(): void
@@ -176,7 +178,7 @@ class FlashcardOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('unit', $result));
+        $this->assertFalse(\array_key_exists('unit', $result));
     }
 
     public function testConfigureUnitRequired(): void

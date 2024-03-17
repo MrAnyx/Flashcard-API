@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Entity;
 
-use App\Entity\Unit;
-use App\Entity\Topic;
-use DateTimeImmutable;
 use App\Entity\Flashcard;
-use Doctrine\ORM\EntityManager;
-use App\Repository\UnitRepository;
-use App\Repository\TopicRepository;
+use App\Entity\Topic;
+use App\Entity\Unit;
 use App\Repository\FlashcardRepository;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use App\Repository\TopicRepository;
+use App\Repository\UnitRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UnitTest extends KernelTestCase
@@ -40,14 +41,14 @@ class UnitTest extends KernelTestCase
         $this->assertEmpty($unit->getFlashcards());
     }
 
-    public function testId()
+    public function testId(): void
     {
         /** @var Unit $unit */
         $unit = self::getContainer()->get(UnitRepository::class)->find(1);
         $this->assertIsInt($unit->getId());
     }
 
-    public function testName()
+    public function testName(): void
     {
         $unit = new Unit();
 
@@ -66,23 +67,23 @@ class UnitTest extends KernelTestCase
         $this->assertSame($title, $unit->getName());
     }
 
-    public function testCreatedAt()
+    public function testCreatedAt(): void
     {
         $unit = new Unit();
         $this->em->persist($unit);
-        $this->assertInstanceOf(DateTimeImmutable::class, $unit->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $unit->getCreatedAt());
         $this->em->detach($unit);
     }
 
-    public function testUpdatedAt()
+    public function testUpdatedAt(): void
     {
         $unit = new Unit();
         $this->em->persist($unit);
-        $this->assertInstanceOf(DateTimeImmutable::class, $unit->getUpdatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $unit->getUpdatedAt());
         $this->em->detach($unit);
     }
 
-    public function testTopic()
+    public function testTopic(): void
     {
         $unit = new Unit();
 
@@ -97,7 +98,7 @@ class UnitTest extends KernelTestCase
         $this->assertSame($topic, $unit->getTopic());
     }
 
-    public function testFlashcards()
+    public function testFlashcards(): void
     {
         $unit = new Unit();
 
@@ -112,6 +113,6 @@ class UnitTest extends KernelTestCase
 
         $unit->removeFlashcard($flashcard);
         $this->assertNotContains($flashcard, $unit->getFlashcards());
-        $this->assertSame(null, $flashcard->getUnit());
+        $this->assertNull($flashcard->getUnit());
     }
 }

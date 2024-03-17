@@ -6,7 +6,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "^2.0",
@@ -34,7 +34,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "laravel/pint": "^1.12",
+        "friendsofphp/php-cs-fixer": "^3.51",
         "pestphp/pest": "^1.23",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^9.5",
@@ -83,8 +83,8 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "cs:fix": "./vendor/bin/pint",
-        "cs:check": "@cs:fix --test",
+        "cs:fix": "./vendor/bin/php-cs-fixer fix",
+        "cs:check": "@cs:fix --dry-run",
         "stan": "@stan:default --ansi --error-format=table",
         "stan:default": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 500M",
         "stan:github": "@stan:default --error-format=github --quiet",

@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Entity;
 
+use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
-use App\Entity\Topic;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManager;
+use App\Repository\TopicRepository;
 use App\Repository\UnitRepository;
 use App\Repository\UserRepository;
-use App\Repository\TopicRepository;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class TopicTest extends KernelTestCase
@@ -40,14 +41,14 @@ class TopicTest extends KernelTestCase
         $this->assertEmpty($topic->getUnits());
     }
 
-    public function testId()
+    public function testId(): void
     {
         /** @var Topic $topic */
         $topic = self::getContainer()->get(TopicRepository::class)->find(1);
         $this->assertIsInt($topic->getId());
     }
 
-    public function testName()
+    public function testName(): void
     {
         $topic = new Topic();
 
@@ -66,23 +67,23 @@ class TopicTest extends KernelTestCase
         $this->assertSame($title, $topic->getName());
     }
 
-    public function testCreatedAt()
+    public function testCreatedAt(): void
     {
         $topic = new Topic();
         $this->em->persist($topic);
-        $this->assertInstanceOf(DateTimeImmutable::class, $topic->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $topic->getCreatedAt());
         $this->em->detach($topic);
     }
 
-    public function testUpdatedAt()
+    public function testUpdatedAt(): void
     {
         $topic = new Topic();
         $this->em->persist($topic);
-        $this->assertInstanceOf(DateTimeImmutable::class, $topic->getUpdatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $topic->getUpdatedAt());
         $this->em->detach($topic);
     }
 
-    public function testAuthor()
+    public function testAuthor(): void
     {
         $topic = new Topic();
 
@@ -97,7 +98,7 @@ class TopicTest extends KernelTestCase
         $this->assertSame($user, $topic->getAuthor());
     }
 
-    public function testUnits()
+    public function testUnits(): void
     {
         $topic = new Topic();
 
@@ -112,6 +113,6 @@ class TopicTest extends KernelTestCase
 
         $topic->removeUnit($unit);
         $this->assertNotContains($unit, $topic->getUnits());
-        $this->assertSame(null, $unit->getTopic());
+        $this->assertNull($unit->getTopic());
     }
 }

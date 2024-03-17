@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Entity;
 
-use App\Entity\User;
 use App\Entity\Topic;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManager;
-use App\Repository\UserRepository;
+use App\Entity\User;
 use App\Repository\TopicRepository;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Validator\Constraints\NotEqualTo;
-use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserTest extends KernelTestCase
@@ -30,7 +31,7 @@ class UserTest extends KernelTestCase
         $this->validator = self::getContainer()->get('validator');
     }
 
-    private function assertArrayContainsInstanceOf(string $constraint, ConstraintViolationList $constraintViolations)
+    private function assertArrayContainsInstanceOf(string $constraint, ConstraintViolationList $constraintViolations): void
     {
         foreach ($constraintViolations as $violation) {
             if ($violation->getConstraint() instanceof $constraint) {
@@ -40,7 +41,7 @@ class UserTest extends KernelTestCase
             }
         }
 
-        $this->fail("Array does not contain an instance of $constraint");
+        $this->fail("Array does not contain an instance of {$constraint}");
     }
 
     public function testDefaultValues(): void
@@ -60,14 +61,14 @@ class UserTest extends KernelTestCase
         $this->assertEmpty($user->getTopics());
     }
 
-    public function testId()
+    public function testId(): void
     {
         /** @var User $user */
         $user = self::getContainer()->get(UserRepository::class)->find(1);
         $this->assertIsInt($user->getId());
     }
 
-    public function testEmail()
+    public function testEmail(): void
     {
         $user = new User();
 
@@ -88,7 +89,7 @@ class UserTest extends KernelTestCase
         $this->assertSame($email, $user->getEmail());
     }
 
-    public function testUsername()
+    public function testUsername(): void
     {
         $user = new User();
 
@@ -109,7 +110,7 @@ class UserTest extends KernelTestCase
         $this->assertSame($username, $user->getUsername());
     }
 
-    public function testToken()
+    public function testToken(): void
     {
         $user = new User();
 
@@ -126,7 +127,7 @@ class UserTest extends KernelTestCase
         $this->assertSame($username, $user->getToken());
     }
 
-    public function testUserIdentifier()
+    public function testUserIdentifier(): void
     {
         $user = new User();
 
@@ -136,23 +137,23 @@ class UserTest extends KernelTestCase
         $this->assertSame($username, $user->getUserIdentifier());
     }
 
-    public function testCreatedAt()
+    public function testCreatedAt(): void
     {
         $user = new User();
         $this->em->persist($user);
-        $this->assertInstanceOf(DateTimeImmutable::class, $user->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $user->getCreatedAt());
         $this->em->detach($user);
     }
 
-    public function testUpdatedAt()
+    public function testUpdatedAt(): void
     {
         $user = new User();
         $this->em->persist($user);
-        $this->assertInstanceOf(DateTimeImmutable::class, $user->getUpdatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $user->getUpdatedAt());
         $this->em->detach($user);
     }
 
-    public function testRoles()
+    public function testRoles(): void
     {
         $user = new User();
 
@@ -168,14 +169,14 @@ class UserTest extends KernelTestCase
         $this->assertContains('ROLE_TEST_2', $user->getRoles());
     }
 
-    public function testEraseCredentials()
+    public function testEraseCredentials(): void
     {
         $user = new User();
         $user->eraseCredentials();
         $this->assertTrue(true);
     }
 
-    public function testRawPassword()
+    public function testRawPassword(): void
     {
         $user = new User();
         $user->setUsername('username');
@@ -204,7 +205,7 @@ class UserTest extends KernelTestCase
         $this->assertSame($password, $user->getRawPassword());
     }
 
-    public function testTopic()
+    public function testTopic(): void
     {
         $user = new User();
 
@@ -219,6 +220,6 @@ class UserTest extends KernelTestCase
 
         $user->removeTopic($topic);
         $this->assertNotContains($topic, $user->getTopics());
-        $this->assertSame(null, $topic->getAuthor());
+        $this->assertNull($topic->getAuthor());
     }
 }

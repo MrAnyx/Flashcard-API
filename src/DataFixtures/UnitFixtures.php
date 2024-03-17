@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Factory\UnitFactory;
-use Zenstruck\Foundry\Factory;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
+use Zenstruck\Foundry\Factory;
 
 class UnitFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -19,7 +21,7 @@ class UnitFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
-        Factory::delayFlush(function () {
+        Factory::delayFlush(function (): void {
             UnitFactory::createMany(10);
         });
     }

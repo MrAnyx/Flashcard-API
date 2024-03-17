@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Repository;
 
 use App\Model\Paginator;
@@ -50,7 +52,7 @@ class UserRepositoryTest extends KernelTestCase
 
         $resultByUsername = $userRepository->loadUserByIdentifier('Hello World!');
 
-        $this->assertSame(null, $resultByUsername);
+        $this->assertNull($resultByUsername);
     }
 
     public function testUpgradePassword(): void

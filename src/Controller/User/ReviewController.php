@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\User;
 
+use App\Controller\AbstractRestController;
 use App\Entity\User;
 use App\Repository\ReviewRepository;
-use App\Controller\AbstractRestController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api', 'api_', format: 'json')]

@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Utility\Regex;
-use DateTimeImmutable;
 use App\Attribut\Sortable;
+use App\Repository\UserRepository;
+use App\Utility\Regex;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints\PasswordStrength;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -49,20 +50,21 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: 'The token can not be blank')]
     #[Assert\Length(max: 100, maxMessage: 'The token can not exceed {{ limit }} characters')]
+    #[Groups(['read:user:user'])]
     private ?string $token = null;
 
     #[ORM\Column]
     #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
-    private ?DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
-    private ?DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: Types::JSON)]
-    #[Groups(['read:user:admin'])]
+    #[Groups(['read:user:user', 'read:user:admin'])]
     private array $roles = [];
 
     /**
@@ -73,7 +75,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[Assert\NotBlank(message: 'Your password can not be blank', groups: ['edit:user:password'])]
     #[Assert\NotCompromisedPassword(message: 'This password has been compromised. Please choose another password', groups: ['edit:user:password'])]
-    #[PasswordStrength(minScore: PasswordStrength::STRENGTH_VERY_STRONG, message: 'You must choose a stronger password', groups: ['edit:user:password'])]
+    #[PasswordStrength(minScore: PasswordStrength::STRENGTH_MEDIUM, message: 'You must choose a stronger password', groups: ['edit:user:password'])]
     #[Assert\NotEqualTo(propertyPath: 'username', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
     #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
     private ?string $rawPassword = null;
@@ -139,7 +141,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return (string) $this->username;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -147,12 +149,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -161,7 +163,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -239,7 +241,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function addTopic(Topic $topic): static
     {
-        if (! $this->topics->contains($topic)) {
+        if (!$this->topics->contains($topic)) {
             $this->topics->add($topic);
             $topic->setAuthor($this);
         }
@@ -269,7 +271,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function addReviewHistory(Review $reviewHistory): static
     {
-        if (! $this->reviewHistory->contains($reviewHistory)) {
+        if (!$this->reviewHistory->contains($reviewHistory)) {
             $this->reviewHistory->add($reviewHistory);
             $reviewHistory->setUser($this);
         }

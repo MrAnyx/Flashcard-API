@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use Exception;
 use App\Exception\ApiException;
+use App\Model\Page;
+use App\OptionsResolver\PaginatorOptionsResolver;
 use App\Service\EntityValidator;
+use App\Service\ObjectFactory;
 use App\Service\SortableEntityChecker;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\OptionsResolver\PaginatorOptionsResolver;
 use Symfony\Component\Validator\Exception\ValidatorException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AbstractRestController extends AbstractController
 {
@@ -27,7 +30,7 @@ class AbstractRestController extends AbstractController
      * @param string $classname This classname is used to retrieve the sortable fields
      * @param Request $request Request to retrieve the query parameters
      */
-    public function getPaginationParameter(string $classname, Request $request): array
+    public function getPaginationParameter(string $classname, Request $request): Page
     {
         $sortableFields = $this->sortableEntityChecker->getSortableFields($classname);
 
@@ -37,11 +40,18 @@ class AbstractRestController extends AbstractController
                 ->configureSort($sortableFields)
                 ->configureOrder()
                 ->resolve($request->query->all());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
-        return $queryParams;
+        try {
+            /** @var Page $page */
+            $page = ObjectFactory::create(Page::class, $queryParams);
+        } catch (\Exception $e) {
+            throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
+        }
+
+        return $page;
     }
 
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void
@@ -57,6 +67,7 @@ class AbstractRestController extends AbstractController
      * @template T
      *
      * @param class-string<T> $classname
+     *
      * @return T
      */
     public function getResourceById(string $classname, int $id): mixed

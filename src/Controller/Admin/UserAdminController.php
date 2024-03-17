@@ -1,23 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
-use Exception;
+use App\Controller\AbstractRestController;
 use App\Entity\User;
-use App\Utility\Regex;
 use App\Exception\ApiException;
-use App\Service\TokenGenerator;
+use App\OptionsResolver\UserOptionsResolver;
 use App\Repository\UserRepository;
 use App\Service\RequestPayloadService;
+use App\Service\TokenGenerator;
+use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
-use App\OptionsResolver\UserOptionsResolver;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/admin', 'api_admin_', format: 'json')]
 class UserAdminController extends AbstractRestController
@@ -27,14 +28,13 @@ class UserAdminController extends AbstractRestController
         Request $request,
         UserRepository $userRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(User::class, $request);
 
         // Get data with pagination
         $users = $userRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order']
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order
         );
 
         // Return paginate data
@@ -65,7 +65,6 @@ class UserAdminController extends AbstractRestController
         RequestPayloadService $requestPayloadService,
         TokenGenerator $tokenGenerator
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -77,7 +76,7 @@ class UserAdminController extends AbstractRestController
                 ->configurePassword(true)
                 ->configureRoles(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -137,7 +136,6 @@ class UserAdminController extends AbstractRestController
         UserOptionsResolver $userOptionsResolver,
         UserPasswordHasherInterface $passwordHasher
     ): JsonResponse {
-
         // Retrieve the user by id
         $user = $userRepository->find($id);
 
@@ -161,7 +159,7 @@ class UserAdminController extends AbstractRestController
                 ->configurePassword($mandatoryParameters)
                 ->configureRoles($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 

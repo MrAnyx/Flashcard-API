@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Repository;
 
 use App\Model\Paginator;
-use App\Repository\UserRepository;
 use App\Repository\TopicRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class TopicRepositoryTest extends KernelTestCase

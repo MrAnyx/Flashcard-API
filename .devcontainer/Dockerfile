@@ -4,9 +4,6 @@ ARG VARIANT=8.2.8-apache
 # Pull existing php image
 FROM php:${VARIANT}
 
-# Install Taskfile
-RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b  /usr/local/bin
-
 # Set the working dir
 WORKDIR /var/www
 
@@ -24,9 +21,6 @@ RUN install-php-extensions intl
 RUN install-php-extensions opcache
 RUN install-php-extensions zip
 # RUN install-php-extensions xdebug
-
-# Retrieve the lastest version of composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Copy configuration files
 COPY apache/vhosts.conf /etc/apache2/sites-available/000-default.conf

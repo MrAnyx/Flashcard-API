@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service;
 
 use App\Exception\JsonException;
 use App\Service\RequestPayloadService;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpFoundation\Request;
 
 class RequestPayloadServiceTest extends KernelTestCase
 {
-    public function testGetRequestPayloadValidJson()
+    public function testGetRequestPayloadValidJson(): void
     {
         /** @var RequestPayloadService $service */
         $service = self::getContainer()->get(RequestPayloadService::class);
@@ -26,7 +28,7 @@ class RequestPayloadServiceTest extends KernelTestCase
         $this->assertSame($payload, $result);
     }
 
-    public function testGetRequestPayloadInvalidJson()
+    public function testGetRequestPayloadInvalidJson(): void
     {
         /** @var RequestPayloadService $service */
         $service = self::getContainer()->get(RequestPayloadService::class);
@@ -35,7 +37,7 @@ class RequestPayloadServiceTest extends KernelTestCase
         $service->getRequestPayload($request);
     }
 
-    public function testGetQueryPayload()
+    public function testGetQueryPayload(): void
     {
         $service = new RequestPayloadService();
         $request = Request::create('/?param1=value1&param2=value2');

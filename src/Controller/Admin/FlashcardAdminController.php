@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
-use Exception;
-use App\Utility\Regex;
+use App\Controller\AbstractRestController;
 use App\Entity\Flashcard;
 use App\Exception\ApiException;
-use App\Service\RequestPayloadService;
+use App\OptionsResolver\FlashcardOptionsResolver;
 use App\Repository\FlashcardRepository;
+use App\Service\RequestPayloadService;
+use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\OptionsResolver\FlashcardOptionsResolver;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api/admin', 'api_admin_', format: 'json')]
 class FlashcardAdminController extends AbstractRestController
@@ -24,13 +25,12 @@ class FlashcardAdminController extends AbstractRestController
         Request $request,
         FlashcardRepository $flashcardRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
 
         $flashcards = $flashcardRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order']
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order
         );
 
         return $this->json($flashcards, context: ['groups' => ['read:flashcard:admin']]);
@@ -57,7 +57,6 @@ class FlashcardAdminController extends AbstractRestController
         FlashcardOptionsResolver $flashcardOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -69,7 +68,7 @@ class FlashcardAdminController extends AbstractRestController
                 ->configureDetails(true)
                 ->configureUnit(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -125,7 +124,6 @@ class FlashcardAdminController extends AbstractRestController
         Request $request,
         FlashcardOptionsResolver $flashcardOptionsResolver
     ): JsonResponse {
-
         // Retrieve the flashcard by id
         $flashcard = $flashcardRepository->find($id);
 
@@ -149,7 +147,7 @@ class FlashcardAdminController extends AbstractRestController
                 ->configureDetails($mandatoryParameters)
                 ->configureUnit($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 

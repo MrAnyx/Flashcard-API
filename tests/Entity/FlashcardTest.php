@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Entity;
 
-use App\Entity\Topic;
-use DateTimeImmutable;
 use App\Entity\Flashcard;
-use Doctrine\ORM\EntityManager;
-use App\Repository\UnitRepository;
+use App\Entity\Topic;
 use App\Repository\FlashcardRepository;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use App\Repository\UnitRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FlashcardTest extends KernelTestCase
@@ -39,30 +40,30 @@ class FlashcardTest extends KernelTestCase
         $this->assertNull($flashcard->getUnit());
     }
 
-    public function testId()
+    public function testId(): void
     {
         /** @var Flashcard $flashcard */
         $flashcard = self::getContainer()->get(FlashcardRepository::class)->find(1);
         $this->assertIsInt($flashcard->getId());
     }
 
-    public function testCreatedAt()
+    public function testCreatedAt(): void
     {
         $flashcard = new Flashcard();
         $this->em->persist($flashcard);
-        $this->assertInstanceOf(DateTimeImmutable::class, $flashcard->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $flashcard->getCreatedAt());
         $this->em->detach($flashcard);
     }
 
-    public function testUpdatedAt()
+    public function testUpdatedAt(): void
     {
         $flashcard = new Flashcard();
         $this->em->persist($flashcard);
-        $this->assertInstanceOf(DateTimeImmutable::class, $flashcard->getUpdatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $flashcard->getUpdatedAt());
         $this->em->detach($flashcard);
     }
 
-    public function testFront()
+    public function testFront(): void
     {
         $flashcard = new Flashcard();
 
@@ -81,7 +82,7 @@ class FlashcardTest extends KernelTestCase
         $this->assertSame($front, $flashcard->getFront());
     }
 
-    public function testBack()
+    public function testBack(): void
     {
         $flashcard = new Flashcard();
 
@@ -100,7 +101,7 @@ class FlashcardTest extends KernelTestCase
         $this->assertSame($back, $flashcard->getBack());
     }
 
-    public function testDetails()
+    public function testDetails(): void
     {
         $flashcard = new Flashcard();
 
@@ -114,7 +115,7 @@ class FlashcardTest extends KernelTestCase
         $this->assertSame($details, $flashcard->getDetails());
     }
 
-    public function testUnit()
+    public function testUnit(): void
     {
         $flashcard = new Flashcard();
 

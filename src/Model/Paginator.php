@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
-use ArrayIterator;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
@@ -29,7 +30,7 @@ class Paginator extends DoctrinePaginator
         parent::__construct($query, $fetchJoinCollection);
         $this->total = $this->count();
         $this->data = iterator_to_array(parent::getIterator());
-        $this->count = count($this->data);
+        $this->count = \count($this->data);
         $this->page = $page;
 
         $this->totalpages = (int) ceil($this->total / self::ITEMS_PER_PAGE);
@@ -88,9 +89,9 @@ class Paginator extends DoctrinePaginator
         return false;
     }
 
-    public function getIterator(): ArrayIterator
+    public function getIterator(): \ArrayIterator
     {
-        return new ArrayIterator([
+        return new \ArrayIterator([
             'data' => $this->getData(),
             'pagination' => [
                 'total' => $this->getTotal(),

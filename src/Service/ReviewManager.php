@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
+use App\Entity\Flashcard;
+use App\Entity\Review;
+use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
-use App\Entity\Topic;
-use App\Entity\Review;
 use App\Enum\GradeType;
-use App\Entity\Flashcard;
-use App\Repository\ReviewRepository;
 use App\Repository\FlashcardRepository;
+use App\Repository\ReviewRepository;
 
 class ReviewManager
 {
@@ -31,19 +33,19 @@ class ReviewManager
         return $review;
     }
 
-    public function resetFlashcard(Flashcard $flashcard, User $user)
+    public function resetFlashcard(Flashcard $flashcard, User $user): void
     {
         $this->reviewRepository->resetBy($flashcard, $user);
         $this->flashcardRepository->resetBy($flashcard, $user);
     }
 
-    public function resetFlashcards(Unit|Topic $group, User $user)
+    public function resetFlashcards(Unit|Topic $group, User $user): void
     {
         $this->reviewRepository->resetBy($group, $user);
         $this->flashcardRepository->resetBy($group, $user);
     }
 
-    public function resetAllFlashcards(User $user)
+    public function resetAllFlashcards(User $user): void
     {
         $this->reviewRepository->resetAll($user);
         $this->flashcardRepository->resetAll($user);

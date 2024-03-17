@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
-use Exception;
+use App\Controller\AbstractRestController;
 use App\Entity\Topic;
-use App\Utility\Regex;
 use App\Exception\ApiException;
+use App\OptionsResolver\TopicOptionsResolver;
 use App\Repository\TopicRepository;
 use App\Service\RequestPayloadService;
+use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
-use App\OptionsResolver\TopicOptionsResolver;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api/admin', 'api_admin_', format: 'json')]
 class TopicAdminController extends AbstractRestController
@@ -24,14 +25,13 @@ class TopicAdminController extends AbstractRestController
         Request $request,
         TopicRepository $topicRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(Topic::class, $request);
 
         // Get data with pagination
         $topics = $topicRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order']
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order
         );
 
         // Return paginate data
@@ -59,7 +59,6 @@ class TopicAdminController extends AbstractRestController
         TopicOptionsResolver $topicOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -69,7 +68,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureName(true)
                 ->configureAuthor(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -123,7 +122,6 @@ class TopicAdminController extends AbstractRestController
         Request $request,
         TopicOptionsResolver $flashcardOptionsResolver,
     ): JsonResponse {
-
         // Retrieve the element by id
         $topic = $topicRepository->find($id);
 
@@ -145,7 +143,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureName($mandatoryParameters)
                 ->configureAuthor($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 

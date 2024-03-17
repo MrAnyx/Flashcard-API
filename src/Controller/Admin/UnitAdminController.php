@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
-use Exception;
+use App\Controller\AbstractRestController;
 use App\Entity\Unit;
-use App\Utility\Regex;
 use App\Exception\ApiException;
+use App\OptionsResolver\UnitOptionsResolver;
 use App\Repository\UnitRepository;
 use App\Service\RequestPayloadService;
+use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
-use App\OptionsResolver\UnitOptionsResolver;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api/admin', 'api_admin_', format: 'json')]
 class UnitAdminController extends AbstractRestController
@@ -24,14 +25,13 @@ class UnitAdminController extends AbstractRestController
         Request $request,
         UnitRepository $unitRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         // Get data with pagination
         $units = $unitRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order']
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order
         );
 
         // Return paginate data
@@ -59,7 +59,6 @@ class UnitAdminController extends AbstractRestController
         UnitOptionsResolver $unitOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -69,7 +68,7 @@ class UnitAdminController extends AbstractRestController
                 ->configureName(true)
                 ->configureTopic(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -123,7 +122,6 @@ class UnitAdminController extends AbstractRestController
         Request $request,
         UnitOptionsResolver $unitOptionsResolver,
     ): JsonResponse {
-
         // Retrieve the element by id
         $unit = $unitRepository->find($id);
 
@@ -145,7 +143,7 @@ class UnitAdminController extends AbstractRestController
                 ->configureName($mandatoryParameters)
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 

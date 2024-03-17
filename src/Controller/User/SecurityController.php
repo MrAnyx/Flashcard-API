@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\User;
 
-use Exception;
+use App\Controller\AbstractRestController;
 use App\Entity\User;
 use App\Exception\ApiException;
-use App\Service\TokenGenerator;
-use App\Service\RequestPayloadService;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
 use App\OptionsResolver\UserOptionsResolver;
+use App\Service\RequestPayloadService;
+use App\Service\TokenGenerator;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/auth', 'api_auth_', format: 'json')]
 class SecurityController extends AbstractRestController
@@ -23,6 +24,13 @@ class SecurityController extends AbstractRestController
     #[Route('/login', name: 'login', methods: ['POST'])]
     public function login()
     {
+        $user = $this->getUser();
+
+        if ($user === null) {
+            throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Unauthenticated user');
+        }
+
+        return $this->json($user, context: ['groups' => ['read:user:user']]);
     }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
@@ -45,7 +53,7 @@ class SecurityController extends AbstractRestController
                 ->configureEmail(true)
                 ->configurePassword(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -66,12 +74,6 @@ class SecurityController extends AbstractRestController
         $em->persist($user);
         $em->flush();
 
-        // Return the element with the the status 201 (Created)
-        return $this->json(
-            [
-                'token' => $user->getToken(),
-            ],
-            Response::HTTP_CREATED,
-        );
+        return $this->json($user, Response::HTTP_CREATED, context: ['groups' => ['read:user:user']]);
     }
 }
