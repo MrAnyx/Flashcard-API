@@ -52,9 +52,6 @@
         "ghcr.io/devcontainers/features/github-cli:1": {
             "version": "latest"
         },
-        "ghcr.io/devcontainers-contrib/features/composer:1": {
-            "version": "latest"
-        },
         "ghcr.io/audacioustux/devcontainers/taskfile:1": {}
     }
 }

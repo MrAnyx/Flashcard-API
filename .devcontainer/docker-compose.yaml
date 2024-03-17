@@ -21,8 +21,8 @@ services:
         image: rnwood/smtp4dev
         container_name: flashcard-mail
         ports:
-        - 8082:80
-        - 2525:25
+            - 8082:80
+            - 2525:25
         networks:
             - dev
 
@@ -49,8 +49,6 @@ services:
                 - VARIANT=8.2.16-apache
         ports:
             - 8080:80
-        volumes:
-            - ../:/var/www
         networks:
             - dev
         depends_on:
