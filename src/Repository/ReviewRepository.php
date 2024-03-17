@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
+use App\Entity\Flashcard;
+use App\Entity\Review;
+use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
-use App\Entity\Topic;
-use App\Entity\Review;
-use App\Entity\Flashcard;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Review>
@@ -25,7 +27,7 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
-    public function resetAll(User $user)
+    public function resetAll(User $user): void
     {
         $query = $this->createQueryBuilder('r')
             ->update()
@@ -73,7 +75,7 @@ class ReviewRepository extends ServiceEntityRepository
             ->where('r.user = :user')
             ->setParameter('user', $user);
 
-        if (! $withReset) {
+        if (!$withReset) {
             $query
                 ->andWhere('r.reset = :withReset')
                 ->setParameter('withReset', false);

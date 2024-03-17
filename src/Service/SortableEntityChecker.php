@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Attribut\Sortable;
-use InvalidArgumentException;
 
 class SortableEntityChecker
 {
     public function isFieldSortable(string $classname, string $field): bool
     {
-        if (! class_exists($classname)) {
-            throw new InvalidArgumentException("Unknown class $classname");
+        if (!class_exists($classname)) {
+            throw new \InvalidArgumentException("Unknown class {$classname}");
         }
 
-        if (! property_exists($classname, $field)) {
-            throw new InvalidArgumentException("Field $field doesn't exist in entity $classname");
+        if (!property_exists($classname, $field)) {
+            throw new \InvalidArgumentException("Field {$field} doesn't exist in entity {$classname}");
         }
 
         $reflectionClass = new \ReflectionClass($classname);
@@ -23,13 +24,13 @@ class SortableEntityChecker
             ->getProperty($field)
             ->getAttributes(Sortable::class);
 
-        return count($sortableAttributes) > 0;
+        return \count($sortableAttributes) > 0;
     }
 
     public function getSortableFields(string $classname): array
     {
-        if (! class_exists($classname)) {
-            throw new InvalidArgumentException("Unknown class $classname");
+        if (!class_exists($classname)) {
+            throw new \InvalidArgumentException("Unknown class {$classname}");
         }
 
         $sortableFields = [];
@@ -39,7 +40,7 @@ class SortableEntityChecker
 
         /** @var \ReflectionProperty $property */
         foreach ($reflectionProperties as $property) {
-            if (count($property->getAttributes(Sortable::class)) > 0) {
+            if (\count($property->getAttributes(Sortable::class)) > 0) {
                 $sortableFields[] = $property->getName();
             }
         }

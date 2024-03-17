@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\OptionsResolver;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\OptionsResolver\TopicOptionsResolver;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -19,7 +21,7 @@ class TopicOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('name', $result));
+        $this->assertFalse(\array_key_exists('name', $result));
     }
 
     public function testConfigureNameRequired(): void
@@ -67,7 +69,7 @@ class TopicOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('author', $result));
+        $this->assertFalse(\array_key_exists('author', $result));
     }
 
     public function testConfigureAuthorRequired(): void

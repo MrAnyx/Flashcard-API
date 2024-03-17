@@ -1,25 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\User;
 
-use Exception;
+use App\Controller\AbstractRestController;
 use App\Entity\Unit;
-use App\Utility\Regex;
-use App\Voter\UnitVoter;
-use App\Voter\TopicVoter;
-use App\Service\ReviewManager;
+use App\Entity\User;
 use App\Exception\ApiException;
+use App\OptionsResolver\UnitOptionsResolver;
+use App\Repository\FlashcardRepository;
 use App\Repository\UnitRepository;
 use App\Service\RequestPayloadService;
-use App\Repository\FlashcardRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
+use App\Service\ReviewManager;
 use App\Service\SpacedRepetitionScheduler;
-use App\OptionsResolver\UnitOptionsResolver;
+use App\Utility\Regex;
+use App\Voter\TopicVoter;
+use App\Voter\UnitVoter;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api', 'api_', format: 'json')]
 class UnitController extends AbstractRestController
@@ -29,17 +31,16 @@ class UnitController extends AbstractRestController
         Request $request,
         UnitRepository $unitRepository
     ): JsonResponse {
-
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         // Get data with pagination
         $units = $unitRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $user
         );
 
@@ -64,7 +65,6 @@ class UnitController extends AbstractRestController
         UnitOptionsResolver $unitOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -74,7 +74,7 @@ class UnitController extends AbstractRestController
                 ->configureName(true)
                 ->configureTopic(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -126,7 +126,6 @@ class UnitController extends AbstractRestController
         Request $request,
         UnitOptionsResolver $unitOptionsResolver,
     ): JsonResponse {
-
         $unit = $this->getResourceById(Unit::class, $id);
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
@@ -144,7 +143,7 @@ class UnitController extends AbstractRestController
                 ->configureName($mandatoryParameters)
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -182,9 +181,9 @@ class UnitController extends AbstractRestController
 
         // Get data with pagination
         $flashcards = $flashcardRepository->findByUnitWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $unit
         );
 
@@ -196,11 +195,10 @@ class UnitController extends AbstractRestController
         int $id,
         ReviewManager $reviewManager
     ): JsonResponse {
-
         $unit = $this->getResourceById(Unit::class, $id);
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $reviewManager->resetFlashcards($unit, $user);
 
@@ -215,7 +213,7 @@ class UnitController extends AbstractRestController
         $unit = $this->getResourceById(Unit::class, $id);
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, SpacedRepetitionScheduler::SESSION_SIZE);

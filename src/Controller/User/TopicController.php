@@ -1,26 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\User;
 
-use Exception;
-use App\Entity\Unit;
+use App\Controller\AbstractRestController;
 use App\Entity\Topic;
+use App\Entity\Unit;
+use App\Entity\User;
+use App\Exception\ApiException;
+use App\OptionsResolver\TopicOptionsResolver;
+use App\Repository\FlashcardRepository;
+use App\Repository\TopicRepository;
+use App\Repository\UnitRepository;
+use App\Service\RequestPayloadService;
+use App\Service\ReviewManager;
+use App\Service\SpacedRepetitionScheduler;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
-use App\Service\ReviewManager;
-use App\Exception\ApiException;
-use App\Repository\UnitRepository;
-use App\Repository\TopicRepository;
-use App\Service\RequestPayloadService;
-use App\Repository\FlashcardRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Controller\AbstractRestController;
-use App\Service\SpacedRepetitionScheduler;
-use App\OptionsResolver\TopicOptionsResolver;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api', 'api_', format: 'json')]
 class TopicController extends AbstractRestController
@@ -30,14 +32,14 @@ class TopicController extends AbstractRestController
     {
         $pagination = $this->getPaginationParameter(Topic::class, $request);
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         // Get data with pagination
         $topics = $topicRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $user
         );
 
@@ -62,7 +64,6 @@ class TopicController extends AbstractRestController
         TopicOptionsResolver $topicOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -71,11 +72,11 @@ class TopicController extends AbstractRestController
             $data = $topicOptionsResolver
                 ->configureName(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         // Temporarly create the element
@@ -124,7 +125,6 @@ class TopicController extends AbstractRestController
         Request $request,
         TopicOptionsResolver $flashcardOptionsResolver,
     ): JsonResponse {
-
         $topic = $this->getResourceById(Topic::class, $id);
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
@@ -141,7 +141,7 @@ class TopicController extends AbstractRestController
             $data = $flashcardOptionsResolver
                 ->configureName($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -175,9 +175,9 @@ class TopicController extends AbstractRestController
 
         // Get data with pagination
         $units = $unitRepository->findByTopicWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $topic
         );
 
@@ -191,11 +191,10 @@ class TopicController extends AbstractRestController
         EntityManagerInterface $em,
         ReviewManager $reviewManager
     ): JsonResponse {
-
         $topic = $this->getResourceById(Topic::class, $id);
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $reviewManager->resetFlashcards($topic, $user);
 
@@ -210,7 +209,7 @@ class TopicController extends AbstractRestController
         $topic = $this->getResourceById(Topic::class, $id);
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($topic, $user, SpacedRepetitionScheduler::SESSION_SIZE);

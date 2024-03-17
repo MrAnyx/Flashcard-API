@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
-use DateTime;
+use App\Entity\Flashcard;
 use App\Enum\GradeType;
 use App\Enum\StateType;
 use App\Utility\Random;
-use App\Entity\Flashcard;
 
 class SpacedRepetitionScheduler
 {
@@ -20,7 +21,7 @@ class SpacedRepetitionScheduler
 
     public function review(Flashcard &$flashcard, GradeType $grade): void
     {
-        if ($flashcard->getNextReview() > (new DateTime)) {
+        if ($flashcard->getNextReview() > (new \DateTimeImmutable())) {
             return;
         }
 
@@ -33,7 +34,7 @@ class SpacedRepetitionScheduler
         }
 
         $interval = $this->nextInterval($flashcard);
-        $flashcard->setNextReview((new DateTime)->modify("+$interval days")->setTime(0, 0, 0));
+        $flashcard->setNextReview((new \DateTimeImmutable())->modify("+{$interval} days")->setTime(0, 0, 0));
         $flashcard->refreshPreviousReview();
         $flashcard->setState(StateType::Learning);
     }
@@ -62,9 +63,9 @@ class SpacedRepetitionScheduler
 
     private function getRetrievability(Flashcard $flashcard): float
     {
-        $elapsedDays = (int) $flashcard->getPreviousReview()->diff(new DateTime)->format('%a');
+        $elapsedDays = (int) $flashcard->getPreviousReview()->diff(new \DateTimeImmutable())->format('%a');
 
-        return pow(1 + ($elapsedDays / (9 * $flashcard->getStability())), -1);
+        return (1 + ($elapsedDays / (9 * $flashcard->getStability()))) ** (-1);
     }
 
     private function nextInterval(Flashcard $flashcard): int
@@ -86,7 +87,7 @@ class SpacedRepetitionScheduler
         $D = $flashcard->getDifficulty();
         $R = $this->getRetrievability($flashcard);
 
-        return $S * (pow(M_E, self::W[8]) * (11 - $D) * pow($S, -self::W[9]) * (pow(M_E, self::W[10] * (1 - $R)) - 1) * $hardPenalty * $easyPenalty + 1);
+        return $S * (\M_E ** self::W[8] * (11 - $D) * $S ** (-self::W[9]) * (\M_E ** (self::W[10] * (1 - $R)) - 1) * $hardPenalty * $easyPenalty + 1);
     }
 
     private function nextForgetStability(Flashcard $flashcard): float
@@ -95,15 +96,15 @@ class SpacedRepetitionScheduler
         $D = $flashcard->getDifficulty();
         $R = $this->getRetrievability($flashcard);
 
-        return self::W[11] * pow($D, -self::W[12]) * (pow($S + 1, self::W[13]) - 1) * pow(M_E, self::W[14] * (1 - $R));
+        return self::W[11] * $D ** (-self::W[12]) * (($S + 1) ** self::W[13] - 1) * \M_E ** (self::W[14] * (1 - $R));
     }
 
     private function nextStability(Flashcard $flashcard, GradeType $grade): float
     {
         if ($grade->isCorrect()) {
             return $this->nextRecallStability($flashcard, $grade);
-        } else {
-            return $this->nextForgetStability($flashcard);
         }
+
+        return $this->nextForgetStability($flashcard);
     }
 }

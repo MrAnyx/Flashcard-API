@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerTest extends WebTestCase
 {
-    public function testGetMeWithAuthenticatedUser()
+    public function testGetMeWithAuthenticatedUser(): void
     {
         $client = static::createClient();
 
@@ -20,7 +22,7 @@ class UserControllerTest extends WebTestCase
         $this->assertJson($client->getResponse()->getContent());
     }
 
-    public function testGetMeWithoutAuthenticatedUser()
+    public function testGetMeWithoutAuthenticatedUser(): void
     {
         $client = static::createClient();
         $client->request('GET', '/api/users/me');

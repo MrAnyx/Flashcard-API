@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\OptionsResolver;
 
 use App\OptionsResolver\UserOptionsResolver;
@@ -17,7 +19,7 @@ class UserOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('username', $result));
+        $this->assertFalse(\array_key_exists('username', $result));
     }
 
     public function testConfigureUsernameRequired(): void
@@ -65,7 +67,7 @@ class UserOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('email', $result));
+        $this->assertFalse(\array_key_exists('email', $result));
     }
 
     public function testConfigureEmailRequired(): void
@@ -113,7 +115,7 @@ class UserOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('password', $result));
+        $this->assertFalse(\array_key_exists('password', $result));
     }
 
     public function testConfigurePasswordRequired(): void
@@ -161,7 +163,7 @@ class UserOptionsResolverTest extends KernelTestCase
 
         $result = $resolver->resolve([]);
 
-        $this->assertFalse(array_key_exists('roles', $result));
+        $this->assertFalse(\array_key_exists('roles', $result));
     }
 
     public function testConfigureRolesRequired(): void

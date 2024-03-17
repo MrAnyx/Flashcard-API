@@ -1,29 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\User;
 
-use DateTime;
-use Exception;
-use App\Entity\Review;
-use App\Utility\Regex;
-use App\Voter\UnitVoter;
-use App\Entity\Flashcard;
-use App\Voter\FlashcardVoter;
-use App\Service\ReviewManager;
-use App\Exception\ApiException;
-use App\Service\RequestPayloadService;
-use App\Repository\FlashcardRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\AbstractRestController;
+use App\Entity\Flashcard;
+use App\Entity\User;
+use App\Exception\ApiException;
+use App\Exception\ExceptionCode;
+use App\OptionsResolver\FlashcardOptionsResolver;
+use App\OptionsResolver\SpacedRepetitionOptionsResolver;
+use App\Repository\FlashcardRepository;
+use App\Service\RequestPayloadService;
+use App\Service\ReviewManager;
 use App\Service\SpacedRepetitionScheduler;
+use App\Utility\Regex;
+use App\Voter\FlashcardVoter;
+use App\Voter\UnitVoter;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\OptionsResolver\FlashcardOptionsResolver;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use App\OptionsResolver\SpacedRepetitionOptionsResolver;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api', 'api_', format: 'json')]
+// #[IsGranted('IS_AUTHENTICATED', exceptionCode: 450)] --> Marche pas
 class FlashcardController extends AbstractRestController
 {
     #[Route('/flashcards', name: 'get_flashcards', methods: ['GET'])]
@@ -31,13 +34,13 @@ class FlashcardController extends AbstractRestController
     {
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $flashcards = $flashcardRepository->findAllWithPagination(
-            $pagination['page'],
-            $pagination['sort'],
-            $pagination['order'],
+            $pagination->page,
+            $pagination->sort,
+            $pagination->order,
             $user
         );
 
@@ -61,7 +64,6 @@ class FlashcardController extends AbstractRestController
         FlashcardOptionsResolver $flashcardOptionsResolver,
         RequestPayloadService $requestPayloadService
     ): JsonResponse {
-
         try {
             // Retrieve the request body
             $body = $requestPayloadService->getRequestPayload($request);
@@ -73,7 +75,7 @@ class FlashcardController extends AbstractRestController
                 ->configureDetails(true)
                 ->configureUnit(true)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -127,7 +129,6 @@ class FlashcardController extends AbstractRestController
         Request $request,
         FlashcardOptionsResolver $flashcardOptionsResolver
     ): JsonResponse {
-
         $flashcard = $this->getResourceById(Flashcard::class, $id);
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
@@ -147,7 +148,7 @@ class FlashcardController extends AbstractRestController
                 ->configureDetails($mandatoryParameters)
                 ->configureUnit($mandatoryParameters)
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
@@ -191,16 +192,12 @@ class FlashcardController extends AbstractRestController
         SpacedRepetitionScheduler $spacedRepetitionScheduler,
         ReviewManager $reviewManager
     ): JsonResponse {
-
         $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
         // If the next review is in the future
-        if ($flashcard->getNextReview() > (new DateTime)) {
-            throw new ApiException(Response::HTTP_NOT_ACCEPTABLE, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [
-                $flashcard->getId(),
-                $flashcard->getNextReview()->format('jS \of F Y'),
-            ]);
+        if ($flashcard->getNextReview() > (new \DateTimeImmutable())) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [$flashcard->getId(), $flashcard->getNextReview()->format('jS \\of F Y')]);
         }
 
         try {
@@ -209,14 +206,14 @@ class FlashcardController extends AbstractRestController
             $data = $spacedRepetitionOptionsResolver
                 ->configureGrade()
                 ->resolve($body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
         $spacedRepetitionScheduler->review($flashcard, $data['grade']);
         $this->validateEntity($flashcard);
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $review = $reviewManager->createReview($flashcard, $user, $data['grade']);
@@ -232,8 +229,7 @@ class FlashcardController extends AbstractRestController
     public function resetAllFlashcards(
         ReviewManager $reviewManager
     ): JsonResponse {
-
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $reviewManager->resetAllFlashcards($user);
 
@@ -249,7 +245,7 @@ class FlashcardController extends AbstractRestController
         $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $reviewManager->resetFlashcard($flashcard, $user);
 
@@ -262,7 +258,7 @@ class FlashcardController extends AbstractRestController
         ReviewManager $reviewManager,
         FlashcardRepository $flashcardRepository
     ): JsonResponse {
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $cardsToReview = $flashcardRepository->findFlashcardToReview($user, SpacedRepetitionScheduler::SESSION_SIZE);

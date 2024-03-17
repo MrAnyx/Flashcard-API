@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Model;
 
 use App\Model\Paginator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class PaginatorTest extends KernelTestCase
+class PaginationTest extends KernelTestCase
 {
     private Paginator $paginator;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         // Create the Query object
         $em = self::getContainer()->get('doctrine')->getManager();
         $query = $em->createQueryBuilder()
             ->select('f')
-            ->from('App\Entity\Flashcard', 'f')
+            ->from(\App\Entity\Flashcard::class, 'f')
             ->getQuery();
 
         // Create the Paginator object
@@ -69,7 +71,7 @@ class PaginatorTest extends KernelTestCase
         $em = self::getContainer()->get('doctrine')->getManager();
         $query = $em->createQueryBuilder()
             ->select('f')
-            ->from('App\Entity\Flashcard', 'f')
+            ->from(\App\Entity\Flashcard::class, 'f')
             ->where('f.id = -1')
             ->getQuery();
 
@@ -92,7 +94,7 @@ class PaginatorTest extends KernelTestCase
         $em = self::getContainer()->get('doctrine')->getManager();
         $query = $em->createQueryBuilder()
             ->select('f')
-            ->from('App\Entity\Flashcard', 'f')
+            ->from(\App\Entity\Flashcard::class, 'f')
             ->where('f.id = -1')
             ->getQuery();
 

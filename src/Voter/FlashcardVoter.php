@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Voter;
 
-use App\Entity\User;
 use App\Entity\Flashcard;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class FlashcardVoter extends Voter
 {
@@ -13,11 +15,11 @@ class FlashcardVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (! in_array($attribute, [self::OWNER])) {
+        if (!\in_array($attribute, [self::OWNER])) {
             return false;
         }
 
-        if (! $subject instanceof Flashcard) {
+        if (!$subject instanceof Flashcard) {
             return false;
         }
 
@@ -29,7 +31,7 @@ class FlashcardVoter extends Voter
         $user = $token->getUser();
 
         // the user must be logged in; if not, deny access
-        if (! $user instanceof User) {
+        if (!$user instanceof User) {
             return false;
         }
 

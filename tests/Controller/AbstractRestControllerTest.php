@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
-use Exception;
 use App\Attribut\Sortable;
-use App\Exception\ApiException;
 use App\Controller\AbstractRestController;
+use App\Exception\ApiException;
+use App\Model\Page;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class __Foo__
 {
@@ -29,17 +31,16 @@ class AbstractRestControllerTest extends KernelTestCase
 
         $result = $abstractController->getPaginationParameter(__Foo__::class, $request);
 
-        $this->assertArrayHasKey('page', $result);
-        $this->assertIsInt($result['page']);
-        $this->assertSame(1, $result['page']);
+        $this->assertInstanceOf(Page::class, $result);
 
-        $this->assertArrayHasKey('sort', $result);
-        $this->assertIsString($result['sort']);
-        $this->assertSame('id', $result['sort']);
+        $this->assertIsInt($result->page);
+        $this->assertSame(1, $result->page);
 
-        $this->assertArrayHasKey('order', $result);
-        $this->assertIsString($result['order']);
-        $this->assertSame('ASC', $result['order']);
+        $this->assertIsString($result->sort);
+        $this->assertSame('id', $result->sort);
+
+        $this->assertIsString($result->order);
+        $this->assertSame('ASC', $result->order);
     }
 
     public function testGetPaginationParameterInvalidPage(): void
@@ -52,7 +53,7 @@ class AbstractRestControllerTest extends KernelTestCase
         $result = $abstractController->getPaginationParameter(__Foo__::class, $request);
     }
 
-    public function testValidateEntity()
+    public function testValidateEntity(): void
     {
         /** @var AbstractRestController $abstractController */
         $abstractController = self::getContainer()->get(AbstractRestController::class);
@@ -64,7 +65,7 @@ class AbstractRestControllerTest extends KernelTestCase
         $abstractController->validateEntity($entity);
     }
 
-    public function testValidateEntityWithValidationGroup()
+    public function testValidateEntityWithValidationGroup(): void
     {
         /** @var AbstractRestController $abstractController */
         $abstractController = self::getContainer()->get(AbstractRestController::class);
@@ -75,7 +76,7 @@ class AbstractRestControllerTest extends KernelTestCase
         try {
             $abstractController->validateEntity($entity, ['special_group']);
             $this->assertTrue(true);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail($e);
         }
     }

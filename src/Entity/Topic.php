@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use DateTimeImmutable;
 use App\Attribut\Sortable;
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TopicRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -32,12 +33,12 @@ class Topic
     #[ORM\Column]
     #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
     #[Sortable]
-    private ?DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
     #[Sortable]
-    private ?DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'topics')]
     #[Assert\NotBlank(message: 'You must associate a user to this topic')]
@@ -69,7 +70,7 @@ class Topic
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -77,12 +78,12 @@ class Topic
     #[ORM\PrePersist]
     public function setCreatedAt(): static
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -91,7 +92,7 @@ class Topic
     #[ORM\PreUpdate]
     public function setUpdatedAt(): static
     {
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -118,7 +119,7 @@ class Topic
 
     public function addUnit(Unit $unit): static
     {
-        if (! $this->units->contains($unit)) {
+        if (!$this->units->contains($unit)) {
             $this->units->add($unit);
             $unit->setTopic($this);
         }

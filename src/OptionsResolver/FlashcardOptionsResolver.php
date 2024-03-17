@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\OptionsResolver;
 
 use App\Repository\UnitRepository;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 class FlashcardOptionsResolver extends OptionsResolver
 {
@@ -65,7 +67,7 @@ class FlashcardOptionsResolver extends OptionsResolver
             $unit = $this->unitRepository->find($value);
 
             if ($unit === null) {
-                throw new InvalidOptionsException("Unit with id $value was not found");
+                throw new InvalidOptionsException("Unit with id {$value} was not found");
             }
 
             return $unit;
