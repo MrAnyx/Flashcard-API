@@ -4,6 +4,8 @@ FROM php:8.2.16
 # Set the working dir
 WORKDIR /var/www
 
+RUN apt-get update && apt-get install -y apt-transport-https
+
 # Install PCOV using Pecl
 RUN pecl install pcov
 RUN docker-php-ext-enable pcov
