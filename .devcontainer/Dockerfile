@@ -1,5 +1,5 @@
 # Dockerfile arguments
-ARG VARIANT=8.2.8-apache
+ARG VARIANT=8.2.16-apache
 
 # Pull existing php image
 FROM php:${VARIANT}
@@ -21,6 +21,9 @@ RUN install-php-extensions intl
 RUN install-php-extensions opcache
 RUN install-php-extensions zip
 # RUN install-php-extensions xdebug
+
+# Retrieve the lastest version of composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Copy configuration files
 COPY apache/vhosts.conf /etc/apache2/sites-available/000-default.conf
