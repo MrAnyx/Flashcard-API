@@ -15,15 +15,17 @@ RUN docker-php-ext-enable pdo
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-enable pdo_mysql
 
+RUN apt-get install -y libicu-dev
+RUN docker-php-ext-configure intl \
 RUN docker-php-ext-install intl
 RUN docker-php-ext-enable intl
 
 RUN docker-php-ext-install opcache
 RUN docker-php-ext-enable opcache
 
+RUN apt-get install -y libzip-dev zip 
 RUN docker-php-ext-install zip
 RUN docker-php-ext-enable zip
-# RUN install-php-extensions xdebug
 
 # Retrieve the lastest version of composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
