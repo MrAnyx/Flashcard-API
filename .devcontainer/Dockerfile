@@ -1,5 +1,5 @@
 # Pull existing php image
-FROM php:8.2.16-fpm-alpine3.19
+FROM php:8.2.16-fpm
 
 # Set the working dir
 WORKDIR /var/www
