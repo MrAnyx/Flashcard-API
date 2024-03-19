@@ -15,5 +15,8 @@ RUN install-php-extensions intl
 RUN install-php-extensions opcache
 RUN install-php-extensions zip
 
+# Install Taskfile
+RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b  /usr/local/bin
+
 # Retrieve the lastest version of composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer

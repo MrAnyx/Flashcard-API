@@ -48,7 +48,5 @@
             ]
         }
     },
-    "features": {
-        "ghcr.io/audacioustux/devcontainers/taskfile:1": {}
-    }
+    "features": {}
 }
