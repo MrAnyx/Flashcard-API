@@ -17,7 +17,7 @@ services:
         networks:
             - dev
 
-    maildev:
+    mailer:
         image: rnwood/smtp4dev
         container_name: flashcard-mail
         ports:
@@ -45,7 +45,7 @@ services:
         ports:
             - 80:80
         volumes:
-            - project:/var/www
+            - ..:/var/www
             - ./nginx:/etc/nginx/conf.d
         depends_on:
             - php
@@ -55,7 +55,7 @@ services:
         build:
             dockerfile: Dockerfile
         volumes:
-            - project:/var/www
+            - ..:/var/www
         networks:
             - dev
         depends_on:
@@ -63,7 +63,6 @@ services:
 
 volumes:
     data:
-    project:
 
 networks:
     dev:
