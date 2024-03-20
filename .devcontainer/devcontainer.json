@@ -6,15 +6,15 @@
             "label": "Api"
         },
         "8081": {
-            "label": "PhpMyAdmin"
+            "label": "Adminer"
         },
         "8082": {
             "label": "Mailer"
         }
     },
-    "dockerComposeFile": "docker-compose.yaml",
+    "dockerComposeFile": "../docker-compose.yaml",
     "service": "php",
-    "workspaceFolder": "/var/www",
+    "workspaceFolder": "/var/www/html",
     "postStartCommand": "task app:default:config",
     "customizations": {
         "vscode": {

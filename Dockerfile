@@ -2,7 +2,7 @@
 FROM php:8.2.16-fpm
 
 # Set the working dir
-WORKDIR /var/www
+WORKDIR /var/www/html
 
 # Install php extension installer
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
