@@ -36,7 +36,11 @@ services:
         ports:
             - 80:80
         volumes:
-            - project:/var/www/html:ro
+            - type: volume
+              source: project
+              target: /var/www/html
+              read_only: true
+              mount: {}
             - ./devcontainer/nginx:/etc/nginx/conf.d
         depends_on:
             - php
@@ -46,7 +50,10 @@ services:
         build:
             dockerfile: Dockerfile
         volumes:
-            - project:/workspaces/Flashcard-API
+            - type: volume
+              source: project
+              target: /workspaces/Flashcard-API
+              volume: {}
         ports:
             - 9000:9000
         depends_on:
