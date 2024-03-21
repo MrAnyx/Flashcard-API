@@ -12,7 +12,7 @@
             "label": "Mailer"
         }
     },
-    "dockerComposeFile": "../docker-compose.yaml",
+    "dockerComposeFile": "docker-compose.yaml",
     "service": "php",
     "postStartCommand": "task app:default:config",
     "customizations": {
