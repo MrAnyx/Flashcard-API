@@ -1,55 +1,56 @@
 {
-    "name": "Flashcard API",
-    "forwardPorts": [80, 8081, 8082],
-    "portsAttributes": {
-        "80": {
-            "label": "Api"
-        },
-        "8081": {
-            "label": "Adminer"
-        },
-        "8082": {
-            "label": "Mailer"
-        }
+  "name": "Flashcard API",
+  "forwardPorts": [80, 8081, 8082],
+  "portsAttributes": {
+    "80": {
+      "label": "Api"
     },
-    "dockerComposeFile": "docker-compose.yaml",
-    "service": "php",
-    "postStartCommand": "task app:default:config",
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "php.executablePath": "/usr/local/bin/php",
-                "php.validate.executablePath": "/usr/local/bin/php",
-                "php.suggest.basic": false,
-                "php-cs-fixer.allowRisky": false,
-                "[php]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "junstyle.php-cs-fixer"
-                },
-                "[yaml][json][jsonc]": {
-                    "editor.formatOnSave": true,
-                    "editor.defaultFormatter": "esbenp.prettier-vscode"
-                }
-            },
-            "extensions": [
-                // "hbenl.vscode-test-explorer",
-                // "ms-vscode.test-adapter-converter",
-                // "recca0120.vscode-phpunit",
-                "esbenp.prettier-vscode",
-                "MehediDracula.php-namespace-resolver",
-                "bmewburn.vscode-intelephense-client",
-                "neilbrayfield.php-docblocker",
-                "mikestead.dotenv",
-                "MehediDracula.php-namespace-resolver",
-                "mikestead.dotenv",
-                "EditorConfig.EditorConfig",
-                "junstyle.php-cs-fixer"
-            ]
-        }
+    "8081": {
+      "label": "Adminer"
     },
-    "features": {
-        "ghcr.io/devcontainers/features/github-cli:1": {
-            "version": "latest"
-        }
+    "8082": {
+      "label": "Mailer"
     }
+  },
+  "dockerComposeFile": "docker-compose.yaml",
+  "service": "php",
+  "workspaceFolder": "/var/www/html",
+  "postStartCommand": "task app:default:config",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "php.executablePath": "/usr/local/bin/php",
+        "php.validate.executablePath": "/usr/local/bin/php",
+        "php.suggest.basic": false,
+        "php-cs-fixer.allowRisky": false,
+        "[php]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "junstyle.php-cs-fixer"
+        },
+        "[yaml][json][jsonc]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
+      },
+      "extensions": [
+        // "hbenl.vscode-test-explorer",
+        // "ms-vscode.test-adapter-converter",
+        // "recca0120.vscode-phpunit",
+        "esbenp.prettier-vscode",
+        "MehediDracula.php-namespace-resolver",
+        "bmewburn.vscode-intelephense-client",
+        "neilbrayfield.php-docblocker",
+        "mikestead.dotenv",
+        "MehediDracula.php-namespace-resolver",
+        "mikestead.dotenv",
+        "EditorConfig.EditorConfig",
+        "junstyle.php-cs-fixer"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    }
+  }
 }
