@@ -36,17 +36,18 @@ services:
         ports:
             - 80:80
         volumes:
-            - project:/var/www/html:ro
-            - ./devcontainer/nginx:/etc/nginx/conf.d
+            - project:/var/www/html
+            - ./nginx:/etc/nginx/conf.d
         depends_on:
             - php
 
     php:
         container_name: flashcard-php
         build:
+            context: .
             dockerfile: Dockerfile
         volumes:
-            - project:/workspaces/Flashcard-API
+            - project:/var/www/html
         ports:
             - 9000:9000
         depends_on:
