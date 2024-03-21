@@ -6,7 +6,7 @@ services:
         container_name: flashcard-database
         image: mariadb
         ports:
-            - 3306:3306 # To access the database through the mysql extension in vscode
+            - 3306:3306
         environment:
             MYSQL_ROOT_PASSWORD: password
             MYSQL_DATABASE: flashcard
@@ -31,12 +31,12 @@ services:
             - 8081:8080
 
     nginx:
-        image: nginx:alpine-3.18
+        image: nginx:alpine3.18
         container_name: flashcard-nginx
         ports:
             - 80:80
         volumes:
-            - project:/var/www/html
+            - ..:/var/www/html
             - ./nginx:/etc/nginx/conf.d
         depends_on:
             - php
@@ -47,7 +47,7 @@ services:
             context: .
             dockerfile: Dockerfile
         volumes:
-            - project:/var/www/html
+            - ..:/var/www/html
         ports:
             - 9000:9000
         depends_on:
@@ -55,4 +55,3 @@ services:
 
 volumes:
     data:
-    project:
