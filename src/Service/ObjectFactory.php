@@ -7,7 +7,9 @@ namespace App\Service;
 class ObjectFactory
 {
     /**
-     * @template T
+     * @template T of object
+     *
+     * @param class-string<T> $fqcn
      *
      * @return T
      */
