@@ -48,6 +48,11 @@ class Unit
     #[ORM\OneToMany(mappedBy: 'unit', targetEntity: Flashcard::class, cascade: ['remove'])]
     private Collection $flashcards;
 
+    #[ORM\Column(length: 300)]
+    #[Assert\Length(max: 300, maxMessage: 'The description of a unit can not exceed {{ limit }} characters')]
+    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->flashcards = new ArrayCollection();
@@ -143,5 +148,17 @@ class Unit
     public function getCountFlashcards()
     {
         return $this->flashcards->count();
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
     }
 }

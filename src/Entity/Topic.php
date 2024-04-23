@@ -48,6 +48,11 @@ class Topic
     #[ORM\OneToMany(mappedBy: 'topic', targetEntity: Unit::class, cascade: ['remove'])]
     private Collection $units;
 
+    #[ORM\Column(length: 300)]
+    #[Assert\Length(max: 300, maxMessage: 'The description of a topic can not exceed {{ limit }} characters')]
+    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->units = new ArrayCollection();
@@ -143,5 +148,17 @@ class Topic
     public function getCountUnits()
     {
         return $this->units->count();
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
     }
 }

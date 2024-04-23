@@ -35,7 +35,7 @@ services:
         image: nginx:alpine3.18
         container_name: flashcard-nginx
         ports:
-            - 80:80
+            - 8080:80
         volumes:
             - ..:/var/www/html
             - ./nginx:/etc/nginx/conf.d

@@ -63,6 +63,7 @@ final class UnitFactory extends ModelFactory
         return [
             'name' => self::faker()->text(35),
             'topic' => TopicFactory::random(),
+            'description' => self::faker()->text(300),
         ];
     }
 
