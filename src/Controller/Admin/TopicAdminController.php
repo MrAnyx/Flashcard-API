@@ -66,6 +66,7 @@ class TopicAdminController extends AbstractRestController
             // Validate the content of the request body
             $data = $topicOptionsResolver
                 ->configureName(true)
+                ->configureDescription(true)
                 ->configureAuthor(true)
                 ->resolve($body);
         } catch (\Exception $e) {
@@ -76,6 +77,7 @@ class TopicAdminController extends AbstractRestController
         $topic = new Topic();
         $topic
             ->setName($data['name'])
+            ->setDescription($data['description'])
             ->setAuthor($data['author']);
 
         // Second validation using the validation constraints
@@ -141,6 +143,7 @@ class TopicAdminController extends AbstractRestController
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
                 ->configureName($mandatoryParameters)
+                ->configureDescription($mandatoryParameters)
                 ->configureAuthor($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
@@ -152,6 +155,9 @@ class TopicAdminController extends AbstractRestController
             switch ($field) {
                 case 'name':
                     $topic->setName($value);
+                    break;
+                case 'description':
+                    $topic->setDescription($value);
                     break;
                 case 'author':
                     $topic->setAuthor($value);

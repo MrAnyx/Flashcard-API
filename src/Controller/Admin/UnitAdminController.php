@@ -66,6 +66,7 @@ class UnitAdminController extends AbstractRestController
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName(true)
+                ->configureDescription(true)
                 ->configureTopic(true)
                 ->resolve($body);
         } catch (\Exception $e) {
@@ -76,6 +77,7 @@ class UnitAdminController extends AbstractRestController
         $unit = new Unit();
         $unit
             ->setName($data['name'])
+            ->setDescription($data['description'])
             ->setTopic($data['topic']);
 
         // Second validation using the validation constraints
@@ -141,6 +143,7 @@ class UnitAdminController extends AbstractRestController
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName($mandatoryParameters)
+                ->configureDescription($mandatoryParameters)
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
@@ -152,6 +155,9 @@ class UnitAdminController extends AbstractRestController
             switch ($field) {
                 case 'name':
                     $unit->setName($value);
+                    break;
+                case 'description':
+                    $unit->setDescription($value);
                     break;
                 case 'topic':
                     $unit->setTopic($value);
