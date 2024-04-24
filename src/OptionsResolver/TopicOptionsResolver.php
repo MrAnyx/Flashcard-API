@@ -27,6 +27,17 @@ class TopicOptionsResolver extends OptionsResolver
         return $this;
     }
 
+    public function configureDescription(bool $isRequired = true): self
+    {
+        $this->setDefined('description')->setAllowedTypes('description', 'string');
+
+        if ($isRequired) {
+            $this->setRequired('description');
+        }
+
+        return $this;
+    }
+
     public function configureAuthor(bool $isRequired = true): self
     {
         $this->setDefined('author')->setAllowedTypes('author', 'int');

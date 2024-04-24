@@ -27,6 +27,17 @@ class UnitOptionsResolver extends OptionsResolver
         return $this;
     }
 
+    public function configureDescription(bool $isRequired = true): self
+    {
+        $this->setDefined('description')->setAllowedTypes('description', 'string');
+
+        if ($isRequired) {
+            $this->setRequired('description');
+        }
+
+        return $this;
+    }
+
     public function configureTopic(bool $isRequired = true): self
     {
         $this->setDefined('topic')->setAllowedTypes('topic', 'int');

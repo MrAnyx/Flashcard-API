@@ -71,6 +71,7 @@ class TopicController extends AbstractRestController
             // Validate the content of the request body
             $data = $topicOptionsResolver
                 ->configureName(true)
+                ->configureDescription(true)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -83,6 +84,7 @@ class TopicController extends AbstractRestController
         $topic = new Topic();
         $topic
             ->setName($data['name'])
+            ->setDescription($data['description'])
             ->setAuthor($user);
 
         // Second validation using the validation constraints
@@ -140,6 +142,7 @@ class TopicController extends AbstractRestController
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
                 ->configureName($mandatoryParameters)
+                ->configureDescription($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -150,6 +153,10 @@ class TopicController extends AbstractRestController
             switch ($field) {
                 case 'name':
                     $topic->setName($value);
+                    break;
+
+                case 'description':
+                    $topic->setDescription($value);
                     break;
             }
         }

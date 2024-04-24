@@ -72,6 +72,7 @@ class UnitController extends AbstractRestController
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName(true)
+                ->configureDescription(true)
                 ->configureTopic(true)
                 ->resolve($body);
         } catch (\Exception $e) {
@@ -84,6 +85,7 @@ class UnitController extends AbstractRestController
         $unit = new Unit();
         $unit
             ->setName($data['name'])
+            ->setDescription($data['description'])
             ->setTopic($data['topic']);
 
         // Second validation using the validation constraints
@@ -141,6 +143,7 @@ class UnitController extends AbstractRestController
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName($mandatoryParameters)
+                ->configureDescription($mandatoryParameters)
                 ->configureTopic($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
@@ -152,6 +155,9 @@ class UnitController extends AbstractRestController
             switch ($field) {
                 case 'name':
                     $unit->setName($value);
+                    break;
+                case 'description':
+                    $unit->setDescription($value);
                     break;
                 case 'topic':
                     $this->denyAccessUnlessGranted(TopicVoter::OWNER, $value, 'You can not use this resource');

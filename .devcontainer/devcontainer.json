@@ -15,7 +15,7 @@
     "dockerComposeFile": "docker-compose.yaml",
     "service": "php",
     "workspaceFolder": "/var/www/html",
-    "postStartCommand": "task app:default:config",
+    "postCreateCommand": "task app:default:config",
     "customizations": {
         "vscode": {
             "settings": {
