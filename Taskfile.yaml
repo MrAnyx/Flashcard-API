@@ -78,6 +78,7 @@ tasks:
         desc: "Run required commands in order to make the project functional"
         aliases: ["a:d:c"]
         cmds:
+            - mkdir -p var
             - chmod -R 0777 var 2>/dev/null
             - cp .env.example .env.local
             - composer install --ansi --prefer-dist --no-interaction --no-progress
