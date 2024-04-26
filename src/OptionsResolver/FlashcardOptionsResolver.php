@@ -75,4 +75,15 @@ class FlashcardOptionsResolver extends OptionsResolver
 
         return $this;
     }
+
+    public function configureFavorite(bool $isRequired = true): self
+    {
+        $this->setDefined('favorite')->setAllowedTypes('favorite', 'bool');
+
+        if ($isRequired) {
+            $this->setRequired('favorite');
+        }
+
+        return $this;
+    }
 }

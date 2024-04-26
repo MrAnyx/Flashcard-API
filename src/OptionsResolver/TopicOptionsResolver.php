@@ -27,17 +27,6 @@ class TopicOptionsResolver extends OptionsResolver
         return $this;
     }
 
-    public function configureDescription(bool $isRequired = true): self
-    {
-        $this->setDefined('description')->setAllowedTypes('description', 'string');
-
-        if ($isRequired) {
-            $this->setRequired('description');
-        }
-
-        return $this;
-    }
-
     public function configureAuthor(bool $isRequired = true): self
     {
         $this->setDefined('author')->setAllowedTypes('author', 'int');
@@ -55,6 +44,28 @@ class TopicOptionsResolver extends OptionsResolver
 
             return $user;
         });
+
+        return $this;
+    }
+
+    public function configureDescription(bool $isRequired = true): self
+    {
+        $this->setDefined('description')->setAllowedTypes('description', 'string');
+
+        if ($isRequired) {
+            $this->setRequired('description');
+        }
+
+        return $this;
+    }
+
+    public function configureFavorite(bool $isRequired = true): self
+    {
+        $this->setDefined('favorite')->setAllowedTypes('favorite', 'bool');
+
+        if ($isRequired) {
+            $this->setRequired('favorite');
+        }
 
         return $this;
     }

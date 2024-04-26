@@ -65,6 +65,7 @@ final class FlashcardFactory extends ModelFactory
             'back' => self::faker()->text(255),
             'details' => self::faker()->text(1000),
             'unit' => UnitFactory::random(),
+            'favorite' => self::faker()->boolean(25),
         ];
     }
 

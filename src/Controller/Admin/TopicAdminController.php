@@ -68,6 +68,7 @@ class TopicAdminController extends AbstractRestController
                 ->configureName(true)
                 ->configureDescription(true)
                 ->configureAuthor(true)
+                ->configureFavorite(true)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -77,8 +78,9 @@ class TopicAdminController extends AbstractRestController
         $topic = new Topic();
         $topic
             ->setName($data['name'])
+            ->setAuthor($data['author'])
             ->setDescription($data['description'])
-            ->setAuthor($data['author']);
+            ->setFavorite($data['favorite']);
 
         // Second validation using the validation constraints
         $this->validateEntity($topic);
@@ -143,8 +145,9 @@ class TopicAdminController extends AbstractRestController
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
                 ->configureName($mandatoryParameters)
-                ->configureDescription($mandatoryParameters)
                 ->configureAuthor($mandatoryParameters)
+                ->configureDescription($mandatoryParameters)
+                ->configureFavorite($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -156,11 +159,14 @@ class TopicAdminController extends AbstractRestController
                 case 'name':
                     $topic->setName($value);
                     break;
+                case 'author':
+                    $topic->setAuthor($value);
+                    break;
                 case 'description':
                     $topic->setDescription($value);
                     break;
-                case 'author':
-                    $topic->setAuthor($value);
+                case 'favorite':
+                    $topic->setFavorite($value);
                     break;
             }
         }

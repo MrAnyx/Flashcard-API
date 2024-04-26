@@ -72,6 +72,7 @@ class TopicController extends AbstractRestController
             $data = $topicOptionsResolver
                 ->configureName(true)
                 ->configureDescription(true)
+                ->configureFavorite(true)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -84,8 +85,9 @@ class TopicController extends AbstractRestController
         $topic = new Topic();
         $topic
             ->setName($data['name'])
+            ->setAuthor($user)
             ->setDescription($data['description'])
-            ->setAuthor($user);
+            ->setFavorite($data['favorite']);
 
         // Second validation using the validation constraints
         $this->validateEntity($topic);
@@ -143,6 +145,7 @@ class TopicController extends AbstractRestController
             $data = $flashcardOptionsResolver
                 ->configureName($mandatoryParameters)
                 ->configureDescription($mandatoryParameters)
+                ->configureFavorite($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -154,9 +157,11 @@ class TopicController extends AbstractRestController
                 case 'name':
                     $topic->setName($value);
                     break;
-
                 case 'description':
                     $topic->setDescription($value);
+                    break;
+                case 'favorite':
+                    $topic->setFavorite($value);
                     break;
             }
         }

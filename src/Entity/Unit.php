@@ -53,6 +53,10 @@ class Unit
     #[Groups(['read:unit:admin', 'read:unit:user'])]
     private ?string $description = null;
 
+    #[ORM\Column]
+    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    private ?bool $favorite = null;
+
     public function __construct()
     {
         $this->flashcards = new ArrayCollection();
@@ -145,7 +149,7 @@ class Unit
     }
 
     #[Groups(['read:unit:admin', 'read:unit:user'])]
-    public function getCountFlashcards()
+    public function getCountFlashcards(): int
     {
         return $this->flashcards->count();
     }
@@ -158,6 +162,18 @@ class Unit
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function isFavorite(): ?bool
+    {
+        return $this->favorite;
+    }
+
+    public function setFavorite(bool $favorite): static
+    {
+        $this->favorite = $favorite;
 
         return $this;
     }

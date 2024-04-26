@@ -74,6 +74,7 @@ class FlashcardController extends AbstractRestController
                 ->configureBack(true)
                 ->configureDetails(true)
                 ->configureUnit(true)
+                ->configureFavorite(true)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -87,7 +88,8 @@ class FlashcardController extends AbstractRestController
             ->setFront($data['front'])
             ->setBack($data['back'])
             ->setDetails($data['details'])
-            ->setUnit($data['unit']);
+            ->setUnit($data['unit'])
+            ->setFavorite($data['favorite']);
 
         // Second validation using the validation constraints
         $this->validateEntity($flashcard);
@@ -147,6 +149,7 @@ class FlashcardController extends AbstractRestController
                 ->configureBack($mandatoryParameters)
                 ->configureDetails($mandatoryParameters)
                 ->configureUnit($mandatoryParameters)
+                ->configureFavorite($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -167,6 +170,9 @@ class FlashcardController extends AbstractRestController
                 case 'unit':
                     $this->denyAccessUnlessGranted(UnitVoter::OWNER, $value, 'You can not use this resource');
                     $flashcard->setUnit($value);
+                    break;
+                case 'favorite':
+                    $flashcard->setFavorite($value);
                     break;
             }
         }

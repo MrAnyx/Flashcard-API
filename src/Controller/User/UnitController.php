@@ -72,8 +72,9 @@ class UnitController extends AbstractRestController
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName(true)
-                ->configureDescription(true)
                 ->configureTopic(true)
+                ->configureDescription(true)
+                ->configureFavorite(true)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -85,8 +86,9 @@ class UnitController extends AbstractRestController
         $unit = new Unit();
         $unit
             ->setName($data['name'])
+            ->setTopic($data['topic'])
             ->setDescription($data['description'])
-            ->setTopic($data['topic']);
+            ->setFavorite($data['favorite']);
 
         // Second validation using the validation constraints
         $this->validateEntity($unit);
@@ -143,8 +145,9 @@ class UnitController extends AbstractRestController
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName($mandatoryParameters)
-                ->configureDescription($mandatoryParameters)
                 ->configureTopic($mandatoryParameters)
+                ->configureDescription($mandatoryParameters)
+                ->configureFavorite($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -162,6 +165,9 @@ class UnitController extends AbstractRestController
                 case 'topic':
                     $this->denyAccessUnlessGranted(TopicVoter::OWNER, $value, 'You can not use this resource');
                     $unit->setTopic($value);
+                    break;
+                case 'favorite':
+                    $unit->setFavorite($value);
                     break;
             }
         }

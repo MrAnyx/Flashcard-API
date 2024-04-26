@@ -18,6 +18,7 @@ class SpacedRepetitionOptionsResolver extends OptionsResolver
             ->setAllowedTypes('grade', 'int')
             ->setAllowedValues('grade', function ($grade) {
                 if ($grade < 1 || $grade > 4) {
+                    // TODO Refacto to use the actual value of the enum
                     return false;
                 }
 

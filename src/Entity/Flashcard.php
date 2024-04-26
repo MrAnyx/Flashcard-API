@@ -86,6 +86,10 @@ class Flashcard
     #[ORM\OneToMany(mappedBy: 'flashcard', targetEntity: Review::class, cascade: ['remove'])]
     private Collection $reviewHistory;
 
+    #[ORM\Column]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    private ?bool $favorite = null;
+
     public function __construct()
     {
         $this->reviewHistory = new ArrayCollection();
@@ -264,6 +268,18 @@ class Flashcard
                 $reviewHistory->setFlashcard(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isFavorite(): ?bool
+    {
+        return $this->favorite;
+    }
+
+    public function setFavorite(bool $favorite): static
+    {
+        $this->favorite = $favorite;
 
         return $this;
     }

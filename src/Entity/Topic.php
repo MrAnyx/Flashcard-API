@@ -53,6 +53,10 @@ class Topic
     #[Groups(['read:topic:admin', 'read:topic:user'])]
     private ?string $description = null;
 
+    #[ORM\Column]
+    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    private ?bool $favorite = null;
+
     public function __construct()
     {
         $this->units = new ArrayCollection();
@@ -145,7 +149,7 @@ class Topic
     }
 
     #[Groups(['read:topic:admin', 'read:topic:user'])]
-    public function getCountUnits()
+    public function getCountUnits(): int
     {
         return $this->units->count();
     }
@@ -158,6 +162,18 @@ class Topic
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function isFavorite(): ?bool
+    {
+        return $this->favorite;
+    }
+
+    public function setFavorite(bool $favorite): static
+    {
+        $this->favorite = $favorite;
 
         return $this;
     }

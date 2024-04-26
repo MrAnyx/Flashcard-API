@@ -64,6 +64,7 @@ final class TopicFactory extends ModelFactory
             'name' => self::faker()->text(35),
             'author' => UserFactory::random(),
             'description' => self::faker()->text(300),
+            'favorite' => self::faker()->boolean(25),
         ];
     }
 

@@ -66,8 +66,9 @@ class UnitAdminController extends AbstractRestController
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName(true)
-                ->configureDescription(true)
                 ->configureTopic(true)
+                ->configureDescription(true)
+                ->configureFavorite(true)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -77,8 +78,9 @@ class UnitAdminController extends AbstractRestController
         $unit = new Unit();
         $unit
             ->setName($data['name'])
+            ->setTopic($data['topic'])
             ->setDescription($data['description'])
-            ->setTopic($data['topic']);
+            ->setFavorite($data['favorite']);
 
         // Second validation using the validation constraints
         $this->validateEntity($unit);
@@ -143,8 +145,9 @@ class UnitAdminController extends AbstractRestController
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName($mandatoryParameters)
-                ->configureDescription($mandatoryParameters)
                 ->configureTopic($mandatoryParameters)
+                ->configureDescription($mandatoryParameters)
+                ->configureFavorite($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -156,11 +159,14 @@ class UnitAdminController extends AbstractRestController
                 case 'name':
                     $unit->setName($value);
                     break;
+                case 'topic':
+                    $unit->setTopic($value);
+                    break;
                 case 'description':
                     $unit->setDescription($value);
                     break;
-                case 'topic':
-                    $unit->setTopic($value);
+                case 'favorite':
+                    $unit->setFavorite($value);
                     break;
             }
         }
