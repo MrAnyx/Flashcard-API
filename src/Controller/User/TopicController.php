@@ -48,7 +48,7 @@ class TopicController extends AbstractRestController
     }
 
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getOneTopic(int $id, TopicRepository $topicRepository): JsonResponse
+    public function getOneTopic(int $id): JsonResponse
     {
         $topic = $this->getResourceById(Topic::class, $id);
 
@@ -106,7 +106,7 @@ class TopicController extends AbstractRestController
     }
 
     #[Route('/topics/{id}', name: 'delete_topic', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
-    public function deleteTopic(int $id, TopicRepository $topicRepository, EntityManagerInterface $em): JsonResponse
+    public function deleteTopic(int $id, EntityManagerInterface $em): JsonResponse
     {
         $topic = $this->getResourceById(Topic::class, $id);
 
@@ -123,7 +123,6 @@ class TopicController extends AbstractRestController
     #[Route('/topics/{id}', name: 'update_topic', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
     public function updateTopic(
         int $id,
-        TopicRepository $topicRepository,
         EntityManagerInterface $em,
         RequestPayloadService $requestPayloadService,
         Request $request,
@@ -177,7 +176,7 @@ class TopicController extends AbstractRestController
     }
 
     #[Route('/topics/{id}/units', name: 'get_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getUnitsFromTopic(int $id, Request $request, TopicRepository $topicRepository, UnitRepository $unitRepository): JsonResponse
+    public function getUnitsFromTopic(int $id, Request $request, UnitRepository $unitRepository): JsonResponse
     {
         $topic = $this->getResourceById(Topic::class, $id);
 
@@ -199,8 +198,6 @@ class TopicController extends AbstractRestController
     #[Route('/topics/{id}/flashcards/reset', name: 'reset_topic', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetUnit(
         int $id,
-        TopicRepository $topicRepository,
-        EntityManagerInterface $em,
         ReviewManager $reviewManager
     ): JsonResponse {
         $topic = $this->getResourceById(Topic::class, $id);

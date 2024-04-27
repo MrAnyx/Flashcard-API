@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/auth', 'api_auth_', format: 'json')]
 class SecurityController extends AbstractRestController
@@ -38,7 +37,6 @@ class SecurityController extends AbstractRestController
         Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
-        ValidatorInterface $validator,
         UserOptionsResolver $userOptionsResolver,
         RequestPayloadService $requestPayloadService,
         TokenGenerator $tokenGenerator

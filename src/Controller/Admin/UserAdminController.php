@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/admin', 'api_admin_', format: 'json')]
 class UserAdminController extends AbstractRestController
@@ -60,7 +59,6 @@ class UserAdminController extends AbstractRestController
         Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
-        ValidatorInterface $validator,
         UserOptionsResolver $userOptionsResolver,
         RequestPayloadService $requestPayloadService,
         TokenGenerator $tokenGenerator

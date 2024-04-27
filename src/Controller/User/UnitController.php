@@ -49,7 +49,7 @@ class UnitController extends AbstractRestController
     }
 
     #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getOneUnit(int $id, UnitRepository $unitRepository): JsonResponse
+    public function getOneUnit(int $id): JsonResponse
     {
         $unit = $this->getResourceById(Unit::class, $id);
 
@@ -107,7 +107,7 @@ class UnitController extends AbstractRestController
     }
 
     #[Route('/units/{id}', name: 'delete_unit', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
-    public function deleteUnit(int $id, UnitRepository $unitRepository, EntityManagerInterface $em): JsonResponse
+    public function deleteUnit(int $id, EntityManagerInterface $em): JsonResponse
     {
         $unit = $this->getResourceById(Unit::class, $id);
 
@@ -124,7 +124,6 @@ class UnitController extends AbstractRestController
     #[Route('/units/{id}', name: 'update_unit', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
     public function updateUnit(
         int $id,
-        UnitRepository $unitRepository,
         EntityManagerInterface $em,
         RequestPayloadService $requestPayloadService,
         Request $request,

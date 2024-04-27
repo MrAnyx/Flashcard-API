@@ -48,7 +48,7 @@ class FlashcardController extends AbstractRestController
     }
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getOneFlashcard(int $id, FlashcardRepository $flashcardRepository): JsonResponse
+    public function getOneFlashcard(int $id): JsonResponse
     {
         $flashcard = $this->getResourceById(Flashcard::class, $id);
 
@@ -108,7 +108,7 @@ class FlashcardController extends AbstractRestController
     }
 
     #[Route('/flashcards/{id}', name: 'delete_flashcard', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
-    public function deleteFlashcard(int $id, FlashcardRepository $flashcardRepository, EntityManagerInterface $em): JsonResponse
+    public function deleteFlashcard(int $id, EntityManagerInterface $em): JsonResponse
     {
         $flashcard = $this->getResourceById(Flashcard::class, $id);
 
@@ -125,7 +125,6 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/{id}', name: 'update_flashcard', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
     public function updateFlashcard(
         int $id,
-        FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
         RequestPayloadService $requestPayloadService,
         Request $request,
@@ -190,7 +189,6 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/{id}/review', name: 'review_flashcard', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function reviewFlashcard(
         int $id,
-        FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
         RequestPayloadService $requestPayloadService,
         Request $request,
@@ -245,7 +243,6 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/{id}/reset', name: 'reset_flashcard', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetFlashcard(
         int $id,
-        EntityManagerInterface $em,
         ReviewManager $reviewManager
     ): JsonResponse {
         $flashcard = $this->getResourceById(Flashcard::class, $id);
@@ -260,8 +257,6 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/session', name: 'session_flashcard', methods: ['GET'])]
     public function getFlashcardSession(
-        EntityManagerInterface $em,
-        ReviewManager $reviewManager,
         FlashcardRepository $flashcardRepository
     ): JsonResponse {
         /** @var User $user */
