@@ -47,6 +47,39 @@ class TopicController extends AbstractRestController
         return $this->json($topics, context: ['groups' => ['read:topic:user']]);
     }
 
+    /*
+    https://github.com/omniti-labs/jsend
+    {
+        "@guid": "123e4567-e89b-12d3-a456-426614174000"
+        "@status": "success"
+        "@type": "Topic",
+        "@payload": {
+            "query": {
+                "page": 3
+                "order: "asc"
+                "sort": "id"
+            },
+            "request": {}
+        }
+        "@meta": {
+            "pagination" => [
+                "total" => 52,
+                "count" => 10,
+                "offset" => 20,
+                "items_per_page" => 10,
+                "total_pages" => 6,
+                "current_page" => 3,
+                "has_next_page" => true
+                "has_previous_page" => true,
+            ],
+            "timestamps": "2024-04-28T10:56:54Z"
+        },
+        "data": [
+
+        ]
+    }
+    */
+
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getOneTopic(int $id): JsonResponse
     {
