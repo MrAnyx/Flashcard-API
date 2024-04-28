@@ -50,25 +50,19 @@ class TopicController extends AbstractRestController
     /*
     https://github.com/omniti-labs/jsend
     {
-        "@status": "success"
-        "@type": "Topic",
-        "@payload": {
-            "query": {
-                "page": 3
-                "order: "asc"
-                "sort": "id"
+        "@status": "success",
+        "@context" {
+            "@type": "Topic",
+            "@pagination" => {
+                "total" => 52,
+                "count" => 10,
+                "offset" => 20,
+                "items_per_page" => 10,
+                "total_pages" => 6,
+                "current_page" => 3,
+                "has_next_page" => true
+                "has_previous_page" => true,
             },
-            "request": {}
-        }
-        "@pagination" => {
-            "total" => 52,
-            "count" => 10,
-            "offset" => 20,
-            "items_per_page" => 10,
-            "total_pages" => 6,
-            "current_page" => 3,
-            "has_next_page" => true
-            "has_previous_page" => true,
         },
         "@meta": {
             "@guid": "123e4567-e89b-12d3-a456-426614174000"
