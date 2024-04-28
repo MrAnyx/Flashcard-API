@@ -50,9 +50,9 @@ class TopicController extends AbstractRestController
     /*
     https://github.com/omniti-labs/jsend
     {
-        "@status": "success",
+        "@status": "valid",
+        "@timestamps": "2024-04-28T10:56:54Z",
         "@context" {
-            "type": "Topic",
             "pagination" => {
                 "total" => 52,
                 "count" => 10,
@@ -64,13 +64,19 @@ class TopicController extends AbstractRestController
                 "has_previous_page" => true,
             },
         },
-        "@meta": {
-            "guid": "123e4567-e89b-12d3-a456-426614174000"
-            "timestamps": "2024-04-28T10:56:54Z"
+        "data": []
+    }
+    
+    {
+        "@status": "invalid",
+        "@timestamps": "2024-04-28T10:56:54Z",
+        "@context" {
+            "pagination" => null,
         },
-        "data": [
-
-        ]
+        "data": {
+            "message": "",
+            "details": ""
+        }
     }
     */
 
