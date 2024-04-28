@@ -52,8 +52,8 @@ class TopicController extends AbstractRestController
     {
         "@status": "success",
         "@context" {
-            "@type": "Topic",
-            "@pagination" => {
+            "type": "Topic",
+            "pagination" => {
                 "total" => 52,
                 "count" => 10,
                 "offset" => 20,
@@ -65,7 +65,7 @@ class TopicController extends AbstractRestController
             },
         },
         "@meta": {
-            "@guid": "123e4567-e89b-12d3-a456-426614174000"
+            "guid": "123e4567-e89b-12d3-a456-426614174000"
             "timestamps": "2024-04-28T10:56:54Z"
         },
         "data": [
