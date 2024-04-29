@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-class Page
+readonly class Page
 {
     public function __construct(
-        public readonly int $page,
-        public readonly string $sort,
-        public readonly string $order
+        public int $page,
+        public string $sort,
+        public string $order
     ) {
     }
 }
