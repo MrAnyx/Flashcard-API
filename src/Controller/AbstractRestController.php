@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\JsonStandardStatus;
 use App\Exception\ApiException;
+use App\Model\JsonStandard;
 use App\Model\Page;
 use App\OptionsResolver\PaginatorOptionsResolver;
 use App\Service\EntityValidator;
@@ -12,6 +14,7 @@ use App\Service\ObjectFactory;
 use App\Service\SortableEntityChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Exception\ValidatorException;
@@ -81,5 +84,13 @@ class AbstractRestController extends AbstractController
         }
 
         return $resource;
+    }
+
+    public function jsonStd(mixed $data, JsonStandardStatus $jsonStatus = JsonStandardStatus::VALID, int $status = 200, array $headers = [], array $groups = []): JsonResponse
+    {
+        $serializationGroups = $groups;
+        $serializationGroups[] = JsonStandard::DEFAULT_GROUP;
+
+        return $this->json(new JsonStandard($data, $jsonStatus), $status, $headers, ['groups' => $serializationGroups]);
     }
 }

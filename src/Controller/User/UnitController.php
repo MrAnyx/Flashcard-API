@@ -45,7 +45,7 @@ class UnitController extends AbstractRestController
         );
 
         // Return paginate data
-        return $this->json($units, context: ['groups' => ['read:unit:user']]);
+        return $this->jsonStd($units, groups: ['read:unit:user']);
     }
 
     #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
