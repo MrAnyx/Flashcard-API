@@ -26,6 +26,7 @@ class ExceptionListener
         $exception = $event->getThrowable();
         $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
 
+        // TODO Refacto
         $format = [
             // 'code' => $exception->getCode(),
             'message' => Response::$statusTexts[$statusCode],

@@ -35,6 +35,8 @@ readonly class JsonStandard
 
         if ($data instanceof Paginator) {
             $this->data = $data->getData();
+
+            // TODO Refacto
             $this->pagination = [
                 'total' => $data->getTotal(),
                 'count' => $data->getCount(),
