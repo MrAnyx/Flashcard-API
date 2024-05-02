@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Enum\JsonStandardStatus;
+use App\Model\ErrorStandard;
 use App\Model\JsonStandard;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,18 +27,17 @@ class ExceptionListener
         $exception = $event->getThrowable();
         $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
 
-        // TODO Refacto
-        $format = [
-            // 'code' => $exception->getCode(),
-            'message' => Response::$statusTexts[$statusCode],
-            'details' => $exception->getMessage(),
-        ];
+        // 'code' => $exception->getCode(),
+
+        $error = new ErrorStandard(
+            Response::$statusTexts[$statusCode],
+            $exception->getMessage()
+        );
 
         $response = new JsonResponse(
             $this->normalizer->normalize(
-                new JsonStandard($format, JsonStandardStatus::INVALID),
+                new JsonStandard($error, JsonStandardStatus::INVALID),
                 'json',
-                ['groups' => [JsonStandard::DEFAULT_GROUP]]
             ),
             $statusCode);
 

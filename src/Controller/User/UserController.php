@@ -17,7 +17,7 @@ class UserController extends AbstractRestController
     {
         $user = $this->getUser();
 
-        return $this->jsonStd($user, groups: ['read:user:user']);
+        return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
     }
 
     #[Route('/users/me', name: 'delete_me', methods: ['DELETE'])]

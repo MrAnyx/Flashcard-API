@@ -86,11 +86,8 @@ class AbstractRestController extends AbstractController
         return $resource;
     }
 
-    public function jsonStd(mixed $data, JsonStandardStatus $jsonStatus = JsonStandardStatus::VALID, int $status = 200, array $headers = [], array $groups = []): JsonResponse
+    public function jsonStd(mixed $data, int $status = 200, array $headers = [], array $context = [], JsonStandardStatus $jsonStatus = JsonStandardStatus::VALID): JsonResponse
     {
-        $serializationGroups = $groups;
-        $serializationGroups[] = JsonStandard::DEFAULT_GROUP;
-
-        return $this->json(new JsonStandard($data, $jsonStatus), $status, $headers, ['groups' => $serializationGroups]);
+        return $this->json(new JsonStandard($data, $jsonStatus), $status, $headers, $context);
     }
 }

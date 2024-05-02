@@ -35,7 +35,7 @@ class UnitAdminController extends AbstractRestController
         );
 
         // Return paginate data
-        return $this->json($units, context: ['groups' => ['read:unit:admin']]);
+        return $this->jsonStd($units, context: ['groups' => ['read:unit:admin']]);
     }
 
     #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -49,7 +49,7 @@ class UnitAdminController extends AbstractRestController
             throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
         }
 
-        return $this->json($unit, context: ['groups' => ['read:unit:admin']]);
+        return $this->jsonStd($unit, context: ['groups' => ['read:unit:admin']]);
     }
 
     #[Route('/units', name: 'create_unit', methods: ['POST'])]
@@ -90,7 +90,7 @@ class UnitAdminController extends AbstractRestController
         $em->flush();
 
         // Return the element with the the status 201 (Created)
-        return $this->json(
+        return $this->jsonStd(
             $unit,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('api_admin_get_unit', ['id' => $unit->getId()])],
@@ -114,7 +114,7 @@ class UnitAdminController extends AbstractRestController
         $em->flush();
 
         // Return a response with status 204 (No Content)
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/units/{id}', name: 'update_unit', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
@@ -178,6 +178,6 @@ class UnitAdminController extends AbstractRestController
         $em->flush();
 
         // Return the element
-        return $this->json($unit, context: ['groups' => ['read:unit:admin']]);
+        return $this->jsonStd($unit, context: ['groups' => ['read:unit:admin']]);
     }
 }

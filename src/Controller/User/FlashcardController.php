@@ -44,7 +44,7 @@ class FlashcardController extends AbstractRestController
             $user
         );
 
-        return $this->json($flashcards, context: ['groups' => ['read:flashcard:user']]);
+        return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -54,7 +54,7 @@ class FlashcardController extends AbstractRestController
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not access this resource');
 
-        return $this->json($flashcard, context: ['groups' => ['read:flashcard:user']]);
+        return $this->jsonStd($flashcard, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards', name: 'create_flashcard', methods: ['POST'])]
@@ -99,7 +99,7 @@ class FlashcardController extends AbstractRestController
         $em->flush();
 
         // Return the flashcard with the the status 201 (Created)
-        return $this->json(
+        return $this->jsonStd(
             $flashcard,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('api_get_flashcard', ['id' => $flashcard->getId()])],
@@ -119,7 +119,7 @@ class FlashcardController extends AbstractRestController
         $em->flush();
 
         // Return a response with status 204 (No Content)
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/{id}', name: 'update_flashcard', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
@@ -183,7 +183,7 @@ class FlashcardController extends AbstractRestController
         $em->flush();
 
         // Return the flashcard
-        return $this->json($flashcard, context: ['groups' => ['read:flashcard:user']]);
+        return $this->jsonStd($flashcard, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards/{id}/review', name: 'review_flashcard', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
@@ -226,7 +226,7 @@ class FlashcardController extends AbstractRestController
 
         $em->flush();
 
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/reset', name: 'reset_all_flashcard', methods: ['PATCH'])]
@@ -237,7 +237,7 @@ class FlashcardController extends AbstractRestController
         $user = $this->getUser();
         $reviewManager->resetAllFlashcards($user);
 
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/{id}/reset', name: 'reset_flashcard', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
@@ -252,7 +252,7 @@ class FlashcardController extends AbstractRestController
         $user = $this->getUser();
         $reviewManager->resetFlashcard($flashcard, $user);
 
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/session', name: 'session_flashcard', methods: ['GET'])]
@@ -265,6 +265,6 @@ class FlashcardController extends AbstractRestController
         $cardsToReview = $flashcardRepository->findFlashcardToReview($user, SpacedRepetitionScheduler::SESSION_SIZE);
         shuffle($cardsToReview);
 
-        return $this->json($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
+        return $this->jsonStd($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
     }
 }

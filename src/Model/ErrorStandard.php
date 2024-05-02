@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-class Test
+readonly class ErrorStandard
 {
     public function __construct(
-        public readonly string $string
+        public string $message,
+        public string $details,
     ) {
     }
 }

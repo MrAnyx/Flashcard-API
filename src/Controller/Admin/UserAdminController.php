@@ -37,7 +37,7 @@ class UserAdminController extends AbstractRestController
         );
 
         // Return paginate data
-        return $this->json($users, context: ['groups' => ['read:user:admin']]);
+        return $this->jsonStd($users, context: ['groups' => ['read:user:admin']]);
     }
 
     #[Route('/users/{id}', name: 'get_user', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -51,7 +51,7 @@ class UserAdminController extends AbstractRestController
             throw new ApiException(Response::HTTP_NOT_FOUND, 'User with id %d was not found', [$id]);
         }
 
-        return $this->json($user, context: ['groups' => ['read:user:admin']]);
+        return $this->jsonStd($user, context: ['groups' => ['read:user:admin']]);
     }
 
     #[Route('/users', name: 'create_user', methods: ['POST'])]
@@ -97,7 +97,7 @@ class UserAdminController extends AbstractRestController
         $em->flush();
 
         // Return the element with the the status 201 (Created)
-        return $this->json(
+        return $this->jsonStd(
             $user,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('api_admin_get_user', ['id' => $user->getId()])],
@@ -121,7 +121,7 @@ class UserAdminController extends AbstractRestController
         $em->flush();
 
         // Return a response with status 204 (No Content)
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/users/{id}', name: 'update_user', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
@@ -190,6 +190,6 @@ class UserAdminController extends AbstractRestController
         $em->flush();
 
         // Return the user
-        return $this->json($user, context: ['groups' => ['read:user:admin']]);
+        return $this->jsonStd($user, context: ['groups' => ['read:user:admin']]);
     }
 }
