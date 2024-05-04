@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Repository;
 
+use App\Model\Page;
 use App\Model\Paginator;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -25,7 +26,7 @@ class UserRepositoryTest extends KernelTestCase
         /** @var UserRepository $userRepository */
         $userRepository = self::getContainer()->get(UserRepository::class);
 
-        $result = $userRepository->findAllWithPagination(1, 'id', 'ASC');
+        $result = $userRepository->findAllWithPagination(new Page(1, 'id', 'ASC'));
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());
