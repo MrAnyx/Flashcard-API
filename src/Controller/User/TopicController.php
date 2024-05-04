@@ -36,49 +36,11 @@ class TopicController extends AbstractRestController
         $user = $this->getUser();
 
         // Get data with pagination
-        $topics = $topicRepository->findAllWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order,
-            $user
-        );
+        $topics = $topicRepository->findAllWithPagination($pagination, $user);
 
         // Return paginate data
-        return $this->json($topics, context: ['groups' => ['read:topic:user']]);
+        return $this->jsonStd($topics, context: ['groups' => ['read:topic:user']]);
     }
-
-    /*
-    https://github.com/omniti-labs/jsend
-    {
-        "@status": "valid",
-        "@timestamps": "2024-04-28T10:56:54Z",
-        "@context" {
-            "pagination" => {
-                "total" => 52,
-                "count" => 10,
-                "offset" => 20,
-                "items_per_page" => 10,
-                "total_pages" => 6,
-                "current_page" => 3,
-                "has_next_page" => true
-                "has_previous_page" => true,
-            },
-        },
-        "data": []
-    }
-    
-    {
-        "@status": "invalid",
-        "@timestamps": "2024-04-28T10:56:54Z",
-        "@context" {
-            "pagination" => null,
-        },
-        "data": {
-            "message": "",
-            "details": ""
-        }
-    }
-    */
 
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getOneTopic(int $id): JsonResponse
@@ -87,7 +49,7 @@ class TopicController extends AbstractRestController
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
 
-        return $this->json($topic, context: ['groups' => ['read:topic:user']]);
+        return $this->jsonStd($topic, context: ['groups' => ['read:topic:user']]);
     }
 
     #[Route('/topics', name: 'create_topic', methods: ['POST'])]
@@ -130,7 +92,7 @@ class TopicController extends AbstractRestController
         $em->flush();
 
         // Return the element with the the status 201 (Created)
-        return $this->json(
+        return $this->jsonStd(
             $topic,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('api_get_topic', ['id' => $topic->getId()])],
@@ -150,7 +112,7 @@ class TopicController extends AbstractRestController
         $em->flush();
 
         // Return a response with status 204 (No Content)
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/topics/{id}', name: 'update_topic', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
@@ -205,7 +167,7 @@ class TopicController extends AbstractRestController
         $em->flush();
 
         // Return the element
-        return $this->json($topic, context: ['groups' => ['read:topic:user']]);
+        return $this->jsonStd($topic, context: ['groups' => ['read:topic:user']]);
     }
 
     #[Route('/topics/{id}/units', name: 'get_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -218,14 +180,9 @@ class TopicController extends AbstractRestController
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         // Get data with pagination
-        $units = $unitRepository->findByTopicWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order,
-            $topic
-        );
+        $units = $unitRepository->findByTopicWithPagination($pagination, $topic);
 
-        return $this->json($units, context: ['groups' => ['read:unit:user']]);
+        return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
     }
 
     #[Route('/topics/{id}/flashcards/reset', name: 'reset_topic', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
@@ -240,7 +197,7 @@ class TopicController extends AbstractRestController
         $user = $this->getUser();
         $reviewManager->resetFlashcards($topic, $user);
 
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/topics/{id}/session', name: 'session_topic', methods: ['GET'])]
@@ -257,6 +214,6 @@ class TopicController extends AbstractRestController
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($topic, $user, SpacedRepetitionScheduler::SESSION_SIZE);
         shuffle($cardsToReview);
 
-        return $this->json($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
+        return $this->jsonStd($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
     }
 }

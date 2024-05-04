@@ -29,7 +29,7 @@ class SecurityController extends AbstractRestController
             throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Unauthenticated user');
         }
 
-        return $this->json($user, context: ['groups' => ['read:user:user']]);
+        return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
     }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
@@ -72,6 +72,6 @@ class SecurityController extends AbstractRestController
         $em->persist($user);
         $em->flush();
 
-        return $this->json($user, Response::HTTP_CREATED, context: ['groups' => ['read:user:user']]);
+        return $this->jsonStd($user, Response::HTTP_CREATED, context: ['groups' => ['read:user:user']]);
     }
 }

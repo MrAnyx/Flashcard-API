@@ -104,20 +104,4 @@ class PaginationTest extends KernelTestCase
         $this->assertIsBool($paginator->hasPreviousPage());
         $this->assertFalse($paginator->hasPreviousPage());
     }
-
-    public function testIterator(): void
-    {
-        $arrayPaginator = $this->paginator->getIterator();
-        $this->assertArrayHasKey('data', $arrayPaginator);
-        $this->assertArrayHasKey('pagination', $arrayPaginator);
-
-        $this->assertArrayHasKey('total', $arrayPaginator['pagination']);
-        $this->assertArrayHasKey('count', $arrayPaginator['pagination']);
-        $this->assertArrayHasKey('offset', $arrayPaginator['pagination']);
-        $this->assertArrayHasKey('items_per_page', $arrayPaginator['pagination']);
-        $this->assertArrayHasKey('total_pages', $arrayPaginator['pagination']);
-        $this->assertArrayHasKey('current_page', $arrayPaginator['pagination']);
-        $this->assertArrayHasKey('has_next_page', $arrayPaginator['pagination']);
-        $this->assertArrayHasKey('has_previous_page', $arrayPaginator['pagination']);
-    }
 }

@@ -9,6 +9,7 @@ use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Enum\StateType;
+use App\Model\Page;
 use App\Model\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -28,7 +29,7 @@ class FlashcardRepository extends ServiceEntityRepository
         parent::__construct($registry, Flashcard::class);
     }
 
-    public function findAllWithPagination(int $page, string $sort, string $order, ?User $user = null): Paginator
+    public function findAllWithPagination(Page $page, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('f');
 
@@ -40,19 +41,19 @@ class FlashcardRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        $query->orderBy("f.{$sort}", $order);
+        $query->orderBy("f.{$page->sort}", $page->order);
 
-        return new Paginator($query, $page);
+        return new Paginator($query, $page->page);
     }
 
-    public function findByUnitWithPagination(int $page, string $sort, string $order, Unit $unit): Paginator
+    public function findByUnitWithPagination(Page $page, Unit $unit): Paginator
     {
         $query = $this->createQueryBuilder('f')
             ->where('f.unit = :unit')
             ->setParameter('unit', $unit)
-            ->orderBy("f.{$sort}", $order);
+            ->orderBy("f.{$page->sort}", $page->order);
 
-        return new Paginator($query, $page);
+        return new Paginator($query, $page->page);
     }
 
     public function resetAll(User $user)

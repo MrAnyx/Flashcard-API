@@ -37,15 +37,10 @@ class UnitController extends AbstractRestController
         $user = $this->getUser();
 
         // Get data with pagination
-        $units = $unitRepository->findAllWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order,
-            $user
-        );
+        $units = $unitRepository->findAllWithPagination($pagination, $user);
 
         // Return paginate data
-        return $this->json($units, context: ['groups' => ['read:unit:user']]);
+        return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
     }
 
     #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -55,7 +50,7 @@ class UnitController extends AbstractRestController
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not access this resource');
 
-        return $this->json($unit, context: ['groups' => ['read:unit:user']]);
+        return $this->jsonStd($unit, context: ['groups' => ['read:unit:user']]);
     }
 
     #[Route('/units', name: 'create_unit', methods: ['POST'])]
@@ -98,7 +93,7 @@ class UnitController extends AbstractRestController
         $em->flush();
 
         // Return the element with the the status 201 (Created)
-        return $this->json(
+        return $this->jsonStd(
             $unit,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('api_get_unit', ['id' => $unit->getId()])],
@@ -118,7 +113,7 @@ class UnitController extends AbstractRestController
         $em->flush();
 
         // Return a response with status 204 (No Content)
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/units/{id}', name: 'update_unit', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
@@ -178,7 +173,7 @@ class UnitController extends AbstractRestController
         $em->flush();
 
         // Return the element
-        return $this->json($unit, context: ['groups' => ['read:unit:user']]);
+        return $this->jsonStd($unit, context: ['groups' => ['read:unit:user']]);
     }
 
     #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -191,14 +186,9 @@ class UnitController extends AbstractRestController
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         // Get data with pagination
-        $flashcards = $flashcardRepository->findByUnitWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order,
-            $unit
-        );
+        $flashcards = $flashcardRepository->findByUnitWithPagination($pagination, $unit);
 
-        return $this->json($flashcards, context: ['groups' => ['read:flashcard:user']]);
+        return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/units/{id}/flashcards/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
@@ -213,7 +203,7 @@ class UnitController extends AbstractRestController
         $user = $this->getUser();
         $reviewManager->resetFlashcards($unit, $user);
 
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/units/{id}/session', name: 'session_unit', methods: ['GET'])]
@@ -230,6 +220,6 @@ class UnitController extends AbstractRestController
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, SpacedRepetitionScheduler::SESSION_SIZE);
         shuffle($cardsToReview);
 
-        return $this->json($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
+        return $this->jsonStd($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
     }
 }

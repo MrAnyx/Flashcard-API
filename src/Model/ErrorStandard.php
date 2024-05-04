@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-readonly class Page
+readonly class ErrorStandard
 {
     public function __construct(
-        public int $page,
-        public string $sort,
-        public string $order
+        public string $message,
+        public string $details,
     ) {
     }
 }

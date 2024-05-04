@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
+use App\Model\Page;
 use App\Model\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,7 +27,7 @@ class UnitRepository extends ServiceEntityRepository
         parent::__construct($registry, Unit::class);
     }
 
-    public function findAllWithPagination(int $page, string $sort, string $order, ?User $user = null): Paginator
+    public function findAllWithPagination(Page $page, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('u');
 
@@ -37,18 +38,18 @@ class UnitRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        $query->orderBy("u.{$sort}", $order);
+        $query->orderBy("u.{$page->sort}", $page->order);
 
-        return new Paginator($query, $page);
+        return new Paginator($query, $page->page);
     }
 
-    public function findByTopicWithPagination(int $page, string $sort, string $order, Topic $topic): Paginator
+    public function findByTopicWithPagination(Page $page, Topic $topic): Paginator
     {
         $query = $this->createQueryBuilder('u')
             ->where('u.topic = :topic')
             ->setParameter('topic', $topic)
-            ->orderBy("u.{$sort}", $order);
+            ->orderBy("u.{$page->sort}", $page->order);
 
-        return new Paginator($query, $page);
+        return new Paginator($query, $page->page);
     }
 }

@@ -27,13 +27,9 @@ class FlashcardAdminController extends AbstractRestController
     ): JsonResponse {
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
 
-        $flashcards = $flashcardRepository->findAllWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order
-        );
+        $flashcards = $flashcardRepository->findAllWithPagination($pagination);
 
-        return $this->json($flashcards, context: ['groups' => ['read:flashcard:admin']]);
+        return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:admin']]);
     }
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -47,7 +43,7 @@ class FlashcardAdminController extends AbstractRestController
             throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
         }
 
-        return $this->json($flashcard, context: ['groups' => ['read:flashcard:admin']]);
+        return $this->jsonStd($flashcard, context: ['groups' => ['read:flashcard:admin']]);
     }
 
     #[Route('/flashcards', name: 'create_flashcard', methods: ['POST'])]
@@ -90,7 +86,7 @@ class FlashcardAdminController extends AbstractRestController
         $em->flush();
 
         // Return the flashcard with the the status 201 (Created)
-        return $this->json(
+        return $this->jsonStd(
             $flashcard,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('api_admin_get_flashcard', ['id' => $flashcard->getId()])],
@@ -114,7 +110,7 @@ class FlashcardAdminController extends AbstractRestController
         $em->flush();
 
         // Return a response with status 204 (No Content)
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/{id}', name: 'update_flashcard', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
@@ -182,6 +178,6 @@ class FlashcardAdminController extends AbstractRestController
         $em->flush();
 
         // Return the flashcard
-        return $this->json($flashcard, context: ['groups' => ['read:flashcard:admin']]);
+        return $this->jsonStd($flashcard, context: ['groups' => ['read:flashcard:admin']]);
     }
 }

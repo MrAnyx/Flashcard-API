@@ -73,36 +73,11 @@ class Paginator extends DoctrinePaginator
 
     public function hasNextPage(): bool
     {
-        if ($this->getCurrentPage() >= 1 && $this->getCurrentPage() < $this->getTotalPages()) {
-            return true;
-        }
-
-        return false;
+        return $this->getCurrentPage() >= 1 && $this->getCurrentPage() < $this->getTotalPages();
     }
 
     public function hasPreviousPage(): bool
     {
-        if ($this->getCurrentPage() > 1 && $this->getCurrentPage() <= $this->getTotalPages()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function getIterator(): \ArrayIterator
-    {
-        return new \ArrayIterator([
-            'data' => $this->getData(),
-            'pagination' => [
-                'total' => $this->getTotal(),
-                'count' => $this->getCount(),
-                'offset' => $this->getOffset(),
-                'items_per_page' => $this->getItemsPerPage(),
-                'total_pages' => $this->getTotalPages(),
-                'current_page' => $this->getCurrentPage(),
-                'has_next_page' => $this->hasNextPage(),
-                'has_previous_page' => $this->hasPreviousPage(),
-            ],
-        ]);
+        return $this->getCurrentPage() > 1 && $this->getCurrentPage() <= $this->getTotalPages();
     }
 }

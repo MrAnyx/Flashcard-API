@@ -23,8 +23,6 @@ return (new PhpCsFixer\Config())
         'combine_consecutive_unsets' => true,
         // Concatenation should be spaced according to configuration.
         'concat_space' => ['spacing' => 'one'],
-        // Class `DateTimeImmutable` should be used instead of `DateTime`.
-        'date_time_immutable' => true,
         // Force strict types declaration in all files. Requires PHP >= 7.0.
         'declare_strict_types' => true,
         // Escape implicit backslashes in strings and heredocs to ease the understanding of which are special chars interpreted by PHP and which not.
