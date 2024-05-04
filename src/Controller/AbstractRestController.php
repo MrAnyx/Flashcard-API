@@ -10,13 +10,13 @@ use App\Model\JsonStandard;
 use App\Model\Page;
 use App\OptionsResolver\PaginatorOptionsResolver;
 use App\Service\EntityValidator;
-use App\Service\ObjectFactory;
 use App\Service\SortableEntityChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 class AbstractRestController extends AbstractController
@@ -25,7 +25,8 @@ class AbstractRestController extends AbstractController
         private SortableEntityChecker $sortableEntityChecker,
         private PaginatorOptionsResolver $paginatorOptionsResolver,
         private EntityManagerInterface $em,
-        private EntityValidator $entityValidator
+        private EntityValidator $entityValidator,
+        private DenormalizerInterface $denormalizer
     ) {
     }
 
@@ -48,8 +49,7 @@ class AbstractRestController extends AbstractController
         }
 
         try {
-            /** @var Page $page */
-            $page = ObjectFactory::create(Page::class, $queryParams);
+            $page = $this->denormalizer->denormalize($queryParams, Page::class);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
         }
