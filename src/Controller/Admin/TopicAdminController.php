@@ -28,11 +28,7 @@ class TopicAdminController extends AbstractRestController
         $pagination = $this->getPaginationParameter(Topic::class, $request);
 
         // Get data with pagination
-        $topics = $topicRepository->findAllWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order
-        );
+        $topics = $topicRepository->findAllWithPagination($pagination);
 
         // Return paginate data
         return $this->jsonStd($topics, context: ['groups' => ['read:topic:admin']]);

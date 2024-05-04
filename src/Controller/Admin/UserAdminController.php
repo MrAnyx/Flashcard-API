@@ -31,9 +31,7 @@ class UserAdminController extends AbstractRestController
 
         // Get data with pagination
         $users = $userRepository->findAllWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order
+            $pagination
         );
 
         // Return paginate data

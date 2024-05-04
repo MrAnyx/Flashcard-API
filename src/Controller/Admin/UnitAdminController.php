@@ -28,11 +28,7 @@ class UnitAdminController extends AbstractRestController
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         // Get data with pagination
-        $units = $unitRepository->findAllWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order
-        );
+        $units = $unitRepository->findAllWithPagination($pagination);
 
         // Return paginate data
         return $this->jsonStd($units, context: ['groups' => ['read:unit:admin']]);

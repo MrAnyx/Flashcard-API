@@ -37,12 +37,7 @@ class FlashcardController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
-        $flashcards = $flashcardRepository->findAllWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order,
-            $user
-        );
+        $flashcards = $flashcardRepository->findAllWithPagination($pagination, $user);
 
         return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }

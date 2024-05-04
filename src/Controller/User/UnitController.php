@@ -37,12 +37,7 @@ class UnitController extends AbstractRestController
         $user = $this->getUser();
 
         // Get data with pagination
-        $units = $unitRepository->findAllWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order,
-            $user
-        );
+        $units = $unitRepository->findAllWithPagination($pagination, $user);
 
         // Return paginate data
         return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
@@ -191,12 +186,7 @@ class UnitController extends AbstractRestController
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         // Get data with pagination
-        $flashcards = $flashcardRepository->findByUnitWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order,
-            $unit
-        );
+        $flashcards = $flashcardRepository->findByUnitWithPagination($pagination, $unit);
 
         return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }

@@ -36,12 +36,7 @@ class TopicController extends AbstractRestController
         $user = $this->getUser();
 
         // Get data with pagination
-        $topics = $topicRepository->findAllWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order,
-            $user
-        );
+        $topics = $topicRepository->findAllWithPagination($pagination, $user);
 
         // Return paginate data
         return $this->jsonStd($topics, context: ['groups' => ['read:topic:user']]);
@@ -185,12 +180,7 @@ class TopicController extends AbstractRestController
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         // Get data with pagination
-        $units = $unitRepository->findByTopicWithPagination(
-            $pagination->page,
-            $pagination->sort,
-            $pagination->order,
-            $topic
-        );
+        $units = $unitRepository->findByTopicWithPagination($pagination, $topic);
 
         return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
     }
