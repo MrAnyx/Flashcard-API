@@ -25,12 +25,12 @@ class Flashcard
     #[Sortable]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?\DateTimeImmutable $updatedAt = null;
@@ -52,11 +52,11 @@ class Flashcard
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?string $details = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?\DateTimeImmutable $nextReview = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?\DateTimeImmutable $previousReview = null;
 

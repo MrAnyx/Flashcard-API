@@ -8,6 +8,7 @@ use App\Attribut\Sortable;
 use App\Repository\UnitRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -30,12 +31,12 @@ class Unit
     #[Sortable]
     private ?string $name = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
     private ?\DateTimeImmutable $updatedAt = null;

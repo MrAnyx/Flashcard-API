@@ -22,9 +22,9 @@ class JsonStandardNormalizer implements NormalizerInterface
     public function normalize($data, ?string $format = null, array $context = []): array
     {
         if (\is_array($data->data)) {
-            $normalizedData = array_map(fn ($el) => $this->normalizer->normalize($el, $format, $context), $data->data);
+            $normalizedData = array_map(fn ($el) => $this->normalizeData($el, $format, $context), $data->data);
         } else {
-            $normalizedData = $this->normalizer->normalize($data->data, $format, $context);
+            $normalizedData = $this->normalizeData($data->data, $format, $context);
         }
 
         return [
@@ -33,6 +33,15 @@ class JsonStandardNormalizer implements NormalizerInterface
             '@pagination' => $data->pagination,
             'data' => $normalizedData,
         ];
+    }
+
+    public function normalizeData($data, ?string $format = null, array $context = []): mixed
+    {
+        if (\is_object($data)) {
+            return $this->normalizer->normalize($data, $format, $context);
+        } elseif (\is_scalar($data) || null === $data) {
+            return $data;
+        }
     }
 
     public function supportsNormalization($data, ?string $format = null, array $context = []): bool

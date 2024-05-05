@@ -27,7 +27,7 @@ class Review
     #[Assert\NotBlank(message: 'You must associate a user to this review')]
     private ?User $user = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $date = null;
 
     #[ORM\Column(type: Types::INTEGER, enumType: GradeType::class)]

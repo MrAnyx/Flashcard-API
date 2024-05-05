@@ -40,4 +40,8 @@ class TopicRepository extends ServiceEntityRepository
 
         return new Paginator($query, $page->page);
     }
+
+    public function findRecentTopics(): void
+    {
+    }
 }

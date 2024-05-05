@@ -53,12 +53,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Groups(['read:user:user'])]
     private ?string $token = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
     private ?\DateTimeImmutable $updatedAt = null;
@@ -67,9 +67,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Groups(['read:user:user', 'read:user:admin'])]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column(type: Types::STRING)]
     private ?string $password = null;
 
