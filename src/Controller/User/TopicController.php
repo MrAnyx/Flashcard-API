@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route('/api', 'api_', format: 'json')]
 class TopicController extends AbstractRestController
@@ -219,8 +218,10 @@ class TopicController extends AbstractRestController
     }
 
     #[Route('/topics/recent', name: 'recent_topic', methods: ['GET'])]
-    public function getRecentTopics(TopicRepository $topicRepository, NormalizerInterface $normalizer): JsonResponse
+    public function getRecentTopics(TopicRepository $topicRepository): JsonResponse
     {
-        return $this->jsonStd(null);
+        $recentTopics = $topicRepository->findRecentTopics($this->getUser(), 5);
+
+        return $this->jsonStd($recentTopics, context: ['groups' => ['read:topic:user']]);
     }
 }
