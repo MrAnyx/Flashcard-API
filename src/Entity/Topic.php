@@ -20,24 +20,24 @@ class Topic
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a topic can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
-    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user'])]
     #[Sortable]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user'])]
     #[Sortable]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user'])]
     #[Sortable]
     private ?\DateTimeImmutable $updatedAt = null;
 
@@ -147,12 +147,6 @@ class Topic
         }
 
         return $this;
-    }
-
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
-    public function getCountUnits(): int
-    {
-        return $this->units->count();
     }
 
     public function getDescription(): ?string

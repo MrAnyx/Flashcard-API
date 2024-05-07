@@ -80,7 +80,6 @@ class Flashcard
 
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
     #[Assert\NotBlank(message: 'You must associate a unit to this flashcard')]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     private ?Unit $unit = null;
 
     #[ORM\OneToMany(mappedBy: 'flashcard', targetEntity: Review::class, cascade: ['remove'])]
