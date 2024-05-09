@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\User;
 
 use App\Controller\AbstractRestController;
+use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Exception\ApiException;
@@ -221,5 +222,26 @@ class UnitController extends AbstractRestController
         shuffle($cardsToReview);
 
         return $this->jsonStd($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
+    }
+
+    #[Route('/units/recent', name: 'recent_units', methods: ['GET'])]
+    public function getRecentUnits(UnitRepository $unitRepository): JsonResponse
+    {
+        $recentUnits = $unitRepository->findRecentTopics($this->getUser(), null, 5);
+
+        return $this->jsonStd($recentUnits, context: ['groups' => ['read:unit:user']]);
+    }
+
+    #[Route('/topics/{id}/units/recent', name: 'recent_units_by_topic', methods: ['GET'])]
+    public function getRecentUnitsByTopic(
+        int $id,
+        UnitRepository $unitRepository
+    ): JsonResponse {
+        $topic = $this->getResourceById(Topic::class, $id);
+        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
+
+        $recentUnits = $unitRepository->findRecentTopics($this->getUser(), $topic, 5);
+
+        return $this->jsonStd($recentUnits, context: ['groups' => ['read:unit:user']]);
     }
 }

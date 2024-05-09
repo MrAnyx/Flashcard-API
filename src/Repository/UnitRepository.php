@@ -52,4 +52,30 @@ class UnitRepository extends ServiceEntityRepository
 
         return new Paginator($query, $page->page);
     }
+
+    public function findRecentTopics(User $user, ?Topic $topic, int $maxResults = 5): array
+    {
+        $query = $this->createQueryBuilder('u')
+            ->select('u', 'COUNT(r.id) AS HIDDEN nbReviews')
+            ->join('u.topic', 't')
+            ->join('u.flashcards', 'f')
+            ->join('f.reviewHistory', 'r')
+            ->where('t.author = :user')
+            ->andWhere('r.reset = :reset')
+            ->groupBy('u.id')
+            ->orderBy('DATE(r.date)', 'DESC')
+            ->addOrderBy('nbReviews', 'DESC')
+            ->addOrderBy('r.date', 'DESC')
+            ->setMaxResults($maxResults)
+            ->setParameter('user', $user)
+            ->setParameter('reset', false);
+
+        if ($topic !== null) {
+            $query
+                ->andWhere('t = :topic')
+                ->setParameter('topic', $topic);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }
