@@ -20,14 +20,14 @@ class Topic
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin'])]
     #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a topic can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin'])]
     #[Sortable]
     private ?string $name = null;
 

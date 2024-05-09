@@ -27,7 +27,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(['read:user:admin', 'read:user:user'])]
+    #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
     private ?int $id = null;
 
@@ -43,7 +43,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotBlank(message: 'Your username can not be blank')]
     #[Assert\Length(max: 30, maxMessage: 'Your username can not exceed {{ limit }} characters')]
     #[Assert\Regex(pattern: Regex::USERNAME_SLASH, message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
-    #[Groups(['read:user:admin', 'read:user:user'])]
+    #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
     private ?string $username = null;
 
