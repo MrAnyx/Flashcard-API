@@ -34,9 +34,6 @@
                 }
             },
             "extensions": [
-                // "hbenl.vscode-test-explorer",
-                // "ms-vscode.test-adapter-converter",
-                // "recca0120.vscode-phpunit",
                 "esbenp.prettier-vscode",
                 "MehediDracula.php-namespace-resolver",
                 "bmewburn.vscode-intelephense-client",
@@ -45,7 +42,8 @@
                 "MehediDracula.php-namespace-resolver",
                 "mikestead.dotenv",
                 "EditorConfig.EditorConfig",
-                "junstyle.php-cs-fixer"
+                "junstyle.php-cs-fixer",
+                "Postman.postman-for-vscode"
             ]
         }
     },

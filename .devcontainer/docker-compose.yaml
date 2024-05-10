@@ -2,6 +2,8 @@ version: "3.8"
 
 services:
     database:
+        networks:
+            - flashcard-net
         command: --max-allowed-packet=64MB
         container_name: flashcard-database
         image: mariadb
@@ -18,6 +20,8 @@ services:
 
     mailer:
         image: rnwood/smtp4dev
+        networks:
+            - flashcard-net
         container_name: flashcard-mailer
         ports:
             - 8082:80
@@ -25,6 +29,8 @@ services:
 
     adminer:
         image: adminer
+        networks:
+            - flashcard-net
         container_name: flashcard-adminer
         depends_on:
             - database
@@ -34,6 +40,8 @@ services:
     nginx:
         image: nginx:alpine3.18
         container_name: flashcard-nginx
+        networks:
+            - flashcard-net
         ports:
             - 8080:80
         volumes:
@@ -44,6 +52,8 @@ services:
 
     php:
         container_name: flashcard-php
+        networks:
+            - flashcard-net
         build:
             context: .
             dockerfile: Dockerfile
@@ -53,6 +63,10 @@ services:
             - 9000:9000
         depends_on:
             - database
+
+networks:
+  flashcard-net:
+    external: true
 
 volumes:
     data:
