@@ -61,6 +61,7 @@ class SecurityController extends AbstractRestController
             ->setEmail($data['email'])
             ->setUsername($data['username'])
             ->setToken($tokenGenerator->generateToken())
+            ->setRoles(["ROLE_USER"])
             ->setRawPassword($data['password']);
 
         $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
