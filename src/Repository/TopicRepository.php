@@ -41,7 +41,7 @@ class TopicRepository extends ServiceEntityRepository
         return new Paginator($query, $page->page);
     }
 
-    public function findRecentTopics(User $user, int $maxResults = 5): array
+    public function findRecentTopics(User $user, int $maxResults = 4): array
     {
         return $this->createQueryBuilder('t')
             ->select('t', 'COUNT(r.id) AS HIDDEN nbReviews')

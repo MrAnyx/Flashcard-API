@@ -53,7 +53,7 @@ class UnitRepository extends ServiceEntityRepository
         return new Paginator($query, $page->page);
     }
 
-    public function findRecentTopics(User $user, ?Topic $topic, int $maxResults = 5): array
+    public function findRecentUnitsByTopic(User $user, ?Topic $topic, int $maxResults = 4): array
     {
         $query = $this->createQueryBuilder('u')
             ->select('u', 'COUNT(r.id) AS HIDDEN nbReviews')

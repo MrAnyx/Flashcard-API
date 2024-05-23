@@ -227,7 +227,7 @@ class UnitController extends AbstractRestController
     #[Route('/units/recent', name: 'recent_units', methods: ['GET'])]
     public function getRecentUnits(UnitRepository $unitRepository): JsonResponse
     {
-        $recentUnits = $unitRepository->findRecentTopics($this->getUser(), null, 5);
+        $recentUnits = $unitRepository->findRecentUnitsByTopic($this->getUser(), null, 4);
 
         return $this->jsonStd($recentUnits, context: ['groups' => ['read:unit:user']]);
     }
@@ -240,7 +240,7 @@ class UnitController extends AbstractRestController
         $topic = $this->getResourceById(Topic::class, $id);
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
 
-        $recentUnits = $unitRepository->findRecentTopics($this->getUser(), $topic, 5);
+        $recentUnits = $unitRepository->findRecentUnitsByTopic($this->getUser(), $topic, 4);
 
         return $this->jsonStd($recentUnits, context: ['groups' => ['read:unit:user']]);
     }
