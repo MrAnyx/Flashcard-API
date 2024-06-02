@@ -35,7 +35,7 @@ class PaginatorOptionsResolver extends OptionsResolver
             ->setDefined('order')
             ->setDefault('order', 'ASC')
             ->setAllowedTypes('order', 'string')
-            ->setAllowedValues('order', ['ASC', 'DESC']);
+            ->setAllowedValues('order', ['ASC', 'asc', 'DESC', 'desc']);
     }
 
     public function configureSort(array $sortableFields): self
