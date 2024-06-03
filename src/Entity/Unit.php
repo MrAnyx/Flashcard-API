@@ -56,6 +56,7 @@ class Unit
 
     #[ORM\Column]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Sortable]
     private ?bool $favorite = null;
 
     public function __construct()

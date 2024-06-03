@@ -88,6 +88,7 @@ class Flashcard
 
     #[ORM\Column]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Sortable]
     private ?bool $favorite = null;
 
     public function __construct()

@@ -56,6 +56,7 @@ class Topic
 
     #[ORM\Column]
     #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Sortable]
     private ?bool $favorite = null;
 
     public function __construct()
