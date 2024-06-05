@@ -16,7 +16,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -72,7 +71,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[Assert\NotBlank(message: 'Your password can not be blank', groups: ['edit:user:password'])]
     #[Assert\NotCompromisedPassword(message: 'This password has been compromised. Please choose another password', groups: ['edit:user:password'])]
-    #[PasswordStrength(minScore: PasswordStrength::STRENGTH_MEDIUM, message: 'You must choose a stronger password', groups: ['edit:user:password'])]
+    #[Assert\Regex(pattern: Regex::PASSWORD_SLASH, groups: ['edit:user:password'])]
     #[Assert\NotEqualTo(propertyPath: 'username', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
     #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
     private ?string $rawPassword = null;
