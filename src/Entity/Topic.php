@@ -52,6 +52,7 @@ class Topic
     #[ORM\Column(length: 300)]
     #[Assert\Length(max: 300, maxMessage: 'The description of a topic can not exceed {{ limit }} characters')]
     #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Sortable]
     private ?string $description = null;
 
     #[ORM\Column]

@@ -39,6 +39,7 @@ class Flashcard
     #[Assert\NotBlank(message: 'The front side of a flashcard can not be blank')]
     #[Assert\Length(max: 255, maxMessage: 'The front side of a flashcard can not exceed {{ limit }} characters')]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Sortable]
     private ?string $front = null;
 
     #[ORM\Column(length: 255)]

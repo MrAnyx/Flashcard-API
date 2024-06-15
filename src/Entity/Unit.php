@@ -52,6 +52,7 @@ class Unit
     #[ORM\Column(length: 300)]
     #[Assert\Length(max: 300, maxMessage: 'The description of a unit can not exceed {{ limit }} characters')]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Sortable]
     private ?string $description = null;
 
     #[ORM\Column]
