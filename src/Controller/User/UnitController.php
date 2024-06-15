@@ -177,21 +177,6 @@ class UnitController extends AbstractRestController
         return $this->jsonStd($unit, context: ['groups' => ['read:unit:user']]);
     }
 
-    #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getUnitsFromTopic(int $id, Request $request, FlashcardRepository $flashcardRepository): JsonResponse
-    {
-        $unit = $this->getResourceById(Unit::class, $id);
-
-        $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not access this resource');
-
-        $pagination = $this->getPaginationParameter(Unit::class, $request);
-
-        // Get data with pagination
-        $flashcards = $flashcardRepository->findByUnitWithPagination($pagination, $unit);
-
-        return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
-    }
-
     #[Route('/units/{id}/flashcards/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetUnit(
         int $id,

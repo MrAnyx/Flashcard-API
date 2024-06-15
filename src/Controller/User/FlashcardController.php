@@ -6,6 +6,7 @@ namespace App\Controller\User;
 
 use App\Controller\AbstractRestController;
 use App\Entity\Flashcard;
+use App\Entity\Unit;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\Exception\ExceptionCode;
@@ -179,6 +180,21 @@ class FlashcardController extends AbstractRestController
 
         // Return the flashcard
         return $this->jsonStd($flashcard, context: ['groups' => ['read:flashcard:user']]);
+    }
+
+    #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
+    public function getFlashcardsByUnit(int $id, Request $request, FlashcardRepository $flashcardRepository): JsonResponse
+    {
+        $unit = $this->getResourceById(Unit::class, $id);
+
+        $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not access this resource');
+
+        $pagination = $this->getPaginationParameter(Flashcard::class, $request);
+
+        // Get data with pagination
+        $flashcards = $flashcardRepository->findByUnitWithPagination($pagination, $unit);
+
+        return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards/{id}/review', name: 'review_flashcard', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
