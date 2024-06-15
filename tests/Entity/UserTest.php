@@ -14,7 +14,6 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotEqualTo;
-use Symfony\Component\Validator\Constraints\PasswordStrength;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -190,7 +189,7 @@ class UserTest extends KernelTestCase
 
         $user->setRawPassword('password');
         $errors = $this->validator->validateProperty($user, 'rawPassword', ['edit:user:password']);
-        $this->assertArrayContainsInstanceOf(PasswordStrength::class, $errors);
+        $this->assertArrayContainsInstanceOf(Regex::class, $errors);
 
         $user->setRawPassword('username');
         $errors = $this->validator->validateProperty($user, 'rawPassword', ['edit:user:password']);
