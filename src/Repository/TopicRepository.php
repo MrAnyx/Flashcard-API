@@ -38,7 +38,7 @@ class TopicRepository extends ServiceEntityRepository
 
         $query->orderBy("t.{$page->sort}", $page->order);
 
-        return new Paginator($query, $page->page);
+        return new Paginator($query, $page);
     }
 
     public function findRecentTopics(User $user, int $maxResults = 4): array

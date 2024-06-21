@@ -40,7 +40,7 @@ class UnitRepository extends ServiceEntityRepository
 
         $query->orderBy("u.{$page->sort}", $page->order);
 
-        return new Paginator($query, $page->page);
+        return new Paginator($query, $page);
     }
 
     public function findByTopicWithPagination(Page $page, Topic $topic): Paginator
@@ -50,7 +50,7 @@ class UnitRepository extends ServiceEntityRepository
             ->setParameter('topic', $topic)
             ->orderBy("u.{$page->sort}", $page->order);
 
-        return new Paginator($query, $page->page);
+        return new Paginator($query, $page);
     }
 
     public function findRecentUnitsByTopic(User $user, ?Topic $topic, int $maxResults = 4): array

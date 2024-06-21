@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Model;
 
+use App\Model\Page;
 use App\Model\Paginator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -21,7 +22,8 @@ class PaginationTest extends KernelTestCase
             ->getQuery();
 
         // Create the Paginator object
-        $this->paginator = new Paginator($query, 2);
+        $page = new Page(2, 'id', 'ASC', 1);
+        $this->paginator = new Paginator($query, $page);
     }
 
     public function testTotal(): void
@@ -76,7 +78,8 @@ class PaginationTest extends KernelTestCase
             ->getQuery();
 
         // Create the Paginator object
-        $paginator = new Paginator($query);
+        $page = new Page(1, 'id', 'ASC', 1);
+        $paginator = new Paginator($query, $page);
 
         $this->assertIsBool($paginator->hasNextPage());
         $this->assertFalse($paginator->hasNextPage());
@@ -99,7 +102,8 @@ class PaginationTest extends KernelTestCase
             ->getQuery();
 
         // Create the Paginator object
-        $paginator = new Paginator($query);
+        $page = new Page(1, 'id', 'ASC', 25);
+        $paginator = new Paginator($query, $page);
 
         $this->assertIsBool($paginator->hasPreviousPage());
         $this->assertFalse($paginator->hasPreviousPage());

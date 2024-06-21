@@ -16,7 +16,7 @@ class UnitRepositoryTest extends KernelTestCase
         /** @var UnitRepository $unitRepository */
         $unitRepository = self::getContainer()->get(UnitRepository::class);
 
-        $result = $unitRepository->findAllWithPagination(new Page(1, 'id', 'ASC'));
+        $result = $unitRepository->findAllWithPagination(new Page(1, 'id', 'ASC', 25));
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());

@@ -17,7 +17,7 @@ class TopicRepositoryTest extends KernelTestCase
         /** @var TopicRepository $topicRepository */
         $topicRepository = self::getContainer()->get(TopicRepository::class);
 
-        $result = $topicRepository->findAllWithPagination(new Page(1, 'id', 'ASC'));
+        $result = $topicRepository->findAllWithPagination(new Page(1, 'id', 'ASC', 25));
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());
@@ -33,7 +33,7 @@ class TopicRepositoryTest extends KernelTestCase
 
         $user = $userRepository->find(1);
 
-        $result = $topicRepository->findAllWithPagination(new Page(1, 'id', 'ASC'), $user);
+        $result = $topicRepository->findAllWithPagination(new Page(1, 'id', 'ASC', 25), $user);
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());

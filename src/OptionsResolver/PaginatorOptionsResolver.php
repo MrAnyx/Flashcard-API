@@ -46,4 +46,14 @@ class PaginatorOptionsResolver extends OptionsResolver
             ->setAllowedTypes('sort', 'string')
             ->setAllowedValues('sort', $sortableFields);
     }
+
+    public function configureItemsPerPage(): self
+    {
+        return $this
+            ->setDefined('itemsPerPage')
+            ->setDefault('itemsPerPage', '25') // We use string even if it a number because it comes from the url
+            ->setAllowedTypes('itemsPerPage', 'numeric')
+            ->setAllowedValues('itemsPerPage', ['25', '50', '100', '200'])
+            ->setNormalizer('itemsPerPage', fn (Options $options, $itemsPerPage) => (int) $itemsPerPage);
+    }
 }

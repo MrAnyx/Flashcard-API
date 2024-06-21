@@ -220,7 +220,10 @@ class TopicController extends AbstractRestController
     #[Route('/topics/recent', name: 'recent_topic', methods: ['GET'])]
     public function getRecentTopics(TopicRepository $topicRepository): JsonResponse
     {
-        $recentTopics = $topicRepository->findRecentTopics($this->getUser(), 4);
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $recentTopics = $topicRepository->findRecentTopics($user, 4);
 
         return $this->jsonStd($recentTopics, context: ['groups' => ['read:topic:user']]);
     }

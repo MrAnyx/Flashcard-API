@@ -16,7 +16,7 @@ class FlashcardRepositoryTest extends KernelTestCase
         /** @var FlashcardRepository $flashcardRepository */
         $flashcardRepository = self::getContainer()->get(FlashcardRepository::class);
 
-        $result = $flashcardRepository->findAllWithPagination(new Page(1, 'id', 'ASC'));
+        $result = $flashcardRepository->findAllWithPagination(new Page(1, 'id', 'ASC', 25));
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());

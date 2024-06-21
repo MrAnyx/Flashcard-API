@@ -43,6 +43,7 @@ class AbstractRestController extends AbstractController
                 ->configurePage()
                 ->configureSort($sortableFields)
                 ->configureOrder()
+                ->configureItemsPerPage()
                 ->resolve($request->query->all());
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());

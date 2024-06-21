@@ -10,8 +10,6 @@ use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 
 class Paginator extends DoctrinePaginator
 {
-    public const ITEMS_PER_PAGE = 25;
-
     private int $total;
 
     private array $data;
@@ -22,18 +20,25 @@ class Paginator extends DoctrinePaginator
 
     private int $page;
 
-    public function __construct(QueryBuilder|Query $query, int $page = 1, bool $fetchJoinCollection = true)
+    private int $itemsPerPage;
+
+    private int $offset;
+
+    public function __construct(QueryBuilder|Query $query, Page $pagination, bool $fetchJoinCollection = true)
     {
-        $query->setFirstResult(($page - 1) * self::ITEMS_PER_PAGE);
-        $query->setMaxResults(self::ITEMS_PER_PAGE);
+        $this->itemsPerPage = $pagination->itemsPerPage;
+        $this->offset = ($pagination->page - 1) * $this->itemsPerPage;
+
+        $query->setFirstResult($this->offset);
+        $query->setMaxResults($this->itemsPerPage);
 
         parent::__construct($query, $fetchJoinCollection);
         $this->total = $this->count();
         $this->data = iterator_to_array(parent::getIterator());
         $this->count = \count($this->data);
-        $this->page = $page;
+        $this->page = $pagination->page;
 
-        $this->totalpages = (int) ceil($this->total / self::ITEMS_PER_PAGE);
+        $this->totalpages = (int) ceil($this->total / $this->itemsPerPage);
     }
 
     public function getTotal(): int
@@ -63,12 +68,12 @@ class Paginator extends DoctrinePaginator
 
     public function getItemsPerPage(): ?int
     {
-        return $this->getQuery()->getMaxResults();
+        return $this->itemsPerPage;
     }
 
     public function getOffset(): int
     {
-        return $this->getQuery()->getFirstResult();
+        return $this->offset;
     }
 
     public function hasNextPage(): bool

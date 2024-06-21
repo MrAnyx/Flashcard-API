@@ -42,6 +42,8 @@ class JsonStandardNormalizer implements NormalizerInterface
         } elseif (\is_scalar($data) || null === $data) {
             return $data;
         }
+
+        return $data;
     }
 
     public function supportsNormalization($data, ?string $format = null, array $context = []): bool

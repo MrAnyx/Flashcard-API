@@ -43,7 +43,7 @@ class FlashcardRepository extends ServiceEntityRepository
 
         $query->orderBy("f.{$page->sort}", $page->order);
 
-        return new Paginator($query, $page->page);
+        return new Paginator($query, $page);
     }
 
     public function findByUnitWithPagination(Page $page, Unit $unit): Paginator
@@ -53,7 +53,7 @@ class FlashcardRepository extends ServiceEntityRepository
             ->setParameter('unit', $unit)
             ->orderBy("f.{$page->sort}", $page->order);
 
-        return new Paginator($query, $page->page);
+        return new Paginator($query, $page);
     }
 
     public function resetAll(User $user)
