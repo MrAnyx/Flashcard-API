@@ -278,4 +278,16 @@ class FlashcardController extends AbstractRestController
 
         return $this->jsonStd($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
     }
+
+    #[Route('/flashcards/count', name: 'flashcard_count', methods: ['GET'])]
+    public function countFlashcards(
+        FlashcardRepository $flashcardRepository
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $count = $flashcardRepository->countAll($user);
+
+        return $this->jsonStd($count);
+    }
 }
