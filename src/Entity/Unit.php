@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribut\Searchable;
 use App\Attribut\Sortable;
 use App\Repository\UnitRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -29,16 +30,19 @@ class Unit
     #[Assert\Length(max: 35, maxMessage: 'The name of a unit can not exceed {{ limit }} characters')]
     #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin'])]
     #[Sortable]
+    #[Searchable]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
     #[Sortable]
+    #[Searchable]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
     #[Sortable]
+    #[Searchable]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'units')]
@@ -53,11 +57,13 @@ class Unit
     #[Assert\Length(max: 300, maxMessage: 'The description of a unit can not exceed {{ limit }} characters')]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
     #[Sortable]
+    #[Searchable]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
     #[Sortable]
+    #[Searchable]
     private ?bool $favorite = null;
 
     public function __construct()

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribut\Searchable;
 use App\Attribut\Sortable;
 use App\Enum\StateType;
 use App\Repository\FlashcardRepository;
@@ -28,11 +29,13 @@ class Flashcard
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255)]
@@ -40,6 +43,7 @@ class Flashcard
     #[Assert\Length(max: 255, maxMessage: 'The front side of a flashcard can not exceed {{ limit }} characters')]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable]
     private ?string $front = null;
 
     #[ORM\Column(length: 255)]
@@ -90,6 +94,7 @@ class Flashcard
     #[ORM\Column]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable]
     private ?bool $favorite = null;
 
     public function __construct()
