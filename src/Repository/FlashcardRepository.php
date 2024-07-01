@@ -29,6 +29,22 @@ class FlashcardRepository extends ServiceEntityRepository
         parent::__construct($registry, Flashcard::class);
     }
 
+    public function countAll(?User $user): int
+    {
+        $query = $this->createQueryBuilder('f')
+            ->select('count(f.id)');
+
+        if ($user !== null) {
+            $query
+                ->join('f.unit', 'u')
+                ->join('u.topic', 't')
+                ->where('t.author = :user')
+                ->setParameter('user', $user);
+        }
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
     public function findAllWithPagination(Page $page, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('f');
