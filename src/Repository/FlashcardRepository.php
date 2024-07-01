@@ -179,4 +179,23 @@ class FlashcardRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function countFlashcardsToReview(?User $user): int
+    {
+        $query = $this->createQueryBuilder('f')
+            ->select('count(f.id)')
+            ->where('f.nextReview < :now OR f.state = :state')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('state', StateType::New);
+
+        if ($user !== null) {
+            $query
+                ->join('f.unit', 'u')
+                ->join('u.topic', 't')
+                ->andWhere('t.author = :user')
+                ->setParameter('user', $user);
+        }
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
 }
