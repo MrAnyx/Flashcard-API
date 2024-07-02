@@ -32,11 +32,9 @@ class FilterOptionsResolver extends OptionsResolver
                     return null;
                 }
 
-                $filterdTypes = array_filter($typedFields, fn (TypedField $field) => $field->name === $options['filter']);
+                $correspondingField = array_filter($typedFields, fn (TypedField $field) => $field->name === $options['filter'])[0] ?? null;
 
-                $correspondingField = reset($filterdTypes);
-
-                if (!$correspondingField) {
+                if ($correspondingField === null) {
                     return null;
                 }
 
