@@ -34,11 +34,12 @@ class FlashcardController extends AbstractRestController
     public function getAllFlashcards(Request $request, FlashcardRepository $flashcardRepository): JsonResponse
     {
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
+        $filter = $this->getFilterParameter(Flashcard::class, $request);
 
         /** @var User $user */
         $user = $this->getUser();
 
-        $flashcards = $flashcardRepository->findAllWithPagination($pagination, $user);
+        $flashcards = $flashcardRepository->findAllWithPagination($pagination, $filter, $user);
 
         return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
