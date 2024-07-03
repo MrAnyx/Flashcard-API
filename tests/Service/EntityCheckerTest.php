@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Attribut\Sortable;
+use App\Model\TypedField;
 use App\Service\AttributeHelper;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -52,7 +53,9 @@ class SortableEntityCheckerTest extends KernelTestCase
         /** @var AttributeHelper $checker */
         $checker = self::getContainer()->get(AttributeHelper::class);
 
-        $this->assertSame(['sortable'], $checker->getFieldsWithAttribute(__Foo__::class, Sortable::class));
+        $fields = $checker->getFieldsWithAttribute(__Foo__::class, Sortable::class);
+
+        $this->assertSame(['sortable'], array_map(fn (TypedField $field) => $field->name, $fields));
     }
 
     public function testGetSortableFieldsWithUnknownClass(): void

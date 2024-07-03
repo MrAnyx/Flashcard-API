@@ -21,19 +21,11 @@ class TypeConverter
                 case 'bool':
                     return filter_var($value, \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE);
                 case 'array':
-                    return json_decode($value, true);
-                case 'object':
-                    return json_decode($value);
-                case 'callable':
-                    // This is a complex case, often requires custom logic
-                    throw new \InvalidArgumentException('Cannot convert string to callable type.');
                 case 'iterable':
+                case 'object':
                     return json_decode($value, true);
                 default:
-                    if (class_exists($typeName)) {
-                        return unserialize($value) ?: null;
-                    }
-                    throw new \InvalidArgumentException("Unsupported type: {$typeName}");
+                    throw new \RuntimeException("Unsupported type: {$typeName}");
             }
         } elseif ($type instanceof \ReflectionUnionType) {
             foreach ($type->getTypes() as $subType) {
@@ -43,12 +35,12 @@ class TypeConverter
                     // Continue to try next type
                 }
             }
-            throw new \InvalidArgumentException('None of the union types could handle the conversion.');
+            throw new \RuntimeException('None of the union types could handle the conversion.');
         } elseif ($type instanceof \ReflectionIntersectionType) {
             // Intersection types are more complex and often require custom logic for specific cases.
-            throw new \InvalidArgumentException('Intersection types are not supported in this example.');
+            throw new \RuntimeException('Intersection types are not supported in this example.');
         }
 
-        throw new \InvalidArgumentException('Unsupported ReflectionType provided.');
+        throw new \RuntimeException('Unsupported ReflectionType provided.');
     }
 }
