@@ -170,9 +170,7 @@ class SecurityController extends AbstractRestController
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
-        $tokenToFind = hash(PasswordReset::TOKEN_HASH_ALGO, $data['token']);
-
-        $associatedPasswordResetRequest = $passwordResetRepository->findByToken($tokenToFind);
+        $associatedPasswordResetRequest = $passwordResetRepository->findByToken($data['token']);
 
         if ($associatedPasswordResetRequest == null) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, 'No token was found');
