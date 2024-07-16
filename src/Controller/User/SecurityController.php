@@ -19,6 +19,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -89,7 +91,8 @@ class SecurityController extends AbstractRestController
         RequestPayloadService $requestPayloadService,
         UserRepository $userRepository,
         PasswordResetRepository $passwordResetRepository,
-        UniqueTokenGenerator $uniqueTokenGenerator
+        UniqueTokenGenerator $uniqueTokenGenerator,
+        MailerInterface $mailer
     ): JsonResponse {
         try {
             // Retrieve the request body
@@ -134,6 +137,15 @@ class SecurityController extends AbstractRestController
         // Save the new element
         $em->persist($passwordReset);
         $em->flush();
+
+        $email = (new Email())
+            ->from('hello@example.com')
+            ->to($associatedUser->getEmail())
+            ->priority(Email::PRIORITY_HIGH)
+            ->subject('Password reset')
+            ->text($token);
+
+        $mailer->send($email);
 
         return $this->jsonStd(null, Response::HTTP_CREATED);
     }

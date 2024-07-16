@@ -40,7 +40,7 @@ class PasswordReset
     private ?\DateTimeImmutable $expirationDate = null;
 
     #[ORM\Column(length: 128)]
-    #[Assert\Length(exactly: 128, message: 'The token is not valid')]
+    #[Assert\Length(exactly: 128, exactMessage: 'The token is not valid')]
     private ?string $token = null;
 
     #[ORM\Column]

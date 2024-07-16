@@ -6,7 +6,7 @@ namespace App\Factory;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\TokenGenerator;
+use App\UniqueGenerator\UniqueTokenGenerator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -51,15 +51,15 @@ final class UserFactory extends ModelFactory
 {
     private UserPasswordHasherInterface $passwordHasher;
 
-    private TokenGenerator $tokenGenerator;
+    private UniqueTokenGenerator $uniqueTokenGenerator;
 
     // TODO Recréer la migration avec les nouvelles validation
-    public function __construct(UserPasswordHasherInterface $passwordHasher, TokenGenerator $tokenGenerator)
+    public function __construct(UserPasswordHasherInterface $passwordHasher, UniqueTokenGenerator $uniqueTokenGenerator)
     {
         parent::__construct();
 
         $this->passwordHasher = $passwordHasher;
-        $this->tokenGenerator = $tokenGenerator;
+        $this->uniqueTokenGenerator = $uniqueTokenGenerator;
     }
 
     /**
@@ -71,7 +71,7 @@ final class UserFactory extends ModelFactory
             'email' => self::faker()->email(),
             'username' => self::faker()->userName(),
             'password' => 'password',
-            'token' => $this->tokenGenerator->generateToken(),
+            'token' => $this->uniqueTokenGenerator->generate(User::class, 'token'),
             'roles' => ['ROLE_USER'],
         ];
     }
