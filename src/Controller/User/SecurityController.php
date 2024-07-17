@@ -9,6 +9,7 @@ use App\Entity\PasswordReset;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\Exception\MaxTriesReachedException;
+use App\Message\SendTextEmailMessage;
 use App\OptionsResolver\PasswordResetOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
 use App\Repository\PasswordResetRepository;
@@ -19,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -92,7 +93,7 @@ class SecurityController extends AbstractRestController
         UserRepository $userRepository,
         PasswordResetRepository $passwordResetRepository,
         UniqueTokenGenerator $uniqueTokenGenerator,
-        MailerInterface $mailer
+        MessageBusInterface $messageBusInterface
     ): JsonResponse {
         try {
             // Retrieve the request body
@@ -138,14 +139,13 @@ class SecurityController extends AbstractRestController
         $em->persist($passwordReset);
         $em->flush();
 
-        $email = (new Email())
-            ->from('hello@example.com')
-            ->to($associatedUser->getEmail())
-            ->priority(Email::PRIORITY_HIGH)
-            ->subject('Password reset')
-            ->text($token);
-
-        $mailer->send($email);
+        $messageBusInterface->dispatch(new SendTextEmailMessage(
+            $associatedUser->getEmail(),
+            $associatedUser->getUsername(),
+            Email::PRIORITY_HIGH,
+            'Password reset',
+            $token
+        ));
 
         return $this->jsonStd(null, Response::HTTP_CREATED);
     }

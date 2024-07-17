@@ -83,3 +83,15 @@ tasks:
             - cp .env.example .env.local
             - composer install --ansi --prefer-dist --no-interaction --no-progress
             - task: database:reset
+
+    app:messenger:async:
+        desc: "Run the async messenger queue"
+        aliases: ["a:m:a"]
+        cmds:
+            - php bin/console messenger:consume async -vv
+
+    app:messenger:failed:
+        desc: "Run the messenger queue"
+        aliases: ["a:m:f"]
+        cmds:
+            - php bin/console messenger:consume failed -vv
