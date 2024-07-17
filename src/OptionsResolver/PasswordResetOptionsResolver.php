@@ -18,4 +18,15 @@ class PasswordResetOptionsResolver extends OptionsResolver
 
         return $this;
     }
+
+    public function configurePassword(bool $isRequired = true): self
+    {
+        $this->setDefined('password')->setAllowedTypes('password', 'string');
+
+        if ($isRequired) {
+            $this->setRequired('password');
+        }
+
+        return $this;
+    }
 }

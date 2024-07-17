@@ -150,10 +150,11 @@ class SecurityController extends AbstractRestController
         return $this->jsonStd(null, Response::HTTP_CREATED);
     }
 
-    #[Route('/reset-password/validate', name: 'password_reset_validate', methods: ['POST'])]
+    #[Route('/reset-password/proceed', name: 'password_reset_proceed', methods: ['POST'])]
     public function checkToken(
         Request $request,
         EntityManagerInterface $em,
+        UserPasswordHasherInterface $passwordHasher,
         RequestPayloadService $requestPayloadService,
         PasswordResetOptionsResolver $passwordResetOptionsResolver,
         PasswordResetRepository $passwordResetRepository,
@@ -165,6 +166,7 @@ class SecurityController extends AbstractRestController
             // Validate the content of the request body
             $data = $passwordResetOptionsResolver
                 ->configureToken(true)
+                ->configurePassword(true)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -173,12 +175,19 @@ class SecurityController extends AbstractRestController
         $associatedPasswordResetRequest = $passwordResetRepository->findByToken($data['token']);
 
         if ($associatedPasswordResetRequest == null) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, 'No token was found');
+            throw new ApiException(Response::HTTP_BAD_REQUEST, 'No token found');
         }
 
         $associatedPasswordResetRequest->setUsed(true);
+
+        $user = $associatedPasswordResetRequest->getUser();
+        $user->setRawPassword($data['password']);
+        $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
+
+        $this->validateEntity($user, ['Default', 'edit:user:password']);
+
         $em->flush();
 
-        return $this->jsonStd(null, Response::HTTP_OK);
+        return $this->jsonStd($user, Response::HTTP_OK, context: ['groups' => ['read:user:user']]);
     }
 }
