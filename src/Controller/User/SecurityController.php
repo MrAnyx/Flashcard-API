@@ -107,10 +107,10 @@ class SecurityController extends AbstractRestController
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
-        $associatedUser = $userRepository->findOneBy(['email' => $data['email']]);
+        $associatedUser = $userRepository->loadUserByIdentifier($data['identifier']);
 
         if ($associatedUser == null) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, 'No user was found with this email');
+            throw new ApiException(Response::HTTP_BAD_REQUEST, "This email or username doesn't exist");
         }
 
         if ($passwordResetRepository->getLastRequest($associatedUser) !== null) {
