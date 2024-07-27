@@ -227,4 +227,16 @@ class TopicController extends AbstractRestController
 
         return $this->jsonStd($recentTopics, context: ['groups' => ['read:topic:user']]);
     }
+
+    #[Route('/topics/count', name: 'topic_count', methods: ['GET'])]
+    public function countTopics(
+        TopicRepository $topicRepository
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $count = $topicRepository->countAll($user);
+
+        return $this->jsonStd($count);
+    }
 }

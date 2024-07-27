@@ -60,4 +60,18 @@ class TopicRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function countAll(?User $user): int
+    {
+        $query = $this->createQueryBuilder('t')
+            ->select('count(t.id)');
+
+        if ($user !== null) {
+            $query
+                ->where('t.author = :user')
+                ->setParameter('user', $user);
+        }
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
 }
