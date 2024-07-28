@@ -235,4 +235,16 @@ class UnitController extends AbstractRestController
 
         return $this->jsonStd($recentUnits, context: ['groups' => ['read:unit:user']]);
     }
+
+    #[Route('/units/count', name: 'unit_count', methods: ['GET'])]
+    public function countUnits(
+        UnitRepository $unitRepository
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $count = $unitRepository->countAll($user);
+
+        return $this->jsonStd($count);
+    }
 }

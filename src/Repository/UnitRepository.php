@@ -78,4 +78,19 @@ class UnitRepository extends ServiceEntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function countAll(?User $user): int
+    {
+        $query = $this->createQueryBuilder('u')
+            ->select('count(u.id)');
+
+        if ($user !== null) {
+            $query
+                ->join('u.topic', 't')
+                ->where('t.author = :user')
+                ->setParameter('user', $user);
+        }
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
 }

@@ -12,9 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api', 'api_', format: 'json')]
 class ReviewController extends AbstractRestController
 {
-    #[Route('/reviews/count', name: 'get_reviews', methods: ['GET'])]
+    #[Route('/reviews/count', name: 'count_reviews', methods: ['GET'])]
     public function getCountReviews(ReviewRepository $reviewRepository)
     {
+        // TODO Ajouter un query param pour ajouter ou non les review avec reset
+
         /** @var User $user */
         $user = $this->getUser();
 
