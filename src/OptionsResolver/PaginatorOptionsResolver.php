@@ -51,8 +51,8 @@ class PaginatorOptionsResolver extends OptionsResolver
     {
         return $this
             ->setDefined('itemsPerPage')
-            ->setDefault('itemsPerPage', '25') // We use string even if it a number because it comes from the url
-            ->setAllowedTypes('itemsPerPage', 'numeric')
+            ->setDefault('itemsPerPage', '25')
+            ->setAllowedTypes('itemsPerPage', 'numeric') // We use string even if it a number because it comes from the url
             ->setAllowedValues('itemsPerPage', ['25', '50', '100', '200'])
             ->setNormalizer('itemsPerPage', fn (Options $options, $itemsPerPage) => (int) $itemsPerPage);
     }
