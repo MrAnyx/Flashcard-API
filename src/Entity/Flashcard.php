@@ -84,7 +84,7 @@ class Flashcard
     #[Groups(['read:flashcard:admin'])]
     private ?Unit $unit = null;
 
-    #[ORM\OneToMany(mappedBy: 'flashcard', targetEntity: Review::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'flashcard', targetEntity: Review::class, orphanRemoval: true)]
     private Collection $reviewHistory;
 
     #[ORM\Column]

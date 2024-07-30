@@ -46,7 +46,7 @@ class Unit
     #[Groups(['read:unit:admin'])]
     private ?Topic $topic = null;
 
-    #[ORM\OneToMany(mappedBy: 'unit', targetEntity: Flashcard::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'unit', targetEntity: Flashcard::class, orphanRemoval: true)]
     private Collection $flashcards;
 
     #[ORM\Column(length: 300)]

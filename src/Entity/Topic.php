@@ -46,7 +46,7 @@ class Topic
     #[Groups(['read:topic:admin'])]
     private ?User $author = null;
 
-    #[ORM\OneToMany(mappedBy: 'topic', targetEntity: Unit::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'topic', targetEntity: Unit::class, orphanRemoval: true)]
     private Collection $units;
 
     #[ORM\Column(length: 300)]
