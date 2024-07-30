@@ -82,10 +82,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class, orphanRemoval: true)]
     private Collection $reviewHistory;
 
+    #[ORM\OneToMany(targetEntity: Setting::class, mappedBy: 'user', orphanRemoval: true, cascade: ['persist'])]
+    #[Groups(['read:user:user'])]
+    private Collection $settings;
+
     public function __construct()
     {
         $this->topics = new ArrayCollection();
         $this->reviewHistory = new ArrayCollection();
+        $this->settings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -281,6 +286,57 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             // set the owning side to null (unless already changed)
             if ($reviewHistory->getUser() === $this) {
                 $reviewHistory->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Setting[]
+     */
+    public function getSettings(): array
+    {
+        $settingsArray = [];
+
+        foreach ($this->settings as $setting) {
+            $settingsArray[$setting->getName()->value] = $setting->getValue();
+        }
+
+        $mergedSettings = array_merge(Setting::getDefaultSettings(), $settingsArray);
+
+        return $mergedSettings;
+    }
+
+    public function updateSetting(Setting $setting): static
+    {
+        /** @var ?Setting $existingSetting */
+        $existingSetting = null;
+
+        foreach ($this->settings as $existing) {
+            if ($existing->getName() === $setting->getName() && $existing->getUser() === $setting->getUser()) {
+                $existingSetting = $existing;
+                break;
+            }
+        }
+
+        if ($existingSetting !== null) {
+            $existingSetting->setName($setting->getName());
+            $existingSetting->setValue($setting->getValue());
+        } else {
+            $this->settings->add($setting);
+            $setting->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSetting(Setting $setting): static
+    {
+        if ($this->settings->removeElement($setting)) {
+            // set the owning side to null (unless already changed)
+            if ($setting->getUser() === $this) {
+                $setting->setUser(null);
             }
         }
 
