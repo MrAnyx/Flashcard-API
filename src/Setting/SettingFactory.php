@@ -17,7 +17,7 @@ class SettingFactory
 {
     public static function create(SettingName $name, mixed $value): AbstractSetting
     {
-        $default =
+        // $default =
 
         switch (\gettype($value)) {
             case 'int':

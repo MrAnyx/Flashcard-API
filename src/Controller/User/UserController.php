@@ -26,7 +26,7 @@ class UserController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
-        dd(SettingFactory::create(SettingName::ITEMS_PER_PAGE, 23));
+        // dd(SettingFactory::create(SettingName::ITEMS_PER_PAGE, 23));
 
         return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
     }
