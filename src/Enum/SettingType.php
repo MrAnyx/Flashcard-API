@@ -10,5 +10,6 @@ enum SettingType: string
     case INTEGER = 'integer';
     case FLOAT = 'float';
     case BOOLEAN = 'boolean';
+    case MIXED = 'mixed';
     case ITERABLE = 'iterable';
 }
