@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use App\Attribut\Sortable;
 use App\Repository\UserRepository;
+use App\Setting\SettingsTemplate;
+use App\Setting\Type\AbstractSetting;
 use App\Utility\Regex;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -303,29 +305,35 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             $settingsArray[$setting->getName()->value] = $setting->getValue();
         }
 
-        $mergedSettings = array_merge(Setting::getDefaultSettings(), $settingsArray);
+        $mergedSettings = array_merge(SettingsTemplate::getAssociativeTemplate(), $settingsArray);
 
         return $mergedSettings;
     }
 
-    public function updateSetting(Setting $setting): static
+    public function updateSetting(AbstractSetting $setting): static
     {
         /** @var ?Setting $existingSetting */
         $existingSetting = null;
 
         foreach ($this->settings as $existing) {
-            if ($existing->getName() === $setting->getName() && $existing->getUser() === $setting->getUser()) {
+            if ($existing->getName() === $setting->name) {
                 $existingSetting = $existing;
                 break;
             }
         }
 
         if ($existingSetting !== null) {
-            $existingSetting->setName($setting->getName());
-            $existingSetting->setValue($setting->getValue());
+            $existingSetting->setName($setting->name);
+            $existingSetting->setValue($setting->serialize());
         } else {
-            $this->settings->add($setting);
-            $setting->setUser($this);
+            $newSetting = new Setting();
+            $newSetting
+                ->setType($setting->getType())
+                ->setName($setting->name)
+                ->setValue($setting->serialize())
+                ->setUser($this);
+
+            $this->settings->add($newSetting);
         }
 
         return $this;

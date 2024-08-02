@@ -10,17 +10,18 @@ use App\Setting\Type\BooleanSetting;
 use App\Setting\Type\FloatSetting;
 use App\Setting\Type\IntegerSetting;
 use App\Setting\Type\IterableSetting;
-use App\Setting\Type\MixedSetting;
 use App\Setting\Type\StringSetting;
 
 class SettingFactory
 {
     public static function create(SettingName $name, mixed $value): AbstractSetting
     {
-        // $default =
+        SettingsTemplate::validateSetting($name, $value);
 
-        switch (\gettype($value)) {
-            case 'int':
+        $type = \gettype($value);
+
+        switch ($type) {
+            case 'integer':
                 return new IntegerSetting($name, $value);
             case 'float':
             case 'double':
@@ -33,7 +34,7 @@ class SettingFactory
             case 'object':
                 return new IterableSetting($name, $value);
             default:
-                return new MixedSetting($name, $value);
+                throw new \InvalidArgumentException("Setting value of type {$type} is not supported");
         }
     }
 }

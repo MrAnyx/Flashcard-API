@@ -23,4 +23,9 @@ class FloatSetting extends AbstractSetting
     {
         return (string) $this->value;
     }
+
+    public function isValid(mixed $value): bool
+    {
+        return \in_array(\gettype($value), ['float', 'double']);
+    }
 }

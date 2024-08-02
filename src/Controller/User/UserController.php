@@ -71,14 +71,9 @@ class UserController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
-        $settings = new Setting();
-        $settings
-            ->setName($data['name'])
-            ->setValue($data['value'])
-            ->setUser($user);
+        $setting = SettingFactory::create($data['name'], $data['value']);
 
-        $user->updateSetting($settings);
-
+        $user->updateSetting($setting);
         $em->flush();
 
         return $this->jsonStd($user->getSettings());

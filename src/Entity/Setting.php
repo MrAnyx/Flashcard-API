@@ -13,19 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: SettingRepository::class)]
 class Setting
 {
-    public const DEFAULT_SETTINGS = [
-        [
-            'name' => SettingName::ITEMS_PER_PAGE,
-            'type' => SettingType::INTEGER,
-            'value' => 50,
-        ],
-        [
-            'name' => SettingName::FLASHCARD_PER_SESSION,
-            'type' => SettingType::INTEGER,
-            'value' => 10,
-        ],
-    ];
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -79,33 +66,9 @@ class Setting
         }
     }
 
-    public function setValue(mixed $value): static
+    public function setValue(string $value): static
     {
-        switch (\gettype($value)) {
-            case 'integer':
-                $this->setType(SettingType::INTEGER);
-                $this->value = (string) $value;
-                break;
-            case 'boolean':
-                $this->setType(SettingType::BOOLEAN);
-                $this->value = (string) $value;
-                break;
-            case 'float':
-            case 'double':
-                $this->setType(SettingType::FLOAT);
-                $this->value = (string) $value;
-                break;
-            case 'array':
-            case 'object':
-                $this->setType(SettingType::ITERABLE);
-                $this->value = json_encode($value);
-                break;
-            case 'string':
-            default:
-                $this->setType(SettingType::STRING);
-                $this->value = (string) $value;
-                break;
-        }
+        $this->value = $value;
 
         return $this;
     }
@@ -127,27 +90,10 @@ class Setting
         return $this->type;
     }
 
-    /**
-     * Should not be used outwide of this class.
-     */
-    private function setType(SettingType $type): static
+    public function setType(SettingType $type): static
     {
         $this->type = $type;
 
         return $this;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public static function getDefaultSettings(): array
-    {
-        $defaultSettings = [];
-
-        foreach (self::DEFAULT_SETTINGS as $defaultSetting) {
-            $defaultSettings[$defaultSetting['name']->value] = $defaultSetting['value'];
-        }
-
-        return $defaultSettings;
     }
 }

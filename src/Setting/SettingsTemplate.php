@@ -24,7 +24,7 @@ class SettingsTemplate
     /**
      * @return array<string, mixed>
      */
-    public static function getArrayTemplate(): array
+    public static function getAssociativeTemplate(): array
     {
         $template = [];
 
@@ -47,5 +47,19 @@ class SettingsTemplate
         }
 
         return null;
+    }
+
+    public static function validateSetting(SettingName $settingName, mixed $value): void
+    {
+        $setting = self::getSetting($settingName);
+
+        if ($setting === null) {
+            throw new \InvalidArgumentException("Setting {$settingName->value} is not defined.");
+        }
+
+        if (!$setting->isValid($value)) {
+            $valueType = \gettype($value);
+            throw new \InvalidArgumentException("Setting {$settingName->value} expects value of type {$setting->getType()->value}, {$valueType} given");
+        }
     }
 }

@@ -18,4 +18,6 @@ abstract class AbstractSetting
     abstract public function getType(): SettingType;
 
     abstract public function serialize(): string;
+
+    abstract public function isValid(mixed $value): bool;
 }

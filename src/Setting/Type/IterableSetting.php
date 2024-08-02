@@ -23,4 +23,9 @@ class IterableSetting extends AbstractSetting
     {
         return json_encode($this->value);
     }
+
+    public function isValid(mixed $value): bool
+    {
+        return \in_array(\gettype($value), ['array', 'object']);
+    }
 }

@@ -23,4 +23,9 @@ class IntegerSetting extends AbstractSetting
     {
         return (string) $this->value;
     }
+
+    public function isValid(mixed $value): bool
+    {
+        return \in_array(\gettype($value), ['integer']);
+    }
 }
