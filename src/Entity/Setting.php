@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\NativeType;
 use App\Enum\SettingName;
-use App\Enum\SettingType;
 use App\Repository\SettingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,8 +28,8 @@ class Setting
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column(enumType: SettingType::class)]
-    private ?SettingType $type = null;
+    #[ORM\Column(enumType: NativeType::class)]
+    private ?NativeType $type = null;
 
     public function getId(): ?int
     {
@@ -51,16 +51,14 @@ class Setting
     public function getValue(): mixed
     {
         switch ($this->type) {
-            case SettingType::STRING:
+            case NativeType::STRING:
                 return (string) $this->value;
-            case SettingType::INTEGER:
+            case NativeType::INTEGER:
                 return (int) $this->value;
-            case SettingType::FLOAT:
+            case NativeType::DOUBLE:
                 return (float) $this->value;
-            case SettingType::BOOLEAN:
+            case NativeType::BOOLEAN:
                 return filter_var($this->value, \FILTER_VALIDATE_BOOLEAN);
-            case SettingType::ITERABLE:
-                return json_decode($this->value, true);
             default:
                 return $this->value;
         }
@@ -85,12 +83,12 @@ class Setting
         return $this;
     }
 
-    public function getType(): ?SettingType
+    public function getType(): ?NativeType
     {
         return $this->type;
     }
 
-    public function setType(SettingType $type): static
+    public function setType(NativeType $type): static
     {
         $this->type = $type;
 

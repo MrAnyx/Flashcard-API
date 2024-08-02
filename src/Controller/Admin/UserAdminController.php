@@ -10,7 +10,7 @@ use App\Exception\ApiException;
 use App\OptionsResolver\UserOptionsResolver;
 use App\Repository\UserRepository;
 use App\Service\RequestPayloadService;
-use App\Service\TokenGenerator;
+use App\UniqueGenerator\UniqueTokenGenerator;
 use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -59,7 +59,7 @@ class UserAdminController extends AbstractRestController
         UserPasswordHasherInterface $passwordHasher,
         UserOptionsResolver $userOptionsResolver,
         RequestPayloadService $requestPayloadService,
-        TokenGenerator $tokenGenerator
+        UniqueTokenGenerator $uniqueTokenGenerator
     ): JsonResponse {
         try {
             // Retrieve the request body
@@ -81,7 +81,7 @@ class UserAdminController extends AbstractRestController
         $user
             ->setEmail($data['email'])
             ->setUsername($data['username'])
-            ->setToken($tokenGenerator->generateToken())
+            ->setToken($uniqueTokenGenerator->generate(User::class, 'token'))
             ->setRoles($data['roles'])
             ->setRawPassword($data['password']);
 

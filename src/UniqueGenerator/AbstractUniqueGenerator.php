@@ -28,6 +28,7 @@ abstract class AbstractUniqueGenerator
 
         $tries = 0;
         $alreadyExist = true;
+        $value = null;
 
         while ($alreadyExist && $tries < $maxTries) {
             $value = $this->generateValue($tries);

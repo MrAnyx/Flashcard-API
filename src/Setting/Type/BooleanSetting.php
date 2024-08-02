@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Setting\Type;
 
 use App\Enum\SettingName;
-use App\Enum\SettingType;
 
 class BooleanSetting extends AbstractSetting
 {
@@ -14,18 +13,13 @@ class BooleanSetting extends AbstractSetting
         parent::__construct($name, $value);
     }
 
-    public function getType(): SettingType
+    public function getType(): string
     {
-        return SettingType::BOOLEAN;
+        return 'bool';
     }
 
     public function serialize(): string
     {
         return (string) $this->value;
-    }
-
-    public function isValid(mixed $value): bool
-    {
-        return \in_array(\gettype($value), ['boolean']);
     }
 }

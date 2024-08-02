@@ -9,7 +9,6 @@ use App\Setting\Type\AbstractSetting;
 use App\Setting\Type\BooleanSetting;
 use App\Setting\Type\FloatSetting;
 use App\Setting\Type\IntegerSetting;
-use App\Setting\Type\IterableSetting;
 use App\Setting\Type\StringSetting;
 
 class SettingFactory
@@ -30,9 +29,6 @@ class SettingFactory
                 return new StringSetting($name, $value);
             case 'bool':
                 return new BooleanSetting($name, $value);
-            case 'array':
-            case 'object':
-                return new IterableSetting($name, $value);
             default:
                 throw new \InvalidArgumentException("Setting value of type {$type} is not supported");
         }
