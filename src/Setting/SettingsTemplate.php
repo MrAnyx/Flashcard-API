@@ -49,7 +49,10 @@ class SettingsTemplate
         return null;
     }
 
-    public static function validateSetting(SettingName $settingName, mixed $value): void
+    /**
+     * Returns the template setting.
+     */
+    public static function validateSetting(SettingName $settingName, mixed $value): AbstractSetting
     {
         $setting = self::getSetting($settingName);
 
@@ -62,5 +65,7 @@ class SettingsTemplate
 
             throw new \InvalidArgumentException("Setting {$settingName->value} expects value of type ({$setting->getType()}), {$valueType} given");
         }
+
+        return $setting;
     }
 }

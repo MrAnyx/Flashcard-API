@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setting\Type;
 
 use App\Enum\SettingName;
+use App\Enum\SettingType;
 
 class FloatSetting extends AbstractSetting
 {
@@ -13,9 +14,9 @@ class FloatSetting extends AbstractSetting
         parent::__construct($name, $value);
     }
 
-    public function getType(): string
+    public function getType(): SettingType
     {
-        return 'float';
+        return SettingType::FLOAT;
     }
 
     public function serialize(): string

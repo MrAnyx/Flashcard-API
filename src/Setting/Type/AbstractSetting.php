@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setting\Type;
 
 use App\Enum\SettingName;
+use App\Enum\SettingType;
 
 abstract class AbstractSetting
 {
@@ -14,18 +15,13 @@ abstract class AbstractSetting
     ) {
     }
 
-    /**
-     * You can pass any type for which an `is_<type>()` function is defined in PHP.
-     *
-     * @see https://www.php.net/manual/fr/ref.var.php
-     */
-    abstract public function getType(): string;
+    abstract public function getType(): SettingType;
 
     abstract public function serialize(): string;
 
     public function isValid(mixed $value): bool
     {
-        $isValidMethod = "is_{$this->getType()}";
+        $isValidMethod = "is_{$this->getType()->value}";
 
         if (!\function_exists($isValidMethod)) {
             throw new \InvalidArgumentException("Type {$this->getType()} is not valid.");

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\NativeType;
 use App\Enum\SettingName;
+use App\Enum\SettingType;
 use App\Repository\SettingRepository;
+use App\Setting\Type\AbstractSetting;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,14 +23,21 @@ class Setting
     private ?SettingName $name = null;
 
     #[ORM\Column(type: Types::STRING, length: 1000)]
-    private mixed $value = null;
+    private ?string $value = null;
 
     #[ORM\ManyToOne(inversedBy: 'settings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column(enumType: NativeType::class)]
-    private ?NativeType $type = null;
+    #[ORM\Column(enumType: SettingType::class)]
+    private ?SettingType $type = null;
+
+    public function __construct(AbstractSetting $abstractSetting)
+    {
+        // $this
+        //     ->setName($abstractSetting->name)
+        //     ->setType($abstractSetting->getType())
+    }
 
     public function getId(): ?int
     {
@@ -51,13 +59,13 @@ class Setting
     public function getValue(): mixed
     {
         switch ($this->type) {
-            case NativeType::STRING:
+            case SettingType::STRING:
                 return (string) $this->value;
-            case NativeType::INTEGER:
+            case SettingType::INTEGER:
                 return (int) $this->value;
-            case NativeType::DOUBLE:
+            case SettingType::FLOAT:
                 return (float) $this->value;
-            case NativeType::BOOLEAN:
+            case SettingType::BOOLEAN:
                 return filter_var($this->value, \FILTER_VALIDATE_BOOLEAN);
             default:
                 return $this->value;
@@ -83,12 +91,12 @@ class Setting
         return $this;
     }
 
-    public function getType(): ?NativeType
+    public function getType(): ?SettingType
     {
         return $this->type;
     }
 
-    public function setType(NativeType $type): static
+    public function setType(SettingType $type): static
     {
         $this->type = $type;
 
