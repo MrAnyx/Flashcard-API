@@ -18,9 +18,4 @@ class StringSetting extends AbstractSetting
     {
         return SettingType::STRING;
     }
-
-    public function serialize(): string
-    {
-        return (string) $this->value;
-    }
 }

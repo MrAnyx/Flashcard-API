@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Enum\SettingName;
 use App\Enum\SettingType;
 use App\Repository\SettingRepository;
+use App\Setting\SettingConverter;
 use App\Setting\Type\AbstractSetting;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -32,11 +33,13 @@ class Setting
     #[ORM\Column(enumType: SettingType::class)]
     private ?SettingType $type = null;
 
-    public function __construct(AbstractSetting $abstractSetting)
+    public function __construct(AbstractSetting $abstractSetting, User $user)
     {
-        // $this
-        //     ->setName($abstractSetting->name)
-        //     ->setType($abstractSetting->getType())
+        $this
+            ->setName($abstractSetting->name)
+            ->setValue($abstractSetting->serialize())
+            ->setUser($user)
+            ->setType($abstractSetting->getType());
     }
 
     public function getId(): ?int
@@ -58,18 +61,7 @@ class Setting
 
     public function getValue(): mixed
     {
-        switch ($this->type) {
-            case SettingType::STRING:
-                return (string) $this->value;
-            case SettingType::INTEGER:
-                return (int) $this->value;
-            case SettingType::FLOAT:
-                return (float) $this->value;
-            case SettingType::BOOLEAN:
-                return filter_var($this->value, \FILTER_VALIDATE_BOOLEAN);
-            default:
-                return $this->value;
-        }
+        return SettingConverter::deserialize($this->type, $this->value);
     }
 
     public function setValue(string $value): static

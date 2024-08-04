@@ -13,6 +13,7 @@ use App\OptionsResolver\SettingOptionsResolver;
 use App\Service\RequestPayloadService;
 use App\Setting\SettingFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -71,9 +72,14 @@ class UserController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
-        $setting = SettingFactory::create($data['name'], $data['value']);
+        try {
+            $setting = SettingFactory::create($data['name'], $data['value']);
+        } catch (Exception $e) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
 
         $user->updateSetting($setting);
+
         $em->flush();
 
         return $this->jsonStd($user->getSettings());

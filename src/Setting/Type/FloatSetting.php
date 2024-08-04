@@ -18,9 +18,4 @@ class FloatSetting extends AbstractSetting
     {
         return SettingType::FLOAT;
     }
-
-    public function serialize(): string
-    {
-        return (string) $this->value;
-    }
 }

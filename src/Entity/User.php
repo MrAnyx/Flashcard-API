@@ -324,15 +324,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
         if ($existingSetting !== null) {
             $existingSetting->setName($setting->name);
+            $existingSetting->setType($setting->getType());
             $existingSetting->setValue($setting->serialize());
         } else {
-            $newSetting = new Setting();
-            $newSetting
-                ->setType($setting->getType())
-                ->setName($setting->name)
-                ->setValue($setting->serialize())
-                ->setUser($this);
-
+            $newSetting = new Setting($setting, $this);
             $this->settings->add($newSetting);
         }
 

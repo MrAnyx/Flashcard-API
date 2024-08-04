@@ -18,9 +18,4 @@ class BooleanSetting extends AbstractSetting
     {
         return SettingType::BOOLEAN;
     }
-
-    public function serialize(): string
-    {
-        return (string) $this->value;
-    }
 }

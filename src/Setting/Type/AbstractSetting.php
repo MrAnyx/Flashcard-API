@@ -6,6 +6,7 @@ namespace App\Setting\Type;
 
 use App\Enum\SettingName;
 use App\Enum\SettingType;
+use App\Setting\SettingConverter;
 
 abstract class AbstractSetting
 {
@@ -17,14 +18,17 @@ abstract class AbstractSetting
 
     abstract public function getType(): SettingType;
 
-    abstract public function serialize(): string;
+    public function serialize(): string
+    {
+        return SettingConverter::serialize($this->getType(), $this->value);
+    }
 
     public function isValid(mixed $value): bool
     {
         $isValidMethod = "is_{$this->getType()->value}";
 
         if (!\function_exists($isValidMethod)) {
-            throw new \InvalidArgumentException("Type {$this->getType()} is not valid.");
+            throw new \InvalidArgumentException("Type {$this->getType()->value} is not valid.");
         }
 
         return $isValidMethod($value);

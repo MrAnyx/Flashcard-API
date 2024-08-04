@@ -63,7 +63,7 @@ class SettingsTemplate
         if (!$setting->isValid($value)) {
             $valueType = \gettype($value);
 
-            throw new \InvalidArgumentException("Setting {$settingName->value} expects value of type ({$setting->getType()}), {$valueType} given");
+            throw new \InvalidArgumentException("Setting {$settingName->value} expects value of type ({$setting->getType()->value}), {$valueType} given");
         }
 
         return $setting;

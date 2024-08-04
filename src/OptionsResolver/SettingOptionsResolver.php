@@ -26,10 +26,10 @@ class SettingOptionsResolver extends OptionsResolver
 
     public function configureValue(): self
     {
-        $availableTypes = array_unique(array_merge(...array_map(
-            fn (AbstractSetting $el) => $el->getTypes(),
+        $availableTypes = array_unique(array_map(
+            fn (AbstractSetting $el) => $el->getType()->value,
             SettingsTemplate::getTemplate()
-        )));
+        ));
 
         $this
             ->setDefined('value')

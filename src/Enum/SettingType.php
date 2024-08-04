@@ -11,6 +11,8 @@ namespace App\Enum;
  */
 enum SettingType: string
 {
+    use EnumUtility;
+
     case BOOLEAN = 'bool';
     case INTEGER = 'int';
     case FLOAT = 'float';

@@ -18,18 +18,11 @@ class SettingFactory
     {
         $default = SettingsTemplate::validateSetting($name, $value);
 
-        switch ($default->getType()) {
-            case SettingType::INTEGER:
-                return new IntegerSetting($name, $value);
-            case SettingType::FLOAT:
-                return new FloatSetting($name, $value);
-            case SettingType::STRING:
-                return new StringSetting($name, $value);
-            case SettingType::BOOLEAN:
-                return new BooleanSetting($name, $value);
-            default:
-                $type = \gettype($value);
-                throw new \InvalidArgumentException("Setting value of type {$type} is not supported");
-        }
+        return match ($default->getType()) {
+            SettingType::INTEGER => new IntegerSetting($name, $value),
+            SettingType::FLOAT => new FloatSetting($name, $value),
+            SettingType::STRING => new StringSetting($name, $value),
+            SettingType::BOOLEAN => new BooleanSetting($name, $value),
+        };
     }
 }

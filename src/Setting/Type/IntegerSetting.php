@@ -18,9 +18,4 @@ class IntegerSetting extends AbstractSetting
     {
         return SettingType::INTEGER;
     }
-
-    public function serialize(): string
-    {
-        return (string) $this->value;
-    }
 }
