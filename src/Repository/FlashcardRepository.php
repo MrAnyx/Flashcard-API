@@ -9,6 +9,7 @@ use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Enum\StateType;
+use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -45,7 +46,7 @@ class FlashcardRepository extends ServiceEntityRepository
         return $query->getQuery()->getSingleScalarResult();
     }
 
-    public function findAllWithPagination(Page $page, ?User $user = null): Paginator
+    public function findAllWithPagination(Page $page, Filter $filter, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('f');
 
@@ -55,6 +56,12 @@ class FlashcardRepository extends ServiceEntityRepository
                 ->join('u.topic', 't')
                 ->where('t.author = :user')
                 ->setParameter('user', $user);
+        }
+
+        if ($filter->isFullyConfigured()) {
+            $query
+                ->andWhere("f.{$filter->filter} LIKE :query")
+                ->setParameter('query', "%{$filter->query}%");
         }
 
         $query->orderBy("f.{$page->sort}", $page->order);

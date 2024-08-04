@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Attribut\Sortable;
+use App\Model\TypedField;
 
-class SortableEntityChecker
+class AttributeHelper
 {
-    public function isFieldSortable(string $classname, string $field): bool
+    /**
+     * @template T
+     *
+     * @param class-string<T> $fieldAttribute
+     */
+    public function hasAttribute(string $classname, string $field, string $fieldAttribute): bool
     {
         if (!class_exists($classname)) {
             throw new \InvalidArgumentException("Unknown class {$classname}");
@@ -20,31 +25,41 @@ class SortableEntityChecker
 
         $reflectionClass = new \ReflectionClass($classname);
 
-        $sortableAttributes = $reflectionClass
+        $fields = $reflectionClass
             ->getProperty($field)
-            ->getAttributes(Sortable::class);
+            ->getAttributes($fieldAttribute);
 
-        return \count($sortableAttributes) > 0;
+        return \count($fields) > 0;
     }
 
-    public function getSortableFields(string $classname): array
+    /**
+     * @template T
+     *
+     * @param class-string<T> $fieldAttribute
+     *
+     * @return TypedFields[]
+     */
+    public function getFieldsWithAttribute(string $classname, string $fieldAttribute): array
     {
         if (!class_exists($classname)) {
             throw new \InvalidArgumentException("Unknown class {$classname}");
         }
 
-        $sortableFields = [];
+        $fields = [];
 
         $reflectionClass = new \ReflectionClass($classname);
         $reflectionProperties = $reflectionClass->getProperties();
 
         /** @var \ReflectionProperty $property */
         foreach ($reflectionProperties as $property) {
-            if (\count($property->getAttributes(Sortable::class)) > 0) {
-                $sortableFields[] = $property->getName();
+            if (\count($property->getAttributes($fieldAttribute)) > 0) {
+                $fields[] = new TypedField(
+                    $property->getName(),
+                    $property->getType()
+                );
             }
         }
 
-        return $sortableFields;
+        return $fields;
     }
 }

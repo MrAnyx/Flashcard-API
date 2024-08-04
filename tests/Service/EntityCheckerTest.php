@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Attribut\Sortable;
-use App\Service\SortableEntityChecker;
+use App\Model\TypedField;
+use App\Service\AttributeHelper;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class __Foo__
@@ -20,47 +21,49 @@ class SortableEntityCheckerTest extends KernelTestCase
 {
     public function testIsFieldSortable(): void
     {
-        /** @var SortableEntityChecker $service */
-        $checker = self::getContainer()->get(SortableEntityChecker::class);
+        /** @var AttributeHelper $checker */
+        $checker = self::getContainer()->get(AttributeHelper::class);
 
-        $this->assertTrue($checker->isFieldSortable(__Foo__::class, 'sortable'));
-        $this->assertFalse($checker->isFieldSortable(__Foo__::class, 'notSortable'));
+        $this->assertTrue($checker->hasAttribute(__Foo__::class, 'sortable', Sortable::class));
+        $this->assertFalse($checker->hasAttribute(__Foo__::class, 'notSortable', Sortable::class));
     }
 
     public function testIsFieldSortableWithUnknownClass(): void
     {
-        /** @var SortableEntityChecker $service */
-        $checker = self::getContainer()->get(SortableEntityChecker::class);
+        /** @var AttributeHelper $checker */
+        $checker = self::getContainer()->get(AttributeHelper::class);
 
         $this->expectException(\Exception::class);
 
-        $checker->isFieldSortable('UnknownClass', 'sortable');
+        $checker->hasAttribute('UnknownClass', 'sortable', Sortable::class);
     }
 
     public function testIsFieldSortableWithUnknownField(): void
     {
-        /** @var SortableEntityChecker $service */
-        $checker = self::getContainer()->get(SortableEntityChecker::class);
+        /** @var AttributeHelper $checker */
+        $checker = self::getContainer()->get(AttributeHelper::class);
 
         $this->expectException(\InvalidArgumentException::class);
 
-        $checker->isFieldSortable(__Foo__::class, 'unknownField');
+        $checker->hasAttribute(__Foo__::class, 'unknownField', Sortable::class);
     }
 
     public function testGetSortableFields(): void
     {
-        /** @var SortableEntityChecker $service */
-        $checker = self::getContainer()->get(SortableEntityChecker::class);
+        /** @var AttributeHelper $checker */
+        $checker = self::getContainer()->get(AttributeHelper::class);
 
-        $this->assertSame(['sortable'], $checker->getSortableFields(__Foo__::class));
+        $fields = $checker->getFieldsWithAttribute(__Foo__::class, Sortable::class);
+
+        $this->assertSame(['sortable'], array_map(fn (TypedField $field) => $field->name, $fields));
     }
 
     public function testGetSortableFieldsWithUnknownClass(): void
     {
-        /** @var SortableEntityChecker $service */
-        $checker = self::getContainer()->get(SortableEntityChecker::class);
+        /** @var AttributeHelper $checker */
+        $checker = self::getContainer()->get(AttributeHelper::class);
 
         $this->expectException(\InvalidArgumentException::class);
-        $checker->getSortableFields('UnknownClass');
+        $checker->getFieldsWithAttribute('UnknownClass', Sortable::class);
     }
 }
