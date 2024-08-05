@@ -10,12 +10,14 @@ use App\Entity\User;
 use App\Enum\SettingName;
 use App\Exception\ApiException;
 use App\OptionsResolver\SettingOptionsResolver;
+use App\OptionsResolver\UserOptionsResolver;
 use App\Service\RequestPayloadService;
 use App\Setting\SettingFactory;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api', 'api_', format: 'json')]
@@ -51,6 +53,64 @@ class UserController extends AbstractRestController
         return $this->jsonStd(null, status: Response::HTTP_NO_CONTENT);
     }
 
+    #[Route('/users/me', name: 'update_me', methods: ['PATCH', 'PUT'])]
+    public function updateUser(
+        EntityManagerInterface $em,
+        RequestPayloadService $requestPayloadService,
+        Request $request,
+        UserOptionsResolver $userOptionsResolver,
+        UserPasswordHasherInterface $passwordHasher
+    ): JsonResponse {
+        try {
+            // Retrieve the request body
+            $body = $requestPayloadService->getRequestPayload($request);
+
+            // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
+            // Otherwise, all parameters are optional.
+            $mandatoryParameters = $request->getMethod() === 'PUT';
+
+            // Validate the content of the request body
+            $data = $userOptionsResolver
+                ->configureUsername($mandatoryParameters)
+                ->configureEmail($mandatoryParameters)
+                ->configurePassword($mandatoryParameters)
+                ->resolve($body);
+        } catch (\Exception $e) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $validationGroups = ['Default'];
+
+        // Update each fields if necessary
+        foreach ($data as $field => $value) {
+            switch ($field) {
+                case 'username':
+                    $user->setUsername($value);
+                    break;
+                case 'email':
+                    $user->setEmail($value);
+                    break;
+                case 'password':
+                    $user->setRawPassword($value);
+                    $user->setPassword($passwordHasher->hashPassword($user, $value));
+                    $validationGroups[] = 'edit:user:password';
+                    break;
+            }
+        }
+
+        // Second validation using the validation constraints
+        $this->validateEntity($user, $validationGroups);
+
+        // Save the user information
+        $em->flush();
+
+        // Return the user
+        return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
+    }
+
     #[Route('/users/settings', name: 'create_update_setting', methods: ['POST'])]
     public function createOrUpdateSetting(
         EntityManagerInterface $em,
@@ -74,7 +134,7 @@ class UserController extends AbstractRestController
 
         try {
             $setting = SettingFactory::create($data['name'], $data['value']);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
