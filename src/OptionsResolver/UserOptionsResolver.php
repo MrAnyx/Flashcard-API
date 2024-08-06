@@ -21,6 +21,17 @@ class UserOptionsResolver extends OptionsResolver
 
     public function configureEmail(bool $isRequired = true): self
     {
+        $this->setDefined('email')->setAllowedTypes('email', 'string');
+
+        if ($isRequired) {
+            $this->setRequired('email');
+        }
+
+        return $this;
+    }
+
+    public function configureIdentifier(bool $isRequired = true): self
+    {
         $this->setDefined('identifier')->setAllowedTypes('identifier', 'string');
 
         if ($isRequired) {
