@@ -6,13 +6,11 @@ namespace App\Controller\User;
 
 use App\Controller\AbstractRestController;
 use App\Entity\Topic;
-use App\Entity\Unit;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\TopicOptionsResolver;
 use App\Repository\FlashcardRepository;
 use App\Repository\TopicRepository;
-use App\Repository\UnitRepository;
 use App\Service\RequestPayloadService;
 use App\Service\ReviewManager;
 use App\Service\SpacedRepetitionScheduler;
@@ -170,23 +168,8 @@ class TopicController extends AbstractRestController
         return $this->jsonStd($topic, context: ['groups' => ['read:topic:user']]);
     }
 
-    #[Route('/topics/{id}/units', name: 'get_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getUnitsFromTopic(int $id, Request $request, UnitRepository $unitRepository): JsonResponse
-    {
-        $topic = $this->getResourceById(Topic::class, $id);
-
-        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
-
-        $pagination = $this->getPaginationParameter(Unit::class, $request);
-
-        // Get data with pagination
-        $units = $unitRepository->findByTopicWithPagination($pagination, $topic);
-
-        return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
-    }
-
     #[Route('/topics/{id}/flashcards/reset', name: 'reset_topic', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
-    public function resetUnit(
+    public function resetTopic(
         int $id,
         ReviewManager $reviewManager
     ): JsonResponse {
