@@ -168,7 +168,7 @@ class TopicController extends AbstractRestController
         return $this->jsonStd($topic, context: ['groups' => ['read:topic:user']]);
     }
 
-    #[Route('/topics/{id}/flashcards/reset', name: 'reset_topic', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
+    #[Route('/topics/{id}/reset', name: 'reset_topic', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetTopic(
         int $id,
         ReviewManager $reviewManager

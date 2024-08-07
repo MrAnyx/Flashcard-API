@@ -189,13 +189,6 @@ class Flashcard
         return $this;
     }
 
-    public function refreshPreviousReview(): static
-    {
-        $this->previousReview = new \DateTimeImmutable();
-
-        return $this;
-    }
-
     public function getState(): StateType
     {
         return $this->state;

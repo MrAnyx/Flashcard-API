@@ -35,7 +35,7 @@ class SpacedRepetitionScheduler
 
         $interval = $this->nextInterval($flashcard);
         $flashcard->setNextReview((new \DateTimeImmutable())->modify("+{$interval} days")->setTime(0, 0, 0));
-        $flashcard->refreshPreviousReview();
+        $flashcard->setPreviousReview(new \DateTimeImmutable());
         $flashcard->setState(StateType::Learning);
     }
 

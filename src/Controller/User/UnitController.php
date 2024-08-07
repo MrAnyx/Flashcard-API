@@ -192,7 +192,7 @@ class UnitController extends AbstractRestController
         return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
     }
 
-    #[Route('/units/{id}/flashcards/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
+    #[Route('/units/{id}/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetUnit(
         int $id,
         ReviewManager $reviewManager
