@@ -7,7 +7,6 @@ namespace App\Controller\User;
 use App\Controller\AbstractRestController;
 use App\Entity\Setting;
 use App\Entity\User;
-use App\Enum\SettingName;
 use App\Exception\ApiException;
 use App\OptionsResolver\SettingOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
@@ -28,8 +27,6 @@ class UserController extends AbstractRestController
     {
         /** @var User $user */
         $user = $this->getUser();
-
-        // dd(SettingFactory::create(SettingName::ITEMS_PER_PAGE, 23));
 
         return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
     }
