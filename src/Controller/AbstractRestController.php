@@ -9,7 +9,6 @@ use App\Exception\ApiException;
 use App\Model\JsonStandard;
 use App\Model\Page;
 use App\OptionsResolver\PaginatorOptionsResolver;
-use App\Service\EntityValidator;
 use App\Service\SortableEntityChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AbstractRestController extends AbstractController
 {
@@ -25,8 +24,8 @@ class AbstractRestController extends AbstractController
         private SortableEntityChecker $sortableEntityChecker,
         private PaginatorOptionsResolver $paginatorOptionsResolver,
         private EntityManagerInterface $em,
-        private EntityValidator $entityValidator,
-        private DenormalizerInterface $denormalizer
+        private DenormalizerInterface $denormalizer,
+        private ValidatorInterface $validator
     ) {
     }
 
@@ -60,10 +59,9 @@ class AbstractRestController extends AbstractController
 
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void
     {
-        try {
-            $this->entityValidator->validateEntity($entity, $validationGroups);
-        } catch (ValidatorException $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        $errors = $this->validator->validate($entity, groups: $validationGroups);
+        if (\count($errors) > 0) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, (string) $errors[0]->getMessage());
         }
     }
 
