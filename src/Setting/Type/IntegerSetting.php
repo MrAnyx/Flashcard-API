@@ -9,9 +9,9 @@ use App\Enum\SettingType;
 
 class IntegerSetting extends AbstractSetting
 {
-    public function __construct(SettingName $name, int $value)
+    public function __construct(SettingName $name, int $value, int|float|string|array|null $allowedValues = null)
     {
-        parent::__construct($name, $value);
+        parent::__construct($name, $value, $allowedValues);
     }
 
     public function getType(): SettingType

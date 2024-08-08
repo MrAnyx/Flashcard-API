@@ -12,7 +12,8 @@ abstract class AbstractSetting
 {
     public function __construct(
         public readonly SettingName $name,
-        public readonly mixed $value
+        public readonly mixed $value,
+        protected readonly int|float|string|array|null $allowedValues = null
     ) {
     }
 
@@ -31,6 +32,19 @@ abstract class AbstractSetting
             throw new \InvalidArgumentException("Type {$this->getType()->value} is not valid.");
         }
 
-        return $isValidMethod($value);
+        $isValid = $isValidMethod($value);
+
+        // fast return
+        if ($this->allowedValues === null) {
+            return $isValid;
+        }
+
+        if (\is_array($this->allowedValues)) {
+            $isValid = $isValid && \in_array($value, $this->allowedValues);
+        } else {
+            return $isValid = $isValid && $this->allowedValues === $value;
+        }
+
+        return $isValid;
     }
 }

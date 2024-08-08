@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\User;
 
 use App\Controller\AbstractRestController;
-use App\Entity\Setting;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\SettingOptionsResolver;

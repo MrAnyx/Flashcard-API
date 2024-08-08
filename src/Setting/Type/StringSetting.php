@@ -9,9 +9,9 @@ use App\Enum\SettingType;
 
 class StringSetting extends AbstractSetting
 {
-    public function __construct(SettingName $name, string $value)
+    public function __construct(SettingName $name, string $value, int|float|string|array|null $allowedValues = null)
     {
-        parent::__construct($name, $value);
+        parent::__construct($name, $value, $allowedValues);
     }
 
     public function getType(): SettingType

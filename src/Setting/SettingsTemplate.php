@@ -7,6 +7,7 @@ namespace App\Setting;
 use App\Enum\SettingName;
 use App\Setting\Type\AbstractSetting;
 use App\Setting\Type\IntegerSetting;
+use App\Setting\Type\StringSetting;
 
 class SettingsTemplate
 {
@@ -17,7 +18,8 @@ class SettingsTemplate
     {
         return [
             new IntegerSetting(SettingName::ITEMS_PER_PAGE, 50),
-            new IntegerSetting(SettingName::FLASHCARD_PER_SESSION, 10),
+            new IntegerSetting(SettingName::FLASHCARD_PER_SESSION, 20),
+            new StringSetting(SettingName::COLOR_THEME, 'light', ['light', 'dark', 'system']),
         ];
     }
 
@@ -63,7 +65,7 @@ class SettingsTemplate
         if (!$setting->isValid($value)) {
             $valueType = \gettype($value);
 
-            throw new \InvalidArgumentException("Setting {$settingName->value} expects value of type ({$setting->getType()->value}), {$valueType} given");
+            throw new \InvalidArgumentException("Setting {$settingName->value} expects value of type {$setting->getType()->value}, {$valueType} given");
         }
 
         return $setting;

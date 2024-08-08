@@ -9,9 +9,9 @@ use App\Enum\SettingType;
 
 class BooleanSetting extends AbstractSetting
 {
-    public function __construct(SettingName $name, bool $value)
+    public function __construct(SettingName $name, bool $value, int|float|string|array|null $allowedValues = null)
     {
-        parent::__construct($name, $value);
+        parent::__construct($name, $value, $allowedValues);
     }
 
     public function getType(): SettingType
