@@ -9,7 +9,6 @@ use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\ReviewOptionsResolver;
 use App\Repository\ReviewRepository;
-use App\Service\RequestPayloadService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,12 +20,11 @@ class ReviewController extends AbstractRestController
     public function getCountReviews(
         ReviewRepository $reviewRepository,
         ReviewOptionsResolver $reviewOptionsResolver,
-        RequestPayloadService $requestPayloadService,
         Request $request
     ) {
         try {
             // Retrieve the request body
-            $query = $requestPayloadService->getQueryPayload($request);
+            $query = $this->getQueryPayload($request);
 
             // Validate the content of the request body
             $data = $reviewOptionsResolver

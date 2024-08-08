@@ -10,7 +10,6 @@ use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\SettingOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
-use App\Service\RequestPayloadService;
 use App\Setting\SettingFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,15 +52,14 @@ class UserController extends AbstractRestController
     #[Route('/users/me', name: 'update_me', methods: ['PATCH', 'PUT'])]
     public function updateUser(
         EntityManagerInterface $em,
-        RequestPayloadService $requestPayloadService,
         Request $request,
         UserOptionsResolver $userOptionsResolver,
         UserPasswordHasherInterface $passwordHasher
     ): JsonResponse {
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
             // Otherwise, all parameters are optional.
             $mandatoryParameters = $request->getMethod() === 'PUT';
@@ -111,13 +109,12 @@ class UserController extends AbstractRestController
     #[Route('/users/settings', name: 'create_update_setting', methods: ['POST'])]
     public function createOrUpdateSetting(
         EntityManagerInterface $em,
-        RequestPayloadService $requestPayloadService,
         Request $request,
         SettingOptionsResolver $settingOptionsResolver
     ) {
-        try {
-            $body = $requestPayloadService->getRequestPayload($request);
+        $body = $this->getRequestPayload($request);
 
+        try {
             $data = $settingOptionsResolver
                 ->configureName()
                 ->configureValue()

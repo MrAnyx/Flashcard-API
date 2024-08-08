@@ -13,7 +13,6 @@ use App\Exception\ExceptionCode;
 use App\OptionsResolver\FlashcardOptionsResolver;
 use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 use App\Repository\FlashcardRepository;
-use App\Service\RequestPayloadService;
 use App\Service\ReviewManager;
 use App\Service\SpacedRepetitionScheduler;
 use App\Utility\Regex;
@@ -58,12 +57,11 @@ class FlashcardController extends AbstractRestController
         Request $request,
         EntityManagerInterface $em,
         FlashcardOptionsResolver $flashcardOptionsResolver,
-        RequestPayloadService $requestPayloadService
     ): JsonResponse {
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
                 ->configureFront(true)
@@ -122,7 +120,6 @@ class FlashcardController extends AbstractRestController
     public function updateFlashcard(
         int $id,
         EntityManagerInterface $em,
-        RequestPayloadService $requestPayloadService,
         Request $request,
         FlashcardOptionsResolver $flashcardOptionsResolver
     ): JsonResponse {
@@ -130,10 +127,10 @@ class FlashcardController extends AbstractRestController
 
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
             // Otherwise, all parameters are optional.
             $mandatoryParameters = $request->getMethod() === 'PUT';
@@ -201,7 +198,6 @@ class FlashcardController extends AbstractRestController
     public function reviewFlashcard(
         int $id,
         EntityManagerInterface $em,
-        RequestPayloadService $requestPayloadService,
         Request $request,
         SpacedRepetitionOptionsResolver $spacedRepetitionOptionsResolver,
         SpacedRepetitionScheduler $spacedRepetitionScheduler,
@@ -215,9 +211,9 @@ class FlashcardController extends AbstractRestController
             throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [$flashcard->getId(), $flashcard->getNextReview()->format('jS \\of F Y')]);
         }
 
-        try {
-            $body = $requestPayloadService->getRequestPayload($request);
+        $body = $this->getRequestPayload($request);
 
+        try {
             $data = $spacedRepetitionOptionsResolver
                 ->configureGrade()
                 ->resolve($body);

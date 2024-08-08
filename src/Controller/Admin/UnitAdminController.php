@@ -9,7 +9,6 @@ use App\Entity\Unit;
 use App\Exception\ApiException;
 use App\OptionsResolver\UnitOptionsResolver;
 use App\Repository\UnitRepository;
-use App\Service\RequestPayloadService;
 use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,12 +52,11 @@ class UnitAdminController extends AbstractRestController
         Request $request,
         EntityManagerInterface $em,
         UnitOptionsResolver $unitOptionsResolver,
-        RequestPayloadService $requestPayloadService
     ): JsonResponse {
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName(true)
@@ -118,7 +116,6 @@ class UnitAdminController extends AbstractRestController
         int $id,
         UnitRepository $unitRepository,
         EntityManagerInterface $em,
-        RequestPayloadService $requestPayloadService,
         Request $request,
         UnitOptionsResolver $unitOptionsResolver,
     ): JsonResponse {
@@ -130,10 +127,10 @@ class UnitAdminController extends AbstractRestController
             throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
         }
 
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
             // Otherwise, all parameters are optional.
             $mandatoryParameters = $request->getMethod() === 'PUT';

@@ -14,7 +14,6 @@ use App\OptionsResolver\PasswordResetOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
 use App\Repository\PasswordResetRepository;
 use App\Repository\UserRepository;
-use App\Service\RequestPayloadService;
 use App\UniqueGenerator\UniqueTokenGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,13 +45,12 @@ class SecurityController extends AbstractRestController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
         UserOptionsResolver $userOptionsResolver,
-        RequestPayloadService $requestPayloadService,
         UniqueTokenGenerator $uniqueTokenGenerator
     ): JsonResponse {
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Validate the content of the request body
             $data = $userOptionsResolver
                 ->configureUsername(true)
@@ -89,16 +87,15 @@ class SecurityController extends AbstractRestController
         Request $request,
         EntityManagerInterface $em,
         UserOptionsResolver $userOptionsResolver,
-        RequestPayloadService $requestPayloadService,
         UserRepository $userRepository,
         PasswordResetRepository $passwordResetRepository,
         UniqueTokenGenerator $uniqueTokenGenerator,
         MessageBusInterface $messageBusInterface
     ): JsonResponse {
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Validate the content of the request body
             $data = $userOptionsResolver
                 ->configureEmail(true)
@@ -155,14 +152,13 @@ class SecurityController extends AbstractRestController
         Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
-        RequestPayloadService $requestPayloadService,
         PasswordResetOptionsResolver $passwordResetOptionsResolver,
         PasswordResetRepository $passwordResetRepository,
     ): JsonResponse {
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Validate the content of the request body
             $data = $passwordResetOptionsResolver
                 ->configureToken(true)

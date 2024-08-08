@@ -9,7 +9,6 @@ use App\Entity\Flashcard;
 use App\Exception\ApiException;
 use App\OptionsResolver\FlashcardOptionsResolver;
 use App\Repository\FlashcardRepository;
-use App\Service\RequestPayloadService;
 use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,12 +50,11 @@ class FlashcardAdminController extends AbstractRestController
         Request $request,
         EntityManagerInterface $em,
         FlashcardOptionsResolver $flashcardOptionsResolver,
-        RequestPayloadService $requestPayloadService
     ): JsonResponse {
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
                 ->configureFront(true)
@@ -118,7 +116,6 @@ class FlashcardAdminController extends AbstractRestController
         int $id,
         FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
-        RequestPayloadService $requestPayloadService,
         Request $request,
         FlashcardOptionsResolver $flashcardOptionsResolver
     ): JsonResponse {
@@ -130,10 +127,10 @@ class FlashcardAdminController extends AbstractRestController
             throw new ApiException(Response::HTTP_NOT_FOUND, 'Flashcard with id %d was not found', [$id]);
         }
 
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
             // Otherwise, all parameters are optional.
             $mandatoryParameters = $request->getMethod() === 'PUT';

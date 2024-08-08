@@ -12,7 +12,6 @@ use App\Exception\ApiException;
 use App\OptionsResolver\UnitOptionsResolver;
 use App\Repository\FlashcardRepository;
 use App\Repository\UnitRepository;
-use App\Service\RequestPayloadService;
 use App\Service\ReviewManager;
 use App\Service\SpacedRepetitionScheduler;
 use App\Utility\Regex;
@@ -59,12 +58,11 @@ class UnitController extends AbstractRestController
         Request $request,
         EntityManagerInterface $em,
         UnitOptionsResolver $unitOptionsResolver,
-        RequestPayloadService $requestPayloadService
     ): JsonResponse {
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Validate the content of the request body
             $data = $unitOptionsResolver
                 ->configureName(true)
@@ -121,7 +119,6 @@ class UnitController extends AbstractRestController
     public function updateUnit(
         int $id,
         EntityManagerInterface $em,
-        RequestPayloadService $requestPayloadService,
         Request $request,
         UnitOptionsResolver $unitOptionsResolver,
     ): JsonResponse {
@@ -129,10 +126,10 @@ class UnitController extends AbstractRestController
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
 
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
             // Otherwise, all parameters are optional.
             $mandatoryParameters = $request->getMethod() === 'PUT';

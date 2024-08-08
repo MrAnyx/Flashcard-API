@@ -9,7 +9,6 @@ use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\UserOptionsResolver;
 use App\Repository\UserRepository;
-use App\Service\RequestPayloadService;
 use App\UniqueGenerator\UniqueTokenGenerator;
 use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,13 +57,12 @@ class UserAdminController extends AbstractRestController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
         UserOptionsResolver $userOptionsResolver,
-        RequestPayloadService $requestPayloadService,
         UniqueTokenGenerator $uniqueTokenGenerator
     ): JsonResponse {
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Validate the content of the request body
             $data = $userOptionsResolver
                 ->configureUsername(true)
@@ -127,7 +125,6 @@ class UserAdminController extends AbstractRestController
         int $id,
         UserRepository $userRepository,
         EntityManagerInterface $em,
-        RequestPayloadService $requestPayloadService,
         Request $request,
         UserOptionsResolver $userOptionsResolver,
         UserPasswordHasherInterface $passwordHasher
@@ -140,10 +137,10 @@ class UserAdminController extends AbstractRestController
             throw new ApiException(Response::HTTP_NOT_FOUND, 'User with id %d was not found', [$id]);
         }
 
-        try {
-            // Retrieve the request body
-            $body = $requestPayloadService->getRequestPayload($request);
+        // Retrieve the request body
+        $body = $this->getRequestPayload($request);
 
+        try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
             // Otherwise, all parameters are optional.
             $mandatoryParameters = $request->getMethod() === 'PUT';
