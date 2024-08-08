@@ -35,19 +35,19 @@ class ReviewManager
 
     public function resetFlashcard(Flashcard $flashcard, User $user): void
     {
-        $this->reviewRepository->resetBy($flashcard, $user);
-        $this->flashcardRepository->resetBy($flashcard, $user);
+        $this->reviewRepository->resetBy($user, $flashcard);
+        $this->flashcardRepository->resetBy($user, $flashcard);
     }
 
     public function resetFlashcards(Unit|Topic $group, User $user): void
     {
-        $this->reviewRepository->resetBy($group, $user);
-        $this->flashcardRepository->resetBy($group, $user);
+        $this->reviewRepository->resetBy($user, $group);
+        $this->flashcardRepository->resetBy($user, $group);
     }
 
     public function resetAllFlashcards(User $user): void
     {
-        $this->reviewRepository->resetAll($user);
-        $this->flashcardRepository->resetAll($user);
+        $this->reviewRepository->resetBy($user);
+        $this->flashcardRepository->resetBy($user);
     }
 }

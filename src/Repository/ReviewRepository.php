@@ -27,18 +27,7 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
-    public function resetAll(User $user): void
-    {
-        $query = $this->createQueryBuilder('r')
-            ->update()
-            ->set('r.reset', true)
-            ->where('r.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->execute();
-    }
-
-    public function resetBy(Flashcard|Unit|Topic $resetBy, User $user)
+    public function resetBy(User $user, Flashcard|Unit|Topic|null $resetBy = null)
     {
         // On met des 2 pour les alias car sinon, il y a des conflits avec la requête principale
         $reviewsToUpdate = $this->createQueryBuilder('r2')
@@ -55,15 +44,19 @@ class ReviewRepository extends ServiceEntityRepository
             $reviewsToUpdate->andWhere('u2.topic = :resetBy');
         }
 
-        $reviewsToUpdateDQL = $reviewsToUpdate->getDQL();
-
         $qb = $this->createQueryBuilder('r');
 
-        return $qb->update()
+        $qb
+            ->update()
             ->set('r.reset', true)
-            ->andWhere($qb->expr()->in('r.id', $reviewsToUpdateDQL))
-            ->setParameter('resetBy', $resetBy)
-            ->setParameter('user', $user)
+            ->andWhere($qb->expr()->in('r.id', $reviewsToUpdate->getDQL()))
+            ->setParameter('user', $user);
+
+        if ($resetBy !== null) {
+            $qb->setParameter('resetBy', $resetBy);
+        }
+
+        return $qb
             ->getQuery()
             ->execute();
     }

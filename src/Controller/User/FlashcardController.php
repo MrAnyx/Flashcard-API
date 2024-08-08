@@ -236,7 +236,7 @@ class FlashcardController extends AbstractRestController
         return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('/flashcards/reset', name: 'reset_all_flashcard', methods: ['PATCH'])]
+    #[Route('/flashcards/reset', name: 'reset_all_flashcard', methods: ['POST'])]
     public function resetAllFlashcards(
         ReviewManager $reviewManager
     ): JsonResponse {
@@ -247,7 +247,7 @@ class FlashcardController extends AbstractRestController
         return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('/flashcards/{id}/reset', name: 'reset_flashcard', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
+    #[Route('/flashcards/{id}/reset', name: 'reset_flashcard', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function resetFlashcard(
         int $id,
         ReviewManager $reviewManager
