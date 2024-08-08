@@ -88,6 +88,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Groups(['read:user:user'])]
     private Collection $settings;
 
+    #[ORM\Column]
+    private bool $premium = false;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $premiumAt = null;
+
     public function __construct()
     {
         $this->topics = new ArrayCollection();
@@ -342,6 +348,48 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
                 $setting->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isPremium(): bool
+    {
+        return $this->premium;
+    }
+
+    public function setPremium(bool $premium): static
+    {
+        $this->premium = $premium;
+
+        return $this;
+    }
+
+    public function getPremiumAt(): ?\DateTimeImmutable
+    {
+        return $this->premiumAt;
+    }
+
+    public function setPremiumAt(?\DateTimeImmutable $premiumAt): static
+    {
+        $this->premiumAt = $premiumAt;
+
+        return $this;
+    }
+
+    public function enablePremium(): static
+    {
+        $this
+            ->setPremium(true)
+            ->setPremiumAt(new \DateTimeImmutable());
+
+        return $this;
+    }
+
+    public function disablePremium(): static
+    {
+        $this
+            ->setPremium(false)
+            ->setPremiumAt(null);
 
         return $this;
     }

@@ -90,7 +90,7 @@ class Flashcard
     #[ORM\Column]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
-    private ?bool $favorite = null;
+    private bool $favorite = false;
 
     public function __construct()
     {
@@ -267,7 +267,7 @@ class Flashcard
         return $this;
     }
 
-    public function isFavorite(): ?bool
+    public function isFavorite(): bool
     {
         return $this->favorite;
     }
