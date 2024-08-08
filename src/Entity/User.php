@@ -89,9 +89,11 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private Collection $settings;
 
     #[ORM\Column]
+    #[Groups(['read:user:admin', 'read:user:user'])]
     private bool $premium = false;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['read:user:admin', 'read:user:user'])]
     private ?\DateTimeImmutable $premiumAt = null;
 
     public function __construct()
