@@ -73,10 +73,12 @@ class Flashcard
         max: 10,
         notInRangeMessage: 'The difficulty must be between {{ min }} and {{ max }}',
     )]
+    #[Sortable]
     private ?float $difficulty = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Sortable]
     private ?float $stability = null;
 
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
