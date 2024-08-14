@@ -13,7 +13,7 @@
         }
     },
     "dockerComposeFile": "docker-compose.yaml",
-    "service": "api",
+    "service": "franken",
     "workspaceFolder": "/app",
     // "postCreateCommand": "task app:default:config",
     // "postStartCommand": "task app:messenger:async",

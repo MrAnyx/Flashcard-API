@@ -71,7 +71,7 @@ final class UserFactory extends ModelFactory
             'email' => self::faker()->email(),
             'username' => self::faker()->userName(),
             'password' => 'Password1!',
-            'token' => "toto",# $this->uniqueTokenGenerator->generate(User::class, 'token'),
+            'token' => $this->uniqueTokenGenerator->generate(User::class, 'token'),
             'roles' => ['ROLE_USER'],
         ];
     }

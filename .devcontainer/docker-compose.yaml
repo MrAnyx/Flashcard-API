@@ -7,7 +7,6 @@ services:
         ports:
             - 5432:5432
         environment:
-            POSTGRES_DB: flashcard
             POSTGRES_USER: user
             POSTGRES_PASSWORD: password
         volumes:
@@ -31,19 +30,21 @@ services:
             - 8082:80
             - 2525:25
 
-    api:
+    franken:
         container_name: flashcard-api
         build:
             context: .
             dockerfile: Dockerfile
+        environment:
+            SERVER_NAME: localhost
         volumes:
             - ..:/app
             - caddy_data:/data
             - caddy_config:/config
         ports:
             - 8080:80 # HTTP
-            - 443:443 # HTTPS
-            - 443:443/udp # HTTP/3
+            # - 443:443 # HTTPS
+            # - 443:443/udp # HTTP/3
         depends_on:
             - database
 
