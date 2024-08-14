@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table('`user`')]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(fields: ['email'], message: 'This email is already registered. Please, use this email to login or use another email')]
 #[UniqueEntity(fields: ['username'], message: 'This username is already registered. Please, use this username to login or use another username')]

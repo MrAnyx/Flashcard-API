@@ -3,20 +3,20 @@
     "forwardPorts": [8080, 8081, 8082],
     "portsAttributes": {
         "8080": {
-            "label": "Api"
+            "label": "API"
         },
         "8081": {
-            "label": "Adminer"
+            "label": "PgAdmin4"
         },
         "8082": {
             "label": "Mailer"
         }
     },
     "dockerComposeFile": "docker-compose.yaml",
-    "service": "php",
-    "workspaceFolder": "/var/www/html",
-    "postCreateCommand": "task app:default:config",
-    "postStartCommand": "task app:messenger:async",
+    "service": "api",
+    "workspaceFolder": "/app",
+    // "postCreateCommand": "task app:default:config",
+    // "postStartCommand": "task app:messenger:async",
     "customizations": {
         "vscode": {
             "settings": {

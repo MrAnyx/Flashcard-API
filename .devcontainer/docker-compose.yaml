@@ -2,71 +2,52 @@ version: "3.8"
 
 services:
     database:
-        # networks:
-        #     - bridge
-        command: --max-allowed-packet=64MB
         container_name: flashcard-database
-        image: mariadb
+        image: postgres:16.4-alpine
         ports:
-            - 3306:3306
+            - 5432:5432
         environment:
-            MYSQL_ROOT_PASSWORD: password
-            MYSQL_DATABASE: flashcard
-            MYSQL_USER: user
-            MYSQL_PASSWORD: password
-            MYSQL_ROOT_HOST: "%"
+            POSTGRES_DB: flashcard
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: password
         volumes:
-            - data:/var/lib/mariadb
+            - pgdata:/var/lib/postgresql/data
+
+    pgadmin:
+        image: dpage/pgadmin4:8.10
+        container_name: flashcard-pgadmin
+        environment:
+            PGADMIN_DEFAULT_EMAIL: example@mail.com
+            PGADMIN_DEFAULT_PASSWORD: password
+        depends_on:
+            - database
+        ports:
+            - 8081:80
 
     mailer:
         image: rnwood/smtp4dev
-        # networks:
-        #     - bridge
         container_name: flashcard-mailer
         ports:
             - 8082:80
             - 2525:25
 
-    adminer:
-        image: adminer
-        # networks:
-        #     - bridge
-        container_name: flashcard-adminer
-        depends_on:
-            - database
-        ports:
-            - 8081:8080
-
-    nginx:
-        image: nginx:alpine3.18
-        container_name: flashcard-nginx
-        # networks:
-        #     - bridge
-        ports:
-            - 8080:80
-        volumes:
-            - ..:/var/www/html
-            - ./nginx:/etc/nginx/conf.d
-        depends_on:
-            - php
-
-    php:
-        container_name: flashcard-php
-        # networks:
-        #     - bridge
+    api:
+        container_name: flashcard-api
         build:
             context: .
             dockerfile: Dockerfile
         volumes:
-            - ..:/var/www/html
+            - ..:/app
+            - caddy_data:/data
+            - caddy_config:/config
         ports:
-            - 9000:9000
+            - 8080:80 # HTTP
+            - 443:443 # HTTPS
+            - 443:443/udp # HTTP/3
         depends_on:
             - database
 
-# networks:
-#   flashcard-net:
-#     external: true
-
 volumes:
-    data:
+    pgdata:
+    caddy_data:
+    caddy_config:
