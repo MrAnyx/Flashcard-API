@@ -1,5 +1,5 @@
 # Pull existing php image
-FROM dunglas/frankenphp:php8.2.19
+FROM dunglas/frankenphp:php8.3.10
 
 # Set the working dir
 WORKDIR /app

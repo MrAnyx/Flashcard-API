@@ -43,10 +43,11 @@ services:
             - caddy_config:/config
         ports:
             - 8080:80 # HTTP
-            # - 443:443 # HTTPS
-            # - 443:443/udp # HTTP/3
+            - 443:443 # HTTPS
+            - 443:443/udp # HTTP/3
         depends_on:
             - database
+            - mailer
 
 volumes:
     pgdata:
