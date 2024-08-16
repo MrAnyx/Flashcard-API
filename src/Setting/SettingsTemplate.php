@@ -20,6 +20,8 @@ class SettingsTemplate
             new IntegerSetting(SettingName::ITEMS_PER_PAGE, 50),
             new IntegerSetting(SettingName::FLASHCARD_PER_SESSION, 20),
             new StringSetting(SettingName::COLOR_THEME, 'light', ['light', 'dark', 'system']),
+            new StringSetting(SettingName::PRIMARY_COLOR, 'sky', ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']),
+            new StringSetting(SettingName::GRAY_COLOR, 'cool', ['slate', 'cool', 'zinc', 'neutral', 'stone']),
         ];
     }
 
