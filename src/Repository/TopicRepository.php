@@ -50,7 +50,7 @@ class TopicRepository extends ServiceEntityRepository
             ->join('f.reviewHistory', 'r')
             ->where('t.author = :user')
             ->andWhere('r.reset = :reset')
-            ->groupBy('t.id')
+            ->groupBy('t.id', 'r.date')
             ->orderBy('DATE(r.date)', 'DESC')
             ->addOrderBy('nbReviews', 'DESC')
             ->addOrderBy('r.date', 'DESC')

@@ -227,7 +227,7 @@ class UnitController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
-        $recentUnits = $unitRepository->findRecentUnitsByTopic($user, null, 4);
+        $recentUnits = $unitRepository->findRecentUnitsByTopic($user, null, 5);
 
         return $this->jsonStd($recentUnits, context: ['groups' => ['read:unit:user']]);
     }

@@ -203,7 +203,7 @@ class TopicController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
-        $recentTopics = $topicRepository->findRecentTopics($user, 4);
+        $recentTopics = $topicRepository->findRecentTopics($user, 5);
 
         return $this->jsonStd($recentTopics, context: ['groups' => ['read:topic:user']]);
     }
