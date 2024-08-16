@@ -8,7 +8,8 @@ use App\Factory\TopicFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Zenstruck\Foundry\Factory;
+
+use function Zenstruck\Foundry\Persistence\flush_after;
 
 class TopicFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -21,8 +22,8 @@ class TopicFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
-        Factory::delayFlush(function (): void {
-            TopicFactory::createMany(5);
+        flush_after(function (): void {
+            TopicFactory::createMany(50);
         });
     }
 }
