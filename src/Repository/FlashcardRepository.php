@@ -8,6 +8,7 @@ use App\Entity\Flashcard;
 use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
+use App\Enum\GradeType;
 use App\Enum\StateType;
 use App\Model\Page;
 use App\Model\Paginator;
@@ -53,11 +54,13 @@ class FlashcardRepository extends ServiceEntityRepository
             $query
                 ->join('f.unit', 'u')
                 ->join('u.topic', 't')
-                ->where('t.author = :user')
+                ->andWhere('t.author = :user')
                 ->setParameter('user', $user);
         }
 
-        $query->orderBy("f.{$page->sort}", $page->order);
+        $query
+            ->addOrderBy("CASE WHEN f.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
+            ->addOrderBy("f.{$page->sort}", $page->order);
 
         return new Paginator($query, $page);
     }
@@ -67,7 +70,8 @@ class FlashcardRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('f')
             ->where('f.unit = :unit')
             ->setParameter('unit', $unit)
-            ->orderBy("f.{$page->sort}", $page->order);
+            ->addOrderBy("CASE WHEN f.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC')
+            ->addOrderBy("f.{$page->sort}", $page->order);
 
         return new Paginator($query, $page);
     }
@@ -171,5 +175,47 @@ class FlashcardRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function countCorrectFlashcards(?User $user): int
+    {
+        $query = $this->createQueryBuilder('f')
+            ->select('count(f.id)')
+            ->join('f.reviewHistory', 'r')
+            ->where('r.grade > :threshold')
+            ->setParameter('threshold', GradeType::HARD->value);
+
+        if ($user !== null) {
+            $query
+                ->join('f.unit', 'u')
+                ->join('u.topic', 't')
+                ->andWhere('t.author = :user')
+                ->setParameter('user', $user);
+        }
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function averageGrade(?User $user): float
+    {
+        $query = $this->createQueryBuilder('f')
+            ->select('avg(r.grade)')
+            ->join('f.reviewHistory', 'r');
+
+        if ($user !== null) {
+            $query
+                ->join('f.unit', 'u')
+                ->join('u.topic', 't')
+                ->andWhere('t.author = :user')
+                ->setParameter('user', $user);
+        }
+
+        $result = $query->getQuery()->getSingleScalarResult();
+
+        if (is_numeric($result)) {
+            return (float) $result;
+        }
+
+        return 0;
     }
 }

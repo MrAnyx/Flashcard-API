@@ -298,4 +298,28 @@ class FlashcardController extends AbstractRestController
 
         return $this->jsonStd($count);
     }
+
+    #[Route('/flashcards/correct/count', name: 'flashcard_correct_count', methods: ['GET'])]
+    public function countCorrectFlashcards(
+        FlashcardRepository $flashcardRepository
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $count = $flashcardRepository->countCorrectFlashcards($user);
+
+        return $this->jsonStd($count);
+    }
+
+    #[Route('/flashcards/averageGrade', name: 'flashcard_average_grade', methods: ['GET'])]
+    public function getAverageGrade(
+        FlashcardRepository $flashcardRepository
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $count = $flashcardRepository->averageGrade($user);
+
+        return $this->jsonStd($count);
+    }
 }
