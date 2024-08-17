@@ -48,8 +48,9 @@ class ReviewRepository extends ServiceEntityRepository
 
         $qb
             ->update()
-            ->set('r.reset', true)
+            ->set('r.reset', ':reset')
             ->andWhere($qb->expr()->in('r.id', $reviewsToUpdate->getDQL()))
+            ->setParameter('reset', true)
             ->setParameter('user', $user);
 
         if ($resetBy !== null) {

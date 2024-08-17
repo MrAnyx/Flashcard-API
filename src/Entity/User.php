@@ -97,11 +97,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Groups(['read:user:admin', 'read:user:user'])]
     private ?\DateTimeImmutable $premiumAt = null;
 
+    /**
+     * @var Collection<int, Session>
+     */
+    #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'author', orphanRemoval: true)]
+    private Collection $sessions;
+
     public function __construct()
     {
         $this->topics = new ArrayCollection();
         $this->reviewHistory = new ArrayCollection();
         $this->settings = new ArrayCollection();
+        $this->sessions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -393,6 +400,36 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this
             ->setPremium(false)
             ->setPremiumAt(null);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Session>
+     */
+    public function getSessions(): Collection
+    {
+        return $this->sessions;
+    }
+
+    public function addSession(Session $session): static
+    {
+        if (!$this->sessions->contains($session)) {
+            $this->sessions->add($session);
+            $session->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSession(Session $session): static
+    {
+        if ($this->sessions->removeElement($session)) {
+            // set the owning side to null (unless already changed)
+            if ($session->getAuthor() === $this) {
+                $session->setAuthor(null);
+            }
+        }
 
         return $this;
     }

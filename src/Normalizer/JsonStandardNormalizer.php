@@ -21,29 +21,39 @@ class JsonStandardNormalizer implements NormalizerInterface
      */
     public function normalize($data, ?string $format = null, array $context = []): array
     {
-        if (\is_array($data->data)) {
-            $normalizedData = array_map(fn ($el) => $this->normalizeData($el, $format, $context), $data->data);
-        } else {
-            $normalizedData = $this->normalizeData($data->data, $format, $context);
-        }
-
         return [
             '@timestamp' => $data->timestamp->format(\DateTimeImmutable::ATOM),
             '@status' => $data->status,
             '@pagination' => $data->pagination,
-            'data' => $normalizedData,
+            'data' => $this->normalizeData($data->data, $format, $context),
         ];
     }
 
-    public function normalizeData($data, ?string $format = null, array $context = []): mixed
+    private function normalizeData($data, ?string $format = null, array $context = []): mixed
     {
+        // Check if the data is an object
         if (\is_object($data)) {
             return $this->normalizer->normalize($data, $format, $context);
-        } elseif (\is_scalar($data) || null === $data) {
+        }
+
+        // Check if the data is an array
+        if (\is_array($data)) {
+            $normalizedArray = [];
+            foreach ($data as $key => $value) {
+                // Recursively normalize the value
+                $normalizedArray[$key] = $this->normalizeData($value, $format, $context);
+            }
+
+            return $normalizedArray;
+        }
+
+        // If the data is scalar (string, int, float, bool, null), return as is
+        if (\is_scalar($data) || $data === null) {
             return $data;
         }
 
-        return $data;
+        // If it's a type we didn't handle, throw an exception (optional)
+        throw new \InvalidArgumentException('Unsupported data type for normalization');
     }
 
     public function supportsNormalization($data, ?string $format = null, array $context = []): bool

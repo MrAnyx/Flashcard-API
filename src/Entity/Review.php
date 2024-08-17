@@ -20,10 +20,12 @@ class Review
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviewHistory')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: 'You must associate a flashcard to this review')]
     private ?Flashcard $flashcard = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviewHistory')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: 'You must associate a user to this review')]
     private ?User $user = null;
 
@@ -36,6 +38,11 @@ class Review
 
     #[ORM\Column]
     private bool $reset = false;
+
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(message: 'You must associate a session to this review')]
+    private ?Session $session = null;
 
     public function getId(): ?int
     {
@@ -74,7 +81,7 @@ class Review
     #[ORM\PrePersist]
     public function setDate(): static
     {
-        $this->date = new \DateTimeImmutable('now');
+        $this->date = new \DateTimeImmutable();
 
         return $this;
     }
@@ -99,6 +106,18 @@ class Review
     public function setReset(bool $reset): static
     {
         $this->reset = $reset;
+
+        return $this;
+    }
+
+    public function getSession(): ?Session
+    {
+        return $this->session;
+    }
+
+    public function setSession(?Session $session): static
+    {
+        $this->session = $session;
 
         return $this;
     }

@@ -6,6 +6,8 @@ namespace App\Controller\User;
 
 use App\Controller\AbstractRestController;
 use App\Entity\Flashcard;
+use App\Entity\Review;
+use App\Entity\Session;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Exception\ApiException;
@@ -13,7 +15,7 @@ use App\Exception\ExceptionCode;
 use App\OptionsResolver\FlashcardOptionsResolver;
 use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 use App\Repository\FlashcardRepository;
-use App\Service\ReviewManager;
+use App\Repository\ReviewRepository;
 use App\Service\SpacedRepetitionScheduler;
 use App\Utility\Regex;
 use App\Voter\FlashcardVoter;
@@ -201,7 +203,6 @@ class FlashcardController extends AbstractRestController
         Request $request,
         SpacedRepetitionOptionsResolver $spacedRepetitionOptionsResolver,
         SpacedRepetitionScheduler $spacedRepetitionScheduler,
-        ReviewManager $reviewManager
     ): JsonResponse {
         $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
@@ -216,9 +217,14 @@ class FlashcardController extends AbstractRestController
         try {
             $data = $spacedRepetitionOptionsResolver
                 ->configureGrade()
+                ->configureSession()
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+
+        if ($data['session']->getEndedAt() !== null) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, 'The session with id %d ended at %s. You can not associate a new review with this session', [$data['session']->getId(), $data['session']->getEndedAt()->format('jS \\of F Y')]);
         }
 
         $spacedRepetitionScheduler->review($flashcard, $data['grade']);
@@ -227,10 +233,15 @@ class FlashcardController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
-        $review = $reviewManager->createReview($flashcard, $user, $data['grade']);
+        $review = new Review();
+        $review
+            ->setFlashcard($flashcard)
+            ->setUser($user)
+            ->setGrade($data['grade'])
+            ->setSession($data['session']);
+
         $this->validateEntity($review);
         $em->persist($review);
-
         $em->flush();
 
         return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
@@ -238,11 +249,14 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/reset', name: 'reset_all_flashcard', methods: ['POST'])]
     public function resetAllFlashcards(
-        ReviewManager $reviewManager
+        FlashcardRepository $flashcardRepository,
+        ReviewRepository $reviewRepository
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
-        $reviewManager->resetAllFlashcards($user);
+
+        $reviewRepository->resetBy($user);
+        $flashcardRepository->resetBy($user);
 
         return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
@@ -250,29 +264,42 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/{id}/reset', name: 'reset_flashcard', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function resetFlashcard(
         int $id,
-        ReviewManager $reviewManager
+        FlashcardRepository $flashcardRepository,
+        ReviewRepository $reviewRepository
     ): JsonResponse {
         $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
 
         /** @var User $user */
         $user = $this->getUser();
-        $reviewManager->resetFlashcard($flashcard, $user);
+
+        $reviewRepository->resetBy($user, $flashcard);
+        $flashcardRepository->resetBy($user, $flashcard);
 
         return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/session', name: 'session_flashcard', methods: ['GET'])]
     public function getFlashcardSession(
-        FlashcardRepository $flashcardRepository
+        FlashcardRepository $flashcardRepository,
+        EntityManagerInterface $em
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
 
+        $session = new Session();
+        $session->setAuthor($user);
+        $this->validateEntity($session);
+        $em->persist($session);
+        $em->flush();
+
         $cardsToReview = $flashcardRepository->findFlashcardToReview($user, SpacedRepetitionScheduler::SESSION_SIZE);
         shuffle($cardsToReview);
 
-        return $this->jsonStd($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
+        return $this->jsonStd([
+            'session' => $session,
+            'flashcards' => $cardsToReview,
+        ], context: ['groups' => ['read:flashcard:user', 'read:session:user']]);
     }
 
     #[Route('/flashcards/count', name: 'flashcard_count', methods: ['GET'])]

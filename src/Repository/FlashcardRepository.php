@@ -135,7 +135,10 @@ class FlashcardRepository extends ServiceEntityRepository
         return $result;
     }
 
-    public function findFlashcardToReviewBy(Unit|Topic $reviewBy, User $user, int $cardsToReview)
+    /**
+     * @return Flashcard[]
+     */
+    public function findFlashcardToReviewBy(Unit|Topic $reviewBy, User $user, int $cardsToReview): array
     {
         $qb = $this->createQueryBuilder('f')
             ->join('f.unit', 'u')

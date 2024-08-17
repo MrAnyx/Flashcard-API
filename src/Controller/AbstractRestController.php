@@ -92,13 +92,11 @@ class AbstractRestController extends AbstractController
 
     public function getRequestPayload(Request $request): mixed
     {
-        $body = json_decode($request->getContent(), true);
-
-        if (json_last_error() !== \JSON_ERROR_NONE) {
+        if (!json_validate($request->getContent())) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, 'The request contains an invalid body that can not be parsed. Please verify the json body of the request.');
         }
 
-        return $body;
+        return json_decode($request->getContent(), true);
     }
 
     public function getQueryPayload(Request $request): array

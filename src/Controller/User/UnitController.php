@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace App\Controller\User;
 
 use App\Controller\AbstractRestController;
+use App\Entity\Session;
 use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\UnitOptionsResolver;
 use App\Repository\FlashcardRepository;
+use App\Repository\ReviewRepository;
 use App\Repository\UnitRepository;
-use App\Service\ReviewManager;
 use App\Service\SpacedRepetitionScheduler;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
@@ -192,21 +193,7 @@ class UnitController extends AbstractRestController
     #[Route('/units/{id}/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetUnit(
         int $id,
-        ReviewManager $reviewManager
-    ): JsonResponse {
-        $unit = $this->getResourceById(Unit::class, $id);
-        $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
-
-        /** @var User $user */
-        $user = $this->getUser();
-        $reviewManager->resetFlashcards($unit, $user);
-
-        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
-    }
-
-    #[Route('/units/{id}/session', name: 'session_unit', methods: ['GET'])]
-    public function getFlashcardSession(
-        int $id,
+        ReviewRepository $reviewRepository,
         FlashcardRepository $flashcardRepository
     ): JsonResponse {
         $unit = $this->getResourceById(Unit::class, $id);
@@ -215,10 +202,37 @@ class UnitController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
+        $reviewRepository->resetBy($user, $unit);
+        $flashcardRepository->resetBy($user, $unit);
+
+        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/units/{id}/session', name: 'session_unit', methods: ['GET'])]
+    public function getFlashcardSession(
+        int $id,
+        FlashcardRepository $flashcardRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $unit = $this->getResourceById(Unit::class, $id);
+        $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $session = new Session();
+        $session->setAuthor($user);
+        $this->validateEntity($session);
+        $em->persist($session);
+        $em->flush();
+
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, SpacedRepetitionScheduler::SESSION_SIZE);
         shuffle($cardsToReview);
 
-        return $this->jsonStd($cardsToReview, context: ['groups' => ['read:flashcard:user']]);
+        return $this->jsonStd([
+            'session' => $session,
+            'flashcards' => $cardsToReview,
+        ], context: ['groups' => ['read:flashcard:user', 'read:session:user']]);
     }
 
     #[Route('/units/recent', name: 'recent_units', methods: ['GET'])]
