@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\SettingOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
+use App\Repository\SessionRepository;
 use App\Setting\SettingFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,10 +22,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractRestController
 {
     #[Route('/users/me', name: 'get_me', methods: ['GET'])]
-    public function getMe()
+    public function getMe(SessionRepository $sessionRepository)
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        dd($sessionRepository->getStrike($user));
 
         return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
     }
