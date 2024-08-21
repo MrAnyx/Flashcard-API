@@ -1,0 +1,10 @@
+{
+	frankenphp
+}
+
+localhost {
+	# Compression
+	encode zstd br gzip
+
+	php_server
+}
