@@ -9,12 +9,12 @@ use App\Entity\Session;
 use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
+use App\Enum\SettingName;
 use App\Exception\ApiException;
 use App\OptionsResolver\UnitOptionsResolver;
 use App\Repository\FlashcardRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\UnitRepository;
-use App\Service\SpacedRepetitionScheduler;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
 use App\Voter\UnitVoter;
@@ -226,7 +226,7 @@ class UnitController extends AbstractRestController
         $em->persist($session);
         $em->flush();
 
-        $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, SpacedRepetitionScheduler::SESSION_SIZE);
+        $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
         shuffle($cardsToReview);
 
         return $this->jsonStd([

@@ -22,12 +22,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractRestController
 {
     #[Route('/users/me', name: 'get_me', methods: ['GET'])]
-    public function getMe(SessionRepository $sessionRepository)
+    public function getMe()
     {
         /** @var User $user */
         $user = $this->getUser();
-
-        dd($sessionRepository->getStrike($user));
 
         return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
     }

@@ -10,13 +10,15 @@ use App\Entity\Review;
 use App\Entity\Session;
 use App\Entity\Unit;
 use App\Entity\User;
+use App\Enum\SettingName;
 use App\Exception\ApiException;
 use App\Exception\ExceptionCode;
 use App\OptionsResolver\FlashcardOptionsResolver;
 use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 use App\Repository\FlashcardRepository;
 use App\Repository\ReviewRepository;
-use App\Service\SpacedRepetitionScheduler;
+use App\SpacedRepetition\Fsrs4_5Algorithm;
+use App\SpacedRepetition\SpacedRepetitionScheduler;
 use App\Utility\Regex;
 use App\Voter\FlashcardVoter;
 use App\Voter\UnitVoter;
@@ -227,7 +229,7 @@ class FlashcardController extends AbstractRestController
             throw new ApiException(Response::HTTP_BAD_REQUEST, 'The session with id %d ended at %s. You can not associate a new review with this session', [$data['session']->getId(), $data['session']->getEndedAt()->format('jS \\of F Y')]);
         }
 
-        $spacedRepetitionScheduler->review($flashcard, $data['grade']);
+        $spacedRepetitionScheduler->review($flashcard, $data['grade'], new Fsrs4_5Algorithm());
         $this->validateEntity($flashcard);
 
         /** @var User $user */
@@ -293,7 +295,7 @@ class FlashcardController extends AbstractRestController
         $em->persist($session);
         $em->flush();
 
-        $cardsToReview = $flashcardRepository->findFlashcardToReview($user, SpacedRepetitionScheduler::SESSION_SIZE);
+        $cardsToReview = $flashcardRepository->findFlashcardToReview($user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
         shuffle($cardsToReview);
 
         return $this->jsonStd([

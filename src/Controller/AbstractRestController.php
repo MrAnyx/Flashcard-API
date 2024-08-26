@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\JsonStandardStatus;
+use App\Enum\SettingName;
 use App\Exception\ApiException;
 use App\Model\JsonStandard;
 use App\Model\Page;
@@ -102,5 +104,15 @@ class AbstractRestController extends AbstractController
     public function getQueryPayload(Request $request): array
     {
         return $request->query->all();
+    }
+
+    public function getUserSetting(SettingName $settingName): mixed
+    {
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
+
+        return $user->getSetting($settingName)->getValue();
     }
 }

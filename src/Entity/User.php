@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Attribut\Sortable;
+use App\Enum\SettingName;
 use App\Repository\UserRepository;
 use App\Setting\SettingsTemplate;
 use App\Setting\Type\AbstractSetting;
@@ -311,7 +312,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     }
 
     /**
-     * @return Setting[]
+     * @return array<string, Setting>
      */
     public function getSettings(): array
     {
@@ -324,6 +325,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $mergedSettings = array_merge(SettingsTemplate::getAssociativeTemplate(), $settingsArray);
 
         return $mergedSettings;
+    }
+
+    public function getSetting(SettingName $settingName): Setting
+    {
+        $settings = $this->getSettings();
+
+        return $settings[$settingName->value] ?? throw new \InvalidArgumentException("Unknown setting name {$settingName->value}");
     }
 
     public function updateSetting(AbstractSetting $setting): static

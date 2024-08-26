@@ -8,12 +8,12 @@ use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use App\Entity\Topic;
 use App\Entity\User;
+use App\Enum\SettingName;
 use App\Exception\ApiException;
 use App\OptionsResolver\TopicOptionsResolver;
 use App\Repository\FlashcardRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\TopicRepository;
-use App\Service\SpacedRepetitionScheduler;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -202,7 +202,7 @@ class TopicController extends AbstractRestController
         $em->persist($session);
         $em->flush();
 
-        $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($topic, $user, SpacedRepetitionScheduler::SESSION_SIZE);
+        $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($topic, $user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
         shuffle($cardsToReview);
 
         return $this->jsonStd([

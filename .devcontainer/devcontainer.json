@@ -44,7 +44,8 @@
                 "mikestead.dotenv",
                 "EditorConfig.EditorConfig",
                 "junstyle.php-cs-fixer",
-                "Postman.postman-for-vscode"
+                "Postman.postman-for-vscode",
+                "matthewpi.caddyfile-support"
             ]
         }
     },
