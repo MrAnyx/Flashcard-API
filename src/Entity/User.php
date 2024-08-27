@@ -7,8 +7,8 @@ namespace App\Entity;
 use App\Attribut\Sortable;
 use App\Enum\SettingName;
 use App\Repository\UserRepository;
-use App\Setting\SettingsTemplate;
-use App\Setting\Type\AbstractSetting;
+use App\Setting\SettingEntry;
+use App\Setting\SettingTemplate;
 use App\Utility\Regex;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -322,7 +322,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             $settingsArray[$setting->getName()->value] = $setting->getValue();
         }
 
-        $mergedSettings = array_merge(SettingsTemplate::getAssociativeTemplate(), $settingsArray);
+        $mergedSettings = array_merge(SettingTemplate::getAssociativeTemplate(), $settingsArray);
 
         return $mergedSettings;
     }
@@ -334,22 +334,22 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $settings[$settingName->value] ?? throw new \InvalidArgumentException("Unknown setting name {$settingName->value}");
     }
 
-    public function updateSetting(AbstractSetting $setting): static
+    public function updateSetting(SettingEntry $setting): static
     {
         /** @var ?Setting $existingSetting */
         $existingSetting = null;
 
         foreach ($this->settings as $existing) {
-            if ($existing->getName() === $setting->name) {
+            if ($existing->getName() === $setting->getName()) {
                 $existingSetting = $existing;
                 break;
             }
         }
 
         if ($existingSetting !== null) {
-            $existingSetting->setName($setting->name);
+            $existingSetting->setName($setting->getName());
             $existingSetting->setType($setting->getType());
-            $existingSetting->setValue($setting->serialize());
+            $existingSetting->setValue($setting->getSerializedValue());
         } else {
             $newSetting = new Setting($setting, $this);
             $this->settings->add($newSetting);

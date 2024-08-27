@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\SettingName;
-use App\Enum\SettingType;
 use App\Repository\SettingRepository;
-use App\Setting\SettingConverter;
-use App\Setting\Type\AbstractSetting;
+use App\Setting\SettingEntry;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,16 +28,16 @@ class Setting
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column(enumType: SettingType::class)]
-    private ?SettingType $type = null;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $type = null;
 
-    public function __construct(AbstractSetting $abstractSetting, User $user)
+    public function __construct(SettingEntry $settingEntry, User $user)
     {
         $this
-            ->setName($abstractSetting->name)
-            ->setValue($abstractSetting->serialize())
+            ->setName($settingEntry->getName())
+            ->setValue($settingEntry->getSerializedValue())
             ->setUser($user)
-            ->setType($abstractSetting->getType());
+            ->setType($settingEntry->getType()::class);
     }
 
     public function getId(): ?int
@@ -61,7 +59,8 @@ class Setting
 
     public function getValue(): mixed
     {
-        return SettingConverter::deserialize($this->type, $this->value);
+        // TODO Refactoring
+        return (new $this->type())->deserialize($this->value);
     }
 
     public function setValue(string $value): static
@@ -83,12 +82,12 @@ class Setting
         return $this;
     }
 
-    public function getType(): ?SettingType
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function setType(SettingType $type): static
+    public function setType(string $type): static
     {
         $this->type = $type;
 
