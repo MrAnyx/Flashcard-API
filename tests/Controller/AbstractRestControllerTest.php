@@ -77,7 +77,7 @@ class AbstractRestControllerTest extends KernelTestCase
             $abstractController->validateEntity($entity, ['special_group']);
             $this->assertTrue(true);
         } catch (\Exception $e) {
-            $this->fail($e);
+            $this->fail($e->getMessage());
         }
     }
 }
