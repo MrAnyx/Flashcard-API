@@ -7,7 +7,6 @@ namespace App\Entity;
 use App\Attribut\Sortable;
 use App\Enum\SettingName;
 use App\Repository\UserRepository;
-use App\Setting\SettingEntry;
 use App\Setting\SettingTemplate;
 use App\Utility\Regex;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -289,28 +288,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->reviewHistory;
     }
 
-    public function addReviewHistory(Review $reviewHistory): static
-    {
-        if (!$this->reviewHistory->contains($reviewHistory)) {
-            $this->reviewHistory->add($reviewHistory);
-            $reviewHistory->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReviewHistory(Review $reviewHistory): static
-    {
-        if ($this->reviewHistory->removeElement($reviewHistory)) {
-            // set the owning side to null (unless already changed)
-            if ($reviewHistory->getUser() === $this) {
-                $reviewHistory->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return array<string, Setting>
      */
@@ -332,42 +309,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $settings = $this->getSettings();
 
         return $settings[$settingName->value] ?? throw new \InvalidArgumentException("Unknown setting name {$settingName->value}");
-    }
-
-    public function updateSetting(SettingEntry $setting): static
-    {
-        /** @var ?Setting $existingSetting */
-        $existingSetting = null;
-
-        foreach ($this->settings as $existing) {
-            if ($existing->getName() === $setting->getName()) {
-                $existingSetting = $existing;
-                break;
-            }
-        }
-
-        if ($existingSetting !== null) {
-            $existingSetting->setName($setting->getName());
-            $existingSetting->setType($setting->getType());
-            $existingSetting->setValue($setting->getSerializedValue());
-        } else {
-            $newSetting = new Setting($setting, $this);
-            $this->settings->add($newSetting);
-        }
-
-        return $this;
-    }
-
-    public function removeSetting(Setting $setting): static
-    {
-        if ($this->settings->removeElement($setting)) {
-            // set the owning side to null (unless already changed)
-            if ($setting->getUser() === $this) {
-                $setting->setUser(null);
-            }
-        }
-
-        return $this;
     }
 
     public function isPremium(): bool

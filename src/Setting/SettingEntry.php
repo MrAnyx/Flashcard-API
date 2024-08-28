@@ -11,19 +11,20 @@ use App\Setting\Type\IntegerType;
 use App\Setting\Type\SettingTypeInterface;
 use App\Setting\Type\StringType;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Validation;
 
 class SettingEntry
 {
-    private readonly SettingName $name;
-
-    private readonly mixed $value;
-
-    private readonly SettingTypeInterface $type;
-
     /**
      * @var Constraint[]
      */
-    private readonly array $constraints;
+    public readonly array $constraints;
+
+    private readonly SettingName $name;
+
+    private mixed $value;
+
+    private readonly SettingTypeInterface $type;
 
     private readonly array $options;
 
@@ -48,6 +49,8 @@ class SettingEntry
             'string' => new StringType(),
             default => throw new \InvalidArgumentException(\sprintf('Value with type %s can not be infered, you must specify the "type" parameter', \gettype($this->value)))
         };
+
+        $this->validateValue();
     }
 
     /**
@@ -63,6 +66,14 @@ class SettingEntry
     public function getValue(): mixed
     {
         return $this->value;
+    }
+
+    public function setValue(mixed $value): static
+    {
+        $this->value = $value;
+        $this->validateValue();
+
+        return $this;
     }
 
     public function getSerializedValue(): string
@@ -86,5 +97,20 @@ class SettingEntry
     public function getOptions(): array
     {
         return $this->options;
+    }
+
+    /**
+     * Validate the setting value based on the constraints.
+     */
+    private function validateValue(): void
+    {
+        if (\count($this->constraints) > 0) {
+            $validator = Validation::createValidator();
+            $errors = $validator->validate($this->value, $this->constraints);
+
+            if (\count($errors) > 0) {
+                throw new \InvalidArgumentException($errors[0]->getMessage());
+            }
+        }
     }
 }

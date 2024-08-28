@@ -36,8 +36,8 @@ class Setting
         $this
             ->setName($settingEntry->getName())
             ->setValue($settingEntry->getSerializedValue())
-            ->setUser($user)
-            ->setType($settingEntry->getType()::class);
+            ->setType($settingEntry->getType()::class)
+            ->setUser($user);
     }
 
     public function getId(): ?int

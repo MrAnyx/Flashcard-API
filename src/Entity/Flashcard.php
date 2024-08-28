@@ -247,28 +247,6 @@ class Flashcard
         return $this->reviewHistory;
     }
 
-    public function addReviewHistory(Review $reviewHistory): static
-    {
-        if (!$this->reviewHistory->contains($reviewHistory)) {
-            $this->reviewHistory->add($reviewHistory);
-            $reviewHistory->setFlashcard($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReviewHistory(Review $reviewHistory): static
-    {
-        if ($this->reviewHistory->removeElement($reviewHistory)) {
-            // set the owning side to null (unless already changed)
-            if ($reviewHistory->getFlashcard() === $this) {
-                $reviewHistory->setFlashcard(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function isFavorite(): bool
     {
         return $this->favorite;

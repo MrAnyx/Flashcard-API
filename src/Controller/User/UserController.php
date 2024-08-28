@@ -9,7 +9,6 @@ use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\SettingOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
-use App\Repository\SessionRepository;
 use App\Setting\SettingFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
