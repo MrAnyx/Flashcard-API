@@ -56,27 +56,6 @@ class Fsrs4Algorithm extends AbstractSpacedRepetitionAlgorithm
         return (1 + $this->factor * ($elapsedDays / $flashcard->getStability())) ** $this->decay;
     }
 
-    private function nextRecallStability(Flashcard $flashcard, GradeType $grade): float
-    {
-        $hardPenalty = $grade === GradeType::HARD ? $this->w[15] : 1;
-        $easyPenalty = $grade === GradeType::EASY ? $this->w[16] : 1;
-
-        $S = $flashcard->getStability();
-        $D = $flashcard->getDifficulty();
-        $R = $this->getRetrievability($flashcard);
-
-        return $S * (\M_E ** $this->w[8] * (11 - $D) * $S ** (-$this->w[9]) * (\M_E ** ($this->w[10] * (1 - $R)) - 1) * $hardPenalty * $easyPenalty + 1);
-    }
-
-    private function nextForgetStability(Flashcard $flashcard): float
-    {
-        $S = $flashcard->getStability();
-        $D = $flashcard->getDifficulty();
-        $R = $this->getRetrievability($flashcard);
-
-        return $this->w[11] * $D ** (-$this->w[12]) * (($S + 1) ** $this->w[13] - 1) * \M_E ** ($this->w[14] * (1 - $R));
-    }
-
     protected function nextStability(Flashcard $flashcard, GradeType $grade): float
     {
         if ($grade->isCorrect()) {
@@ -101,5 +80,26 @@ class Fsrs4Algorithm extends AbstractSpacedRepetitionAlgorithm
         $difficulty = $this->w[7] * $this->initDifficulty(GradeType::GOOD) + (1 - $this->w[7]) * ($D - $this->w[6] * ($G - 3));
 
         return min(max($difficulty, 1), 10);
+    }
+
+    private function nextRecallStability(Flashcard $flashcard, GradeType $grade): float
+    {
+        $hardPenalty = $grade === GradeType::HARD ? $this->w[15] : 1;
+        $easyPenalty = $grade === GradeType::EASY ? $this->w[16] : 1;
+
+        $S = $flashcard->getStability();
+        $D = $flashcard->getDifficulty();
+        $R = $this->getRetrievability($flashcard);
+
+        return $S * (\M_E ** $this->w[8] * (11 - $D) * $S ** (-$this->w[9]) * (\M_E ** ($this->w[10] * (1 - $R)) - 1) * $hardPenalty * $easyPenalty + 1);
+    }
+
+    private function nextForgetStability(Flashcard $flashcard): float
+    {
+        $S = $flashcard->getStability();
+        $D = $flashcard->getDifficulty();
+        $R = $this->getRetrievability($flashcard);
+
+        return $this->w[11] * $D ** (-$this->w[12]) * (($S + 1) ** $this->w[13] - 1) * \M_E ** ($this->w[14] * (1 - $R));
     }
 }

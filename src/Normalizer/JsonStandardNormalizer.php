@@ -29,6 +29,18 @@ class JsonStandardNormalizer implements NormalizerInterface
         ];
     }
 
+    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
+    {
+        return $data instanceof JsonStandard;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            JsonStandard::class => true,
+        ];
+    }
+
     private function normalizeData($data, ?string $format = null, array $context = []): mixed
     {
         // Check if the data is an object
@@ -54,17 +66,5 @@ class JsonStandardNormalizer implements NormalizerInterface
 
         // If it's a type we didn't handle, throw an exception (optional)
         throw new \InvalidArgumentException('Unsupported data type for normalization');
-    }
-
-    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
-    {
-        return $data instanceof JsonStandard;
-    }
-
-    public function getSupportedTypes(?string $format): array
-    {
-        return [
-            JsonStandard::class => true,
-        ];
     }
 }

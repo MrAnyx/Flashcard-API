@@ -7,5 +7,6 @@ namespace App\Enum;
 enum JsonStandardStatus: string
 {
     case VALID = 'valid';
+
     case INVALID = 'invalid';
 }

@@ -14,11 +14,11 @@ use Symfony\Component\Validator\Constraints\Length;
 
 class __Foo__
 {
-    #[Sortable]
-    private int $id;
-
     #[Length(max: 5)]
     public string $username;
+
+    #[Sortable]
+    private int $id;
 }
 
 class AbstractRestControllerTest extends KernelTestCase

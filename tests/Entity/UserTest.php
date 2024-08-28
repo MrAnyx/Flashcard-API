@@ -30,19 +30,6 @@ class UserTest extends KernelTestCase
         $this->validator = self::getContainer()->get('validator');
     }
 
-    private function assertArrayContainsInstanceOf(string $constraint, ConstraintViolationList $constraintViolations): void
-    {
-        foreach ($constraintViolations as $violation) {
-            if ($violation->getConstraint() instanceof $constraint) {
-                $this->assertTrue(true);
-
-                return;
-            }
-        }
-
-        $this->fail("Array does not contain an instance of {$constraint}");
-    }
-
     public function testDefaultValues(): void
     {
         $user = new User();
@@ -220,5 +207,18 @@ class UserTest extends KernelTestCase
         $user->removeTopic($topic);
         $this->assertNotContains($topic, $user->getTopics());
         $this->assertNull($topic->getAuthor());
+    }
+
+    private function assertArrayContainsInstanceOf(string $constraint, ConstraintViolationList $constraintViolations): void
+    {
+        foreach ($constraintViolations as $violation) {
+            if ($violation->getConstraint() instanceof $constraint) {
+                $this->assertTrue(true);
+
+                return;
+            }
+        }
+
+        $this->fail("Array does not contain an instance of {$constraint}");
     }
 }

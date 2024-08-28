@@ -16,8 +16,6 @@ abstract class AbstractUniqueGenerator
     ) {
     }
 
-    abstract protected function generateValue(int $iteration): mixed;
-
     public function generate(string $entityFqcn, string $field, int $maxTries = self::MAX_TRIES): mixed
     {
         if (!property_exists($entityFqcn, $field)) {
@@ -43,4 +41,6 @@ abstract class AbstractUniqueGenerator
 
         return $value;
     }
+
+    abstract protected function generateValue(int $iteration): mixed;
 }
