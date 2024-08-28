@@ -46,7 +46,7 @@ class SettingEntry
             'integer' => new IntegerType(),
             'double' => new FloatType(),
             'string' => new StringType(),
-            default => throw new \InvalidArgumentException(\sprintf('Value with type %s can not be infered', \gettype($this->value)))
+            default => throw new \InvalidArgumentException(\sprintf('Value with type %s can not be infered, you must specify the "type" parameter', \gettype($this->value)))
         };
     }
 
