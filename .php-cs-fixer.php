@@ -17,6 +17,8 @@ return (new PhpCsFixer\Config())
         'attribute_empty_parentheses' => true,
         // Converts FQCN strings to `*::class` keywords.
         'class_keyword' => true,
+        // Class, trait and interface elements must be separated with one or none blank line.
+        'class_attributes_separation' => ['elements' => ['const' => 'one', 'method' => 'one', 'property' => 'one', 'trait_import' => 'none', 'case' => 'one']],
         // Using `isset($var) &&` multiple times should be done in one call.
         'combine_consecutive_issets' => true,
         // Calling `unset` on multiple items should be done in one call.
@@ -41,6 +43,8 @@ return (new PhpCsFixer\Config())
         'no_useless_else' => true,
         // There should not be an empty `return` statement at the end of a function.
         'no_useless_return' => true,
+        // Orders the elements of classes/interfaces/traits/enums
+        'ordered_class_elements' => true,
         // Orders the interfaces in an `implements` or `interface extends` clause.
         // All items of the given PHPDoc tags must be either left-aligned or (by default) aligned vertically.
         'phpdoc_align' => ['align' => 'left'],
