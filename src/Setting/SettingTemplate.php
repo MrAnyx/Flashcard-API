@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setting;
 
-use App\Enum\JsonStandardStatus;
 use App\Enum\SettingName;
-use App\Setting\Type\EnumType;
 use App\Setting\Type\IntegerType;
 use App\Setting\Type\StringType;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,16 +16,10 @@ class SettingTemplate
      */
     public static function getTemplate(): array
     {
-        // TODO Ajouter les nom de paramètre dans le message de la contrainte
         return [
             new SettingEntry(SettingName::ITEMS_PER_PAGE, 50, IntegerType::class, [
                 new Assert\Type('integer'),
                 new Assert\Range(min: 1, max: 1000),
-            ]),
-            new SettingEntry(SettingName::TEST_ENUM, JsonStandardStatus::INVALID, EnumType::class, [
-                new Assert\Type(JsonStandardStatus::class),
-            ], [
-                'class' => JsonStandardStatus::class,
             ]),
             new SettingEntry(SettingName::FLASHCARD_PER_SESSION, 20, IntegerType::class, [
                 new Assert\Type('integer'),

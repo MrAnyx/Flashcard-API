@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace App\Setting;
 
 use App\Enum\SettingName;
-use App\Setting\Type\BooleanType;
-use App\Setting\Type\FloatType;
-use App\Setting\Type\IntegerType;
 use App\Setting\Type\SettingTypeInterface;
-use App\Setting\Type\StringType;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Validation;
 
@@ -31,7 +27,7 @@ class SettingEntry
     /**
      * @param Constraint[] $constraints
      */
-    public function __construct(SettingName $name, mixed $value, ?string $type = null, array $constraints = [], array $options = [])
+    public function __construct(SettingName $name, mixed $value, string $type, array $constraints = [], array $options = [])
     {
         $this->name = $name;
         $this->value = $value;
@@ -42,15 +38,9 @@ class SettingEntry
             throw new \InvalidArgumentException(\sprintf('The type %s must implement SettingTypeInterface', $type));
         }
 
-        $this->type = new $type ?? match (\gettype($value)) {
-            'boolean' => new BooleanType(),
-            'integer' => new IntegerType(),
-            'double' => new FloatType(),
-            'string' => new StringType(),
-            default => throw new \InvalidArgumentException(\sprintf('Value with type %s can not be infered, you must specify the "type" parameter', \gettype($this->value)))
-        };
+        $this->type = new $type();
 
-        $this->validateValue();
+        $this->validateConstraints();
     }
 
     /**
@@ -71,7 +61,7 @@ class SettingEntry
     public function setValue(mixed $value): static
     {
         $this->value = $value;
-        $this->validateValue();
+        $this->validateConstraints();
 
         return $this;
     }
@@ -102,7 +92,7 @@ class SettingEntry
     /**
      * Validate the setting value based on the constraints.
      */
-    private function validateValue(): void
+    private function validateConstraints(): void
     {
         if (\count($this->constraints) > 0) {
             $validator = Validation::createValidator();
