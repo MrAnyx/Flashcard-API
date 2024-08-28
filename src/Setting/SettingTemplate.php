@@ -18,23 +18,18 @@ class SettingTemplate
     {
         return [
             new SettingEntry(SettingName::ITEMS_PER_PAGE, 50, IntegerType::class, [
-                new Assert\Type('integer'),
                 new Assert\Range(min: 1, max: 1000),
             ]),
             new SettingEntry(SettingName::FLASHCARD_PER_SESSION, 20, IntegerType::class, [
-                new Assert\Type('integer'),
                 new Assert\Range(min: 1, max: 50),
             ]),
             new SettingEntry(SettingName::COLOR_THEME, 'light', StringType::class, [
-                new Assert\Type('string'),
                 new Assert\Choice(['light', 'dark', 'system']),
             ]),
             new SettingEntry(SettingName::PRIMARY_COLOR, 'sky', StringType::class, [
-                new Assert\Type('string'),
                 new Assert\Choice(['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']),
             ]),
             new SettingEntry(SettingName::GRAY_COLOR, 'cool', StringType::class, [
-                new Assert\Type('string'),
                 new Assert\Choice(['slate', 'cool', 'zinc', 'neutral', 'stone']),
             ]),
         ];

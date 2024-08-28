@@ -7,6 +7,7 @@ namespace App\Setting;
 use App\Enum\SettingName;
 use App\Setting\Type\SettingTypeInterface;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Validation;
 
 class SettingEntry
@@ -32,13 +33,13 @@ class SettingEntry
         $this->name = $name;
         $this->value = $value;
         $this->options = $options;
-        $this->constraints = $constraints;
 
         if (!is_a($type, SettingTypeInterface::class, true) && $type !== null) {
             throw new \InvalidArgumentException(\sprintf('The type %s must implement SettingTypeInterface', $type));
         }
 
         $this->type = new $type();
+        $this->constraints = [new Type($this->type->getType()), ...$constraints];
 
         $this->validateConstraints();
     }

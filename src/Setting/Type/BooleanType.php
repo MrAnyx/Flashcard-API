@@ -6,6 +6,11 @@ namespace App\Setting\Type;
 
 class BooleanType implements SettingTypeInterface
 {
+    public function getType(): array
+    {
+        return ['boolean'];
+    }
+
     public function serialize(mixed $value, array $options = []): string
     {
         if (!\is_bool($value) && null !== $value) {

@@ -6,6 +6,11 @@ namespace App\Setting\Type;
 
 class FloatType implements SettingTypeInterface
 {
+    public function getType(): array
+    {
+        return ['float'];
+    }
+
     public function serialize(mixed $value, array $options = []): string
     {
         if (!\is_float($value) && null !== $value) {

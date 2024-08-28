@@ -17,6 +17,4 @@ enum SettingName: string
     case PRIMARY_COLOR = 'primary_color';
 
     case GRAY_COLOR = 'gray_color';
-
-    case TEST_ENUM = 'test_enum';
 }

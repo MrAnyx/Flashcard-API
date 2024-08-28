@@ -6,6 +6,11 @@ namespace App\Setting\Type;
 
 class StringType implements SettingTypeInterface
 {
+    public function getType(): array
+    {
+        return ['string'];
+    }
+
     public function serialize(mixed $value, array $options = []): string
     {
         if (!\is_string($value) && null !== $value) {

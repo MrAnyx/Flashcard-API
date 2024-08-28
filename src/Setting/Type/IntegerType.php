@@ -6,6 +6,11 @@ namespace App\Setting\Type;
 
 class IntegerType implements SettingTypeInterface
 {
+    public function getType(): array
+    {
+        return ['int'];
+    }
+
     public function serialize(mixed $value, array $options = []): string
     {
         if (!\is_int($value) && null !== $value) {
