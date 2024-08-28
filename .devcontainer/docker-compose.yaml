@@ -13,7 +13,7 @@ services:
             - pgdata:/var/lib/postgresql/data
 
     pgadmin:
-        image: dpage/pgadmin4:8.10
+        image: dpage/pgadmin4:8.11
         container_name: flashcard-pgadmin
         environment:
             PGADMIN_DEFAULT_EMAIL: example@mail.com
@@ -36,16 +36,16 @@ services:
             context: .
             dockerfile: Dockerfile
         environment:
-            SERVER_NAME: localhost
+            SERVER_NAME: :80
         volumes:
             - ..:/app
             # - ./Caddyfile:/etc/Caddyfile
             - caddy_data:/data
             - caddy_config:/config
         ports:
-            - 8080:80 # HTTP
-            - 443:443 # HTTPS
-            - 443:443/udp # HTTP/3
+            - 80:80 # HTTP
+            # - 443:443 # HTTPS
+            # - 443:443/udp # HTTP/3
         depends_on:
             - database
             - mailer

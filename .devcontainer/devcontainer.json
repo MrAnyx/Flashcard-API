@@ -1,8 +1,8 @@
 {
     "name": "Flashcard API",
-    "forwardPorts": [8080, 8081, 8082],
+    "forwardPorts": [80, 8081, 8082],
     "portsAttributes": {
-        "8080": {
+        "80": {
             "label": "API"
         },
         "8081": {
