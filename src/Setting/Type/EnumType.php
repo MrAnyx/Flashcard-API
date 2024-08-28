@@ -8,7 +8,7 @@ class EnumType implements SettingTypeInterface
 {
     public function serialize(mixed $value, array $options = []): string
     {
-        $class = (string) $options['class'] ?? throw new \LogicException('Missing class option for enum type');
+        $class = \array_key_exists('class', $options) ? (string) $options['class'] : throw new \LogicException('Missing class option for enum type');
 
         // Check if class exist
         if (!class_exists($class)) {
@@ -16,7 +16,7 @@ class EnumType implements SettingTypeInterface
         }
 
         // Check if class is an enum
-        if (!is_a($value, \BackedEnum::class, true)) {
+        if (!enum_exists($class)) {
             throw new \LogicException(\sprintf('The enum "%s" must be a backed enum', $class));
         }
 
@@ -25,15 +25,15 @@ class EnumType implements SettingTypeInterface
             throw new \LogicException(\sprintf('Expected type "%s", but "%s" given', $class, \gettype($value)));
         }
 
-        return (string) $value;
+        return (string) $value->value;
     }
 
     public function deserialize(string $value, array $options = []): mixed
     {
-        $class = (string) $options['class'] ?? throw new \LogicException('Missing class option for enum type');
+        $class = \array_key_exists('class', $options) ? (string) $options['class'] : throw new \LogicException('Missing class option for enum type');
 
         // Check if class is an enum
-        if (!is_a($value, \BackedEnum::class)) {
+        if (!enum_exists($class)) {
             throw new \LogicException(\sprintf('The enum "%s" must be a backed enum', $class));
         }
 

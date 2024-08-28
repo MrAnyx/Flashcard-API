@@ -10,7 +10,7 @@ class DateTimeType implements SettingTypeInterface
 {
     public function serialize(mixed $value, array $options = []): string
     {
-        $class = (string) $options['class'] ?? throw new \LogicException('Missing class option for datetime type');
+        $class = \array_key_exists('class', $options) ? (string) $options['class'] : throw new \LogicException('Missing class option for datetime type');
 
         // Check if class exist
         if (!class_exists($class)) {
@@ -32,7 +32,7 @@ class DateTimeType implements SettingTypeInterface
 
     public function deserialize(string $value, array $options = []): \DateTimeInterface
     {
-        $class = (string) $options['class'] ?? throw new \LogicException('Missing class option for datetime type');
+        $class = \array_key_exists('class', $options) ? (string) $options['class'] : throw new \LogicException('Missing class option for datetime type');
 
         if (!is_a($class, \DateTime::class, true) && !is_a($class, \DateTimeImmutable::class, true)) {
             throw new \LogicException(\sprintf('The class %s must extend either DateTime or DateTimeImmutable', $class));

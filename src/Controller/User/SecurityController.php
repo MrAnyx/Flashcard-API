@@ -30,6 +30,7 @@ class SecurityController extends AbstractRestController
     #[Route('/login', name: 'login', methods: ['POST'])]
     public function login(): JsonResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if ($user === null) {

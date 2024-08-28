@@ -43,6 +43,7 @@ security:
     access_control:
         - { path: ^/api/auth, roles: PUBLIC_ACCESS }
         - { path: ^/api/admin, roles: ROLE_ADMIN }
+        - { path: ^/api/_internal, roles: PUBLIC_ACCESS, allow_if: "'%env(APP_ENV)%' in ['dev', 'test']" }
         - { path: ^/api, roles: IS_AUTHENTICATED }
 
 when@test:

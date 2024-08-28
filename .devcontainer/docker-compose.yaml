@@ -39,7 +39,7 @@ services:
             SERVER_NAME: localhost
         volumes:
             - ..:/app
-            - ./Caddyfile:/etc/Caddyfile
+            # - ./Caddyfile:/etc/Caddyfile
             - caddy_data:/data
             - caddy_config:/config
         ports:

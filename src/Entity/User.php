@@ -85,6 +85,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class, orphanRemoval: true)]
     private Collection $reviewHistory;
 
+    /**
+     * @var Collection<int, Setting>
+     */
     #[ORM\OneToMany(targetEntity: Setting::class, mappedBy: 'user', orphanRemoval: true, cascade: ['persist'])]
     #[Groups(['read:user:user'])]
     private Collection $settings;
@@ -308,7 +311,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         $settings = $this->getSettings();
 
-        return $settings[$settingName->value] ?? throw new \InvalidArgumentException("Unknown setting name {$settingName->value}");
+        return \array_key_exists($settingName->value, $settings)
+            ? $settings[$settingName->value]
+            : throw new \InvalidArgumentException("Unknown setting name {$settingName->value}");
     }
 
     public function isPremium(): bool

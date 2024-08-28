@@ -7,6 +7,8 @@ namespace App\Entity;
 use App\Enum\SettingName;
 use App\Repository\SettingRepository;
 use App\Setting\SettingEntry;
+use App\Setting\SettingTemplate;
+use App\Setting\Type\SettingTypeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,7 +36,7 @@ class Setting
     public function __construct(SettingEntry $settingEntry, User $user)
     {
         $this
-            ->setName($settingEntry->getName())
+            ->setName($settingEntry->getName(true))
             ->setValue($settingEntry->getSerializedValue())
             ->setType($settingEntry->getType()::class)
             ->setUser($user);
@@ -59,8 +61,18 @@ class Setting
 
     public function getValue(): mixed
     {
-        // TODO Refactoring
-        return (new $this->type())->deserialize($this->value);
+        if ($this->type === null || !class_exists($this->type) || !is_a($this->type, SettingTypeInterface::class, true)) {
+            throw new \RuntimeException(\sprintf('Type %s is not a valid type. It must implement SettingTypeInterface', $this->type));
+        }
+
+        if ($this->value === null) {
+            throw new \RuntimeException('The value must be defined');
+        }
+
+        /** @var SettingTypeInterface $type */
+        $type = new $this->type();
+
+        return $type->deserialize($this->value, SettingTemplate::getSetting($this->name)?->getOptions() ?? []);
     }
 
     public function setValue(string $value): static

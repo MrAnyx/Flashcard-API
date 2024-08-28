@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Setting;
 
+use App\Enum\JsonStandardStatus;
 use App\Enum\SettingName;
+use App\Setting\Type\EnumType;
 use App\Setting\Type\IntegerType;
 use App\Setting\Type\StringType;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,21 +18,32 @@ class SettingTemplate
      */
     public static function getTemplate(): array
     {
+        // TODO Ajouter les nom de paramètre dans le message de la contrainte
         return [
             new SettingEntry(SettingName::ITEMS_PER_PAGE, 50, IntegerType::class, [
+                new Assert\Type('integer'),
                 new Assert\Range(min: 1, max: 1000),
             ]),
+            new SettingEntry(SettingName::TEST_ENUM, JsonStandardStatus::INVALID, EnumType::class, [
+                new Assert\Type(JsonStandardStatus::class),
+            ], [
+                'class' => JsonStandardStatus::class,
+            ]),
             new SettingEntry(SettingName::FLASHCARD_PER_SESSION, 20, IntegerType::class, [
+                new Assert\Type('integer'),
                 new Assert\Range(min: 1, max: 50),
             ]),
             new SettingEntry(SettingName::COLOR_THEME, 'light', StringType::class, [
+                new Assert\Type('string'),
                 new Assert\Choice(['light', 'dark', 'system']),
             ]),
             new SettingEntry(SettingName::PRIMARY_COLOR, 'sky', StringType::class, [
-                new Assert\Choice([['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']]),
+                new Assert\Type('string'),
+                new Assert\Choice(['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']),
             ]),
             new SettingEntry(SettingName::GRAY_COLOR, 'cool', StringType::class, [
-                new Assert\Choice([['slate', 'cool', 'zinc', 'neutral', 'stone']]),
+                new Assert\Type('string'),
+                new Assert\Choice(['slate', 'cool', 'zinc', 'neutral', 'stone']),
             ]),
         ];
     }
@@ -55,7 +68,7 @@ class SettingTemplate
     public static function getSetting(SettingName $name): ?SettingEntry
     {
         foreach (self::getTemplate() as $setting) {
-            if ($setting->getName() === $name) {
+            if ($setting->getName(true) === $name) {
                 return $setting;
             }
         }
