@@ -8,7 +8,6 @@ use App\Enum\SettingName;
 use App\Repository\SettingRepository;
 use App\Setting\SettingEntry;
 use App\Setting\SettingTemplate;
-use App\Setting\Type\SettingTypeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,15 +29,11 @@ class Setting
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $type = null;
-
     public function __construct(SettingEntry $settingEntry, User $user)
     {
         $this
             ->setName($settingEntry->getName(true))
             ->setValue($settingEntry->getSerializedValue())
-            ->setType($settingEntry->getType()::class)
             ->setUser($user);
     }
 
@@ -61,18 +56,13 @@ class Setting
 
     public function getValue(): mixed
     {
-        if ($this->type === null || !class_exists($this->type) || !is_a($this->type, SettingTypeInterface::class, true)) {
-            throw new \RuntimeException(\sprintf('Type %s is not a valid type. It must implement SettingTypeInterface', $this->type));
-        }
+        $templateSetting = SettingTemplate::getSetting($this->name);
 
-        if ($this->value === null) {
-            throw new \RuntimeException('The value must be defined');
-        }
+        $type = $templateSetting->getType();
 
-        /** @var SettingTypeInterface $type */
-        $type = new $this->type();
+        $type->validateOutput($this->value);
 
-        return $type->deserialize($this->value, SettingTemplate::getSetting($this->name)?->getOptions() ?? []);
+        return $type->deserialize($this->value, $templateSetting->getOptions());
     }
 
     public function setValue(string $value): static
@@ -90,18 +80,6 @@ class Setting
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
 
         return $this;
     }
