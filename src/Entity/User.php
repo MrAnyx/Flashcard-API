@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Attribut\Sortable;
 use App\Enum\SettingName;
 use App\Repository\UserRepository;
+use App\Setting\SettingEntry;
 use App\Setting\SettingTemplate;
 use App\Utility\Regex;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -314,6 +315,28 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return \array_key_exists($settingName->value, $settings)
             ? $settings[$settingName->value]
             : throw new \InvalidArgumentException("Unknown setting name {$settingName->value}");
+    }
+
+    public function updateSetting(SettingEntry $setting): static
+    {
+        /** @var ?Setting $existingSetting */
+        $existingSetting = null;
+
+        foreach ($this->settings as $existing) {
+            if ($existing->getName() === $setting->getName()) {
+                $existingSetting = $existing;
+                break;
+            }
+        }
+
+        if ($existingSetting !== null) {
+            $existingSetting->setValue($setting->getSerializedValue());
+        } else {
+            $newSetting = new Setting($setting, $this);
+            $this->settings->add($newSetting);
+        }
+
+        return $this;
     }
 
     public function isPremium(): bool

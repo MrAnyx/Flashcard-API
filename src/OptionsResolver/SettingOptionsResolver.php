@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\OptionsResolver;
 
 use App\Enum\SettingName;
-use App\Setting\SettingsTemplate;
-use App\Setting\Type\AbstractSetting;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,14 +24,8 @@ class SettingOptionsResolver extends OptionsResolver
 
     public function configureValue(): self
     {
-        $availableTypes = array_unique(array_map(
-            fn (AbstractSetting $el) => $el->getType()->value,
-            SettingsTemplate::getTemplate()
-        ));
-
         $this
             ->setDefined('value')
-            ->setAllowedTypes('value', $availableTypes)
             ->setRequired('value');
 
         return $this;

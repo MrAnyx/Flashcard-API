@@ -9,7 +9,7 @@ use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\SettingOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
-use App\Setting\SettingFactory;
+use App\Setting\SettingTemplate;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -126,7 +126,9 @@ class UserController extends AbstractRestController
         $user = $this->getUser();
 
         try {
-            $setting = SettingFactory::create($data['name'], $data['value']);
+            $setting = SettingTemplate::getSetting($data['name']);
+
+            $setting->setValue($data['value']);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }

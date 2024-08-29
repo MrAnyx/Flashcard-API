@@ -49,17 +49,16 @@ class SettingTemplate
         return $template;
     }
 
-    /**
-     * @return SettingEntry|null Returns the corresponding default setting if it exists, null otherwise
-     */
-    public static function getSetting(SettingName $name): ?SettingEntry
+    public static function getSetting(SettingName $name): SettingEntry
     {
-        foreach (self::getTemplate() as $setting) {
+        $settings = self::getTemplate();
+
+        foreach ($settings as $setting) {
             if ($setting->getName(true) === $name) {
                 return $setting;
             }
         }
 
-        return null;
+        throw new \InvalidArgumentException(\sprintf('Unknown setting name %s, allowed setting name are %s', $name->value, implode(', ', array_keys($settings))));
     }
 }

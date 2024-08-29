@@ -5,23 +5,21 @@ declare(strict_types=1);
 namespace App\Setting;
 
 use App\Enum\SettingName;
-use App\Setting\Type\SettingTypeInterface;
+use App\Setting\Type\AbstractSettingType;
 use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\Constraints\Type;
-use Symfony\Component\Validator\Validation;
 
 class SettingEntry
 {
     /**
      * @var Constraint[]
      */
-    public readonly array $constraints;
+    private readonly array $constraints;
 
     private readonly SettingName $name;
 
     private mixed $value;
 
-    private readonly SettingTypeInterface $type;
+    private readonly AbstractSettingType $type;
 
     private readonly array $options;
 
@@ -34,14 +32,14 @@ class SettingEntry
         $this->value = $value;
         $this->options = $options;
 
-        if (!is_a($type, SettingTypeInterface::class, true) && $type !== null) {
+        if (!is_a($type, AbstractSettingType::class, true)) {
             throw new \InvalidArgumentException(\sprintf('The type %s must implement SettingTypeInterface', $type));
         }
 
         $this->type = new $type();
-        $this->constraints = [new Type($this->type->getType()), ...$constraints];
+        $this->constraints = $constraints;
 
-        $this->validateConstraints();
+        $this->type->validateInput($this->value, $this->constraints);
     }
 
     /**
@@ -62,7 +60,7 @@ class SettingEntry
     public function setValue(mixed $value): static
     {
         $this->value = $value;
-        $this->validateConstraints();
+        $this->type->validateInput($this->value, $this->constraints);
 
         return $this;
     }
@@ -72,7 +70,7 @@ class SettingEntry
         return $this->type->serialize($this->value, $this->options);
     }
 
-    public function getType(): SettingTypeInterface
+    public function getType(): AbstractSettingType
     {
         return $this->type;
     }
@@ -88,20 +86,5 @@ class SettingEntry
     public function getOptions(): array
     {
         return $this->options;
-    }
-
-    /**
-     * Validate the setting value based on the constraints.
-     */
-    private function validateConstraints(): void
-    {
-        if (\count($this->constraints) > 0) {
-            $validator = Validation::createValidator();
-            $errors = $validator->validate($this->value, $this->constraints);
-
-            if (\count($errors) > 0) {
-                throw new \InvalidArgumentException($errors[0]->getMessage());
-            }
-        }
     }
 }
