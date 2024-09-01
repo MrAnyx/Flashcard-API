@@ -7,10 +7,3 @@ https://huggingface.co/spaces/open-spaced-repetition/fsrs4anki_previewer
 
 https://symfony.com/doc/2.x/security/access_denied_handler.html
 https://symfony.com/doc/current/security.html#security-securing-controller-attributes
-
-
-## Prerequisites
-
-``` bash
-docker network create -d bridge flashcard-net
-```
