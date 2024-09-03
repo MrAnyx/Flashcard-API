@@ -15,11 +15,13 @@ jobs:
 
         services:
             database:
-                image: mariadb
-                env:
-                    MYSQL_ROOT_PASSWORD: password
+                image: postgres:16.4-alpine
                 ports:
-                    - 3306:3306
+                    - 5432:5432
+                environment:
+                    POSTGRES_HOST: localhost
+                    POSTGRES_USER: user
+                    POSTGRES_PASSWORD: password
 
         steps:
             - uses: actions/checkout@v4
