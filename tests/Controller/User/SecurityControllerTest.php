@@ -18,7 +18,7 @@ class SecurityControllerTest extends WebTestCase
 
         $content = [
             'identifier' => $user->getEmail(),
-            'password' => 'password',
+            'password' => 'Password1!',
         ];
 
         $client->request('POST', '/api/auth/login', content: json_encode($content));
@@ -37,7 +37,7 @@ class SecurityControllerTest extends WebTestCase
 
         $content = [
             'identifier' => $user->getUsername(),
-            'password' => 'password',
+            'password' => 'Password1!',
         ];
 
         $client->request('POST', '/api/auth/login', content: json_encode($content));
@@ -73,7 +73,7 @@ class SecurityControllerTest extends WebTestCase
 
         $content = [
             'identifier' => 'invalid_indentifier',
-            'password' => 'password',
+            'password' => 'Password1!',
         ];
 
         $client->request('POST', '/api/auth/login', content: json_encode($content));
