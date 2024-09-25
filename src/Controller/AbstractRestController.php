@@ -27,7 +27,7 @@ class AbstractRestController extends AbstractController
         private PaginatorOptionsResolver $paginatorOptionsResolver,
         private EntityManagerInterface $em,
         private DenormalizerInterface $denormalizer,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
     ) {
     }
 
@@ -113,6 +113,6 @@ class AbstractRestController extends AbstractController
          */
         $user = $this->getUser();
 
-        return $user->getSetting($settingName)->getValue();
+        return $user->getSetting($settingName);
     }
 }

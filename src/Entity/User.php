@@ -293,7 +293,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     }
 
     /**
-     * @return array<string, Setting>
+     * @return array<string, mixed>
      */
     public function getSettings(): array
     {
@@ -308,7 +308,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $mergedSettings;
     }
 
-    public function getSetting(SettingName $settingName): Setting
+    public function getSetting(SettingName $settingName): mixed
     {
         $settings = $this->getSettings();
 
