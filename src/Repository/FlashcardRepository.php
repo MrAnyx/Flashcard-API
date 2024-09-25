@@ -185,8 +185,10 @@ class FlashcardRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('f')
             ->select('count(f.id)')
             ->join('f.reviewHistory', 'r')
-            ->where('r.grade > :threshold')
-            ->setParameter('threshold', GradeType::HARD->value);
+            ->andWhere('r.grade > :threshold')
+            ->setParameter('threshold', GradeType::HARD->value)
+            ->andWhere('r.reset = :isReset')
+            ->setParameter('isReset', false);
 
         if ($user !== null) {
             $query
@@ -203,7 +205,9 @@ class FlashcardRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('f')
             ->select('avg(r.grade)')
-            ->join('f.reviewHistory', 'r');
+            ->join('f.reviewHistory', 'r')
+            ->andWhere('r.reset = :isReset')
+            ->setParameter('isReset', false);
 
         if ($user !== null) {
             $query
