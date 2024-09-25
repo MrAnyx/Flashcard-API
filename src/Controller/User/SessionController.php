@@ -8,6 +8,7 @@ use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use App\Entity\User;
 use App\Repository\SessionRepository;
+use App\Utility\Regex;
 use App\Voter\SessionVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,10 +17,10 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api', 'api_', format: 'json')]
 class SessionController extends AbstractRestController
 {
-    #[Route('/sessions/{id}/stop', name: 'session_stop', methods: ['POST'])]
+    #[Route('/sessions/{id}/stop', name: 'session_stop', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function stopSession(
         int $id,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ): JsonResponse {
         $session = $this->getResourceById(Session::class, $id);
         $this->denyAccessUnlessGranted(SessionVoter::OWNER, $session, 'You can not update this resource');
@@ -32,7 +33,7 @@ class SessionController extends AbstractRestController
 
     #[Route('/sessions/count', name: 'sessions_count', methods: ['GET'])]
     public function countSessions(
-        SessionRepository $sessionRepository
+        SessionRepository $sessionRepository,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();

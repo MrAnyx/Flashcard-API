@@ -30,7 +30,7 @@ class UnitController extends AbstractRestController
     #[Route('/units', name: 'get_units', methods: ['GET'])]
     public function getAllUnits(
         Request $request,
-        UnitRepository $unitRepository
+        UnitRepository $unitRepository,
     ): JsonResponse {
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
@@ -194,7 +194,7 @@ class UnitController extends AbstractRestController
     public function resetUnit(
         int $id,
         ReviewRepository $reviewRepository,
-        FlashcardRepository $flashcardRepository
+        FlashcardRepository $flashcardRepository,
     ): JsonResponse {
         $unit = $this->getResourceById(Unit::class, $id);
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
@@ -208,11 +208,11 @@ class UnitController extends AbstractRestController
         return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('/units/{id}/session', name: 'session_unit', methods: ['GET'])]
+    #[Route('/units/{id}/session', name: 'session_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getFlashcardSession(
         int $id,
         FlashcardRepository $flashcardRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ): JsonResponse {
         $unit = $this->getResourceById(Unit::class, $id);
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not update this resource');
@@ -246,10 +246,10 @@ class UnitController extends AbstractRestController
         return $this->jsonStd($recentUnits, context: ['groups' => ['read:unit:user']]);
     }
 
-    #[Route('/topics/{id}/units/recent', name: 'recent_units_by_topic', methods: ['GET'])]
+    #[Route('/topics/{id}/units/recent', name: 'recent_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getRecentUnitsByTopic(
         int $id,
-        UnitRepository $unitRepository
+        UnitRepository $unitRepository,
     ): JsonResponse {
         $topic = $this->getResourceById(Topic::class, $id);
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
@@ -264,7 +264,7 @@ class UnitController extends AbstractRestController
 
     #[Route('/units/count', name: 'unit_count', methods: ['GET'])]
     public function countUnits(
-        UnitRepository $unitRepository
+        UnitRepository $unitRepository,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();

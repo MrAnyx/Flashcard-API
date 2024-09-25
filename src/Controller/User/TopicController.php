@@ -170,7 +170,7 @@ class TopicController extends AbstractRestController
     public function resetTopic(
         int $id,
         ReviewRepository $reviewRepository,
-        FlashcardRepository $flashcardRepository
+        FlashcardRepository $flashcardRepository,
     ): JsonResponse {
         $topic = $this->getResourceById(Topic::class, $id);
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
@@ -184,11 +184,11 @@ class TopicController extends AbstractRestController
         return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('/topics/{id}/session', name: 'session_topic', methods: ['GET'])]
+    #[Route('/topics/{id}/session', name: 'session_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getFlashcardSession(
         int $id,
         FlashcardRepository $flashcardRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ): JsonResponse {
         $topic = $this->getResourceById(Topic::class, $id);
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
@@ -224,7 +224,7 @@ class TopicController extends AbstractRestController
 
     #[Route('/topics/count', name: 'topic_count', methods: ['GET'])]
     public function countTopics(
-        TopicRepository $topicRepository
+        TopicRepository $topicRepository,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();

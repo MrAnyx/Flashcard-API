@@ -125,7 +125,7 @@ class FlashcardController extends AbstractRestController
         int $id,
         EntityManagerInterface $em,
         Request $request,
-        FlashcardOptionsResolver $flashcardOptionsResolver
+        FlashcardOptionsResolver $flashcardOptionsResolver,
     ): JsonResponse {
         $flashcard = $this->getResourceById(Flashcard::class, $id);
 
@@ -198,7 +198,7 @@ class FlashcardController extends AbstractRestController
         return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 
-    #[Route('/flashcards/{id}/review', name: 'review_flashcard', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
+    #[Route('/flashcards/{id}/review', name: 'review_flashcard', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function reviewFlashcard(
         int $id,
         EntityManagerInterface $em,
@@ -252,7 +252,7 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/reset', name: 'reset_all_flashcard', methods: ['POST'])]
     public function resetAllFlashcards(
         FlashcardRepository $flashcardRepository,
-        ReviewRepository $reviewRepository
+        ReviewRepository $reviewRepository,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
@@ -267,7 +267,7 @@ class FlashcardController extends AbstractRestController
     public function resetFlashcard(
         int $id,
         FlashcardRepository $flashcardRepository,
-        ReviewRepository $reviewRepository
+        ReviewRepository $reviewRepository,
     ): JsonResponse {
         $flashcard = $this->getResourceById(Flashcard::class, $id);
         $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
@@ -284,7 +284,7 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/session', name: 'session_flashcard', methods: ['GET'])]
     public function getFlashcardSession(
         FlashcardRepository $flashcardRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
@@ -306,7 +306,7 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/count', name: 'flashcard_count', methods: ['GET'])]
     public function countFlashcards(
-        FlashcardRepository $flashcardRepository
+        FlashcardRepository $flashcardRepository,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
@@ -318,7 +318,7 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/reviews/count', name: 'flashcard_reviews_count', methods: ['GET'])]
     public function countFlashcardsToReview(
-        FlashcardRepository $flashcardRepository
+        FlashcardRepository $flashcardRepository,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
@@ -330,7 +330,7 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/correct/count', name: 'flashcard_correct_count', methods: ['GET'])]
     public function countCorrectFlashcards(
-        FlashcardRepository $flashcardRepository
+        FlashcardRepository $flashcardRepository,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
@@ -342,7 +342,7 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/averageGrade', name: 'flashcard_average_grade', methods: ['GET'])]
     public function getAverageGrade(
-        FlashcardRepository $flashcardRepository
+        FlashcardRepository $flashcardRepository,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
