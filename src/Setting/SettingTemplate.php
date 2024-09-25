@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setting;
 
 use App\Enum\SettingName;
+use App\Setting\Type\BooleanType;
 use App\Setting\Type\IntegerType;
 use App\Setting\Type\StringType;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -32,6 +33,7 @@ class SettingTemplate
             new SettingEntry(SettingName::GRAY_COLOR, 'cool', StringType::class, [
                 new Assert\Choice(['slate', 'cool', 'zinc', 'neutral', 'stone']),
             ]),
+            new SettingEntry(SettingName::SHOW_SESSION_INTRODUCTION, true, BooleanType::class),
         ];
     }
 

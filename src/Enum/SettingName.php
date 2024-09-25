@@ -17,4 +17,6 @@ enum SettingName: string
     case PRIMARY_COLOR = 'primary_color';
 
     case GRAY_COLOR = 'gray_color';
+
+    case SHOW_SESSION_INTRODUCTION = 'show_session_introduction';
 }
