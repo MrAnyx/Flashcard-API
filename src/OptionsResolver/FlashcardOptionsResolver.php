@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FlashcardOptionsResolver extends OptionsResolver
 {
     public function __construct(
-        private UnitRepository $unitRepository
+        private UnitRepository $unitRepository,
     ) {
     }
 
@@ -83,6 +83,23 @@ class FlashcardOptionsResolver extends OptionsResolver
         if ($isRequired) {
             $this->setRequired('favorite');
         }
+
+        return $this;
+    }
+
+    public function configureHelp(bool $isRequired = true): self
+    {
+        $this->setDefined('help')->setAllowedTypes('help', ['string', 'null']);
+
+        if ($isRequired) {
+            $this->setRequired('help');
+        }
+
+        $this->addNormalizer('help', function (Options $options, $value) {
+            $result = trim($value);
+
+            return $result === '' ? null : $result;
+        });
 
         return $this;
     }

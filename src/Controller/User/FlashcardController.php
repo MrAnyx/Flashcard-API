@@ -73,6 +73,7 @@ class FlashcardController extends AbstractRestController
                 ->configureDetails(true)
                 ->configureUnit(true)
                 ->configureFavorite(true)
+                ->configureHelp(true)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -87,7 +88,8 @@ class FlashcardController extends AbstractRestController
             ->setBack($data['back'])
             ->setDetails($data['details'])
             ->setUnit($data['unit'])
-            ->setFavorite($data['favorite']);
+            ->setFavorite($data['favorite'])
+            ->setHelp($data['help']);
 
         // Second validation using the validation constraints
         $this->validateEntity($flashcard);
@@ -146,6 +148,7 @@ class FlashcardController extends AbstractRestController
                 ->configureDetails($mandatoryParameters)
                 ->configureUnit($mandatoryParameters)
                 ->configureFavorite($mandatoryParameters)
+                ->configureHelp($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
@@ -169,6 +172,9 @@ class FlashcardController extends AbstractRestController
                     break;
                 case 'favorite':
                     $flashcard->setFavorite($value);
+                    break;
+                case 'help':
+                    $flashcard->setHelp($value);
                     break;
             }
         }
@@ -289,14 +295,22 @@ class FlashcardController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
+        $cardsToReview = $flashcardRepository->findFlashcardToReview($user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
+
+        if (\count($cardsToReview) === 0) {
+            return $this->jsonStd([
+                'session' => null,
+                'flashcards' => [],
+            ]);
+        }
+
+        shuffle($cardsToReview);
+
         $session = new Session();
         $session->setAuthor($user);
         $this->validateEntity($session);
         $em->persist($session);
         $em->flush();
-
-        $cardsToReview = $flashcardRepository->findFlashcardToReview($user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
-        shuffle($cardsToReview);
 
         return $this->jsonStd([
             'session' => $session,

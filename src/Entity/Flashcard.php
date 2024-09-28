@@ -94,6 +94,11 @@ class Flashcard
     #[Sortable]
     private bool $favorite = false;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255, maxMessage: 'The help of a flashcard can not exceed {{ limit }} characters')]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    private ?string $help = null;
+
     public function __construct()
     {
         $this->reviewHistory = new ArrayCollection();
@@ -255,6 +260,18 @@ class Flashcard
     public function setFavorite(bool $favorite): static
     {
         $this->favorite = $favorite;
+
+        return $this;
+    }
+
+    public function getHelp(): ?string
+    {
+        return $this->help;
+    }
+
+    public function setHelp(?string $help): static
+    {
+        $this->help = $help;
 
         return $this;
     }
