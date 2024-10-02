@@ -220,14 +220,22 @@ class UnitController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
+        $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
+
+        if (\count($cardsToReview) === 0) {
+            return $this->jsonStd([
+                'session' => null,
+                'flashcards' => [],
+            ]);
+        }
+
+        shuffle($cardsToReview);
+
         $session = new Session();
         $session->setAuthor($user);
         $this->validateEntity($session);
         $em->persist($session);
         $em->flush();
-
-        $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
-        shuffle($cardsToReview);
 
         return $this->jsonStd([
             'session' => $session,

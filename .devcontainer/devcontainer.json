@@ -32,7 +32,8 @@
                 "[yaml][json][jsonc]": {
                     "editor.formatOnSave": true,
                     "editor.defaultFormatter": "esbenp.prettier-vscode"
-                }
+                },
+                "temphpest.useStrictTypesInNewFileStubs": true
             },
             "extensions": [
                 "esbenp.prettier-vscode",
@@ -45,7 +46,8 @@
                 "EditorConfig.EditorConfig",
                 "junstyle.php-cs-fixer",
                 "Postman.postman-for-vscode",
-                "matthewpi.caddyfile-support"
+                "matthewpi.caddyfile-support",
+                "liamhammett.temphpest"
             ]
         }
     },
