@@ -46,6 +46,11 @@ class VirtualHydrator extends ObjectHydrator
                     }
                 }
             }
+
+            // Flatten array if it only contains 1 element or less
+            if (\count($data[$rowNumber]) <= 1) {
+                $data[$rowNumber] = $data[$rowNumber][array_key_first($data[$rowNumber])];
+            }
         }
 
         return $data;

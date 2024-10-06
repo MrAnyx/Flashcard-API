@@ -14,9 +14,6 @@ use App\QueryFlag\SessionQueryFlag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Session>
- */
 class SessionRepository extends ServiceEntityRepository
 {
     // private SessionQueryBuilder $sessionQueryBuilder;
