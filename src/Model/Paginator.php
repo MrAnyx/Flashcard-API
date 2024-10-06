@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
@@ -24,7 +25,7 @@ class Paginator extends DoctrinePaginator
 
     private int $offset;
 
-    public function __construct(QueryBuilder|Query $query, Page $pagination, bool $fetchJoinCollection = true)
+    public function __construct(QueryBuilder|Query $query, Page $pagination, string|int $hydrationMode = AbstractQuery::HYDRATE_OBJECT, bool $fetchJoinCollection = true)
     {
         $this->itemsPerPage = $pagination->itemsPerPage;
         $this->offset = ($pagination->page - 1) * $this->itemsPerPage;
@@ -34,7 +35,7 @@ class Paginator extends DoctrinePaginator
 
         parent::__construct($query, $fetchJoinCollection);
         $this->total = $this->count();
-        $this->data = iterator_to_array(parent::getIterator());
+        $this->data = $query->getQuery()->getResult($hydrationMode);
         $this->count = \count($this->data);
         $this->page = $pagination->page;
 

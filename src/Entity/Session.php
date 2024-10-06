@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribut\Sortable;
+use App\Attribut\Virtual;
 use App\Repository\SessionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -19,20 +21,27 @@ class Session
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['read:session:user'])]
+    #[Sortable]
     private ?int $id = null;
 
     #[ORM\Column]
     #[Groups(['read:session:user'])]
+    #[Sortable]
     private ?\DateTimeImmutable $started_at = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read:session:user'])]
+    #[Sortable]
     private ?\DateTimeImmutable $ended_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'sessions')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: 'You must associate a user to this session')]
     private ?User $author = null;
+
+    #[Virtual('totalReviews')]
+    #[Groups(['read:session:user'])]
+    private ?int $totalReviews = null;
 
     /**
      * @var Collection<int, Review>
@@ -113,6 +122,18 @@ class Session
                 $review->setSession(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTotalReviews(): ?int
+    {
+        return $this->totalReviews;
+    }
+
+    public function setTotalReviews(int $totalReviews): static
+    {
+        $this->totalReviews = $totalReviews;
 
         return $this;
     }

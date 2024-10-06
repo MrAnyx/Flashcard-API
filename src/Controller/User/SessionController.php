@@ -12,11 +12,27 @@ use App\Utility\Regex;
 use App\Voter\SessionVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api', 'api_', format: 'json')]
 class SessionController extends AbstractRestController
 {
+    #[Route('/sessions', name: 'get_sessions', methods: ['GET'])]
+    public function getAllSessions(
+        Request $request,
+        SessionRepository $sessionRepository,
+    ): JsonResponse {
+        $pagination = $this->getPaginationParameter(Session::class, $request);
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $sessions = $sessionRepository->findAllWithPagination($pagination, $user);
+
+        return $this->jsonStd($sessions, context: ['groups' => ['read:session:user']]);
+    }
+
     #[Route('/sessions/{id}/stop', name: 'session_stop', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function stopSession(
         int $id,

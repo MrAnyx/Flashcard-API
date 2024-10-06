@@ -6,6 +6,11 @@ namespace App\Repository;
 
 use App\Entity\Session;
 use App\Entity\User;
+use App\Hydrator\VirtualHydrator;
+use App\Model\Page;
+use App\Model\Paginator;
+// use App\QueryBuilder\SessionQueryBuilder;
+use App\QueryFlag\SessionQueryFlag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,9 +19,39 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SessionRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    // private SessionQueryBuilder $sessionQueryBuilder;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        // SessionQueryBuilder $sessionQueryBuilder,
+    ) {
         parent::__construct($registry, Session::class);
+        // $this->sessionQueryBuilder = $sessionQueryBuilder;
+    }
+
+    public function findAllWithPagination(Page $page, ?User $user = null)
+    {
+        // $query = $this->sessionQueryBuilder
+        //     ->buildInitialQuery([
+        //         SessionQueryFlag::INCLUDE_TOTAL_REVIEWS,
+        //     ]);
+
+        $query = $this->createQueryBuilder('s')
+            ->select('s, COUNT(r.id) as totalReviews')
+            ->leftJoin('s.reviews', 'r')
+            ->addGroupBy('s.id');
+
+        if ($user !== null) {
+            $query
+                ->where('s.author = :user')
+                ->setParameter('user', $user);
+        }
+
+        $query
+            ->addOrderBy("CASE WHEN s.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
+            ->addOrderBy("s.{$page->sort}", $page->order);
+
+        return new Paginator($query, $page, VirtualHydrator::class);
     }
 
     public function countAll(?User $user): int
