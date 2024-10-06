@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Hydrator;
 
-use App\Attribut\Virtual;
+use App\Attribute\Virtual;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
 
 class VirtualHydrator extends ObjectHydrator

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\Attribut\Sortable;
+use App\Attribute\Sortable;
 use App\Controller\AbstractRestController;
 use App\Exception\ApiException;
 use App\Model\Page;

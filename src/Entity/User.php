@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Attribut\Sortable;
+use App\Attribute\Sortable;
 use App\Enum\SettingName;
 use App\Repository\UserRepository;
 use App\Setting\SettingEntry;

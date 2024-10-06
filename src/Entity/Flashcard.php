@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Attribut\Sortable;
+use App\Attribute\Sortable;
 use App\Enum\StateType;
 use App\Repository\FlashcardRepository;
 use Doctrine\Common\Collections\ArrayCollection;

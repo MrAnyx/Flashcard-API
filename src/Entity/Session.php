@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Attribut\Sortable;
-use App\Attribut\Virtual;
+use App\Attribute\Sortable;
+use App\Attribute\Virtual;
 use App\Repository\SessionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

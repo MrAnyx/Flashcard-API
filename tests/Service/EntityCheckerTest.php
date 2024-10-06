@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Attribut\Sortable;
+use App\Attribute\Sortable;
 use App\Service\SortableEntityChecker;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
