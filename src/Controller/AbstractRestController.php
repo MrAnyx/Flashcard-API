@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\Sortable;
 use App\Entity\User;
 use App\Enum\JsonStandardStatus;
 use App\Enum\SettingName;
@@ -11,7 +12,7 @@ use App\Exception\ApiException;
 use App\Model\JsonStandard;
 use App\Model\Page;
 use App\OptionsResolver\PaginatorOptionsResolver;
-use App\Service\SortableEntityChecker;
+use App\Service\AttributeParser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,7 +24,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class AbstractRestController extends AbstractController
 {
     public function __construct(
-        private SortableEntityChecker $sortableEntityChecker,
+        private AttributeParser $attributeParser,
         private PaginatorOptionsResolver $paginatorOptionsResolver,
         private EntityManagerInterface $em,
         private DenormalizerInterface $denormalizer,
@@ -37,7 +38,9 @@ class AbstractRestController extends AbstractController
      */
     public function getPaginationParameter(string $classname, Request $request): Page
     {
-        $sortableFields = $this->sortableEntityChecker->getSortableFields($classname);
+        $reflectionProperties = $this->attributeParser->getFieldsWithAttribute($classname, Sortable::class);
+
+        $sortableFields = array_map(fn (\ReflectionProperty $p) => $p->name, $reflectionProperties);
 
         try {
             $queryParams = $this->paginatorOptionsResolver
@@ -45,6 +48,7 @@ class AbstractRestController extends AbstractController
                 ->configureSort($sortableFields)
                 ->configureOrder()
                 ->configureItemsPerPage()
+                ->setIgnoreUndefined()
                 ->resolve($request->query->all());
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());

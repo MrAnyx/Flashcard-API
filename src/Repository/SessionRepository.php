@@ -9,30 +9,19 @@ use App\Entity\User;
 use App\Hydrator\VirtualHydrator;
 use App\Model\Page;
 use App\Model\Paginator;
-// use App\QueryBuilder\SessionQueryBuilder;
-use App\QueryFlag\SessionQueryFlag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 class SessionRepository extends ServiceEntityRepository
 {
-    // private SessionQueryBuilder $sessionQueryBuilder;
-
     public function __construct(
         ManagerRegistry $registry,
-        // SessionQueryBuilder $sessionQueryBuilder,
     ) {
         parent::__construct($registry, Session::class);
-        // $this->sessionQueryBuilder = $sessionQueryBuilder;
     }
 
     public function findAllWithPagination(Page $page, ?User $user = null)
     {
-        // $query = $this->sessionQueryBuilder
-        //     ->buildInitialQuery([
-        //         SessionQueryFlag::INCLUDE_TOTAL_REVIEWS,
-        //     ]);
-
         $query = $this->createQueryBuilder('s')
             ->select('s, COUNT(r.id) as totalReviews')
             ->leftJoin('s.reviews', 'r')

@@ -23,8 +23,8 @@ class FloatType extends AbstractSettingType
 
     public function validateOutput(string $value): void
     {
-        if (filter_var($value, \FILTER_VALIDATE_BOOLEAN) === false) {
-            throw new \InvalidArgumentException(\sprintf('Setting value "%s" is not a valid boolean.', $value));
+        if (filter_var($value, \FILTER_VALIDATE_FLOAT) === false) {
+            throw new \InvalidArgumentException(\sprintf('Setting value "%s" is not a valid float.', $value));
         }
     }
 }

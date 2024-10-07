@@ -27,7 +27,7 @@ class IntegerType extends AbstractSettingType
     public function validateOutput(string $value): void
     {
         if (filter_var($value, \FILTER_VALIDATE_INT) === false) {
-            throw new \InvalidArgumentException(\sprintf('Setting value "%s" is not a valid boolean.', $value));
+            throw new \InvalidArgumentException(\sprintf('Setting value "%s" is not a valid integer.', $value));
         }
     }
 }

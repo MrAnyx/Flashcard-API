@@ -52,7 +52,7 @@ class PaginatorOptionsResolver extends OptionsResolver
         return $this
             ->setDefined('itemsPerPage')
             ->setDefault('itemsPerPage', '25')
-            ->setAllowedTypes('itemsPerPage', 'numeric') // We use string even if it a number because it comes from the url
+            ->setAllowedTypes('itemsPerPage', 'numeric') // We use numeric even if it a number because it comes from the url
             ->setAllowedValues('itemsPerPage', function ($itemsPerPage) {
                 $validatedValue = filter_var($itemsPerPage, \FILTER_VALIDATE_INT, [
                     'flags' => \FILTER_NULL_ON_FAILURE,

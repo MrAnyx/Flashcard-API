@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\Searchable;
 use App\Attribute\Sortable;
 use App\Attribute\Virtual;
 use App\Repository\SessionRepository;
@@ -22,6 +23,7 @@ class Session
     #[ORM\Column]
     #[Groups(['read:session:user'])]
     #[Sortable]
+    #[Searchable]
     private ?int $id = null;
 
     #[ORM\Column]
