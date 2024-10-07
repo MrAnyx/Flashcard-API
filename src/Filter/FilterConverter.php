@@ -83,12 +83,14 @@ class FilterConverter
         return $converter->newInstanceArgs($constructorArgs);
     }
 
+    /**
+     * @param \ReflectionParameter[] $constructorParams
+     */
     private function mapOptionsToConstructorArgs(array $constructorParams, array $options): array
     {
         $constructorArgs = [];
 
         foreach ($constructorParams as $param) {
-            /** @var ReflectionParameter $param */
             $paramName = $param->getName();
 
             if (\array_key_exists($paramName, $options)) {
