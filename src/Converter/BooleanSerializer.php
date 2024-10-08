@@ -2,11 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Filter\Converter;
+namespace App\Converter;
 
-class BooleanConverter implements FilterValueConverterInterface
+class BooleanSerializer implements SerializerInterface
 {
-    public function convert(string $value): bool
+    public function serialize(mixed $value): string
+    {
+        return (string) $value;
+    }
+
+    public function deserialize(string $value): mixed
     {
         if (filter_var($value, \FILTER_VALIDATE_BOOLEAN) === false) {
             throw new \InvalidArgumentException(\sprintf('The filter value "%s" is not a valid boolean.', $value));

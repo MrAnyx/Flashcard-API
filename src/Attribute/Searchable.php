@@ -8,8 +8,8 @@ namespace App\Attribute;
 class Searchable
 {
     public function __construct(
-        public readonly ?string $converterFqcn = null,
-        public readonly array $options = [],
+        public readonly ?string $serializerFqcn = null,
+        public readonly array $serializerConstructorParams = [],
     ) {
     }
 }

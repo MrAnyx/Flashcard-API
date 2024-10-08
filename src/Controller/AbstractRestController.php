@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attribute\Searchable;
 use App\Attribute\Sortable;
 use App\Entity\User;
 use App\Enum\JsonStandardStatus;
 use App\Enum\SettingName;
 use App\Exception\ApiException;
+use App\Model\Filter;
 use App\Model\JsonStandard;
 use App\Model\Page;
+use App\OptionsResolver\FilterOptionsResolver;
 use App\OptionsResolver\PaginatorOptionsResolver;
 use App\Service\AttributeParser;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,6 +29,7 @@ class AbstractRestController extends AbstractController
     public function __construct(
         private AttributeParser $attributeParser,
         private PaginatorOptionsResolver $paginatorOptionsResolver,
+        private FilterOptionsResolver $filterOptionsResolver,
         private EntityManagerInterface $em,
         private DenormalizerInterface $denormalizer,
         private ValidatorInterface $validator,
@@ -39,7 +43,6 @@ class AbstractRestController extends AbstractController
     public function getPaginationParameter(string $classname, Request $request): Page
     {
         $reflectionProperties = $this->attributeParser->getFieldsWithAttribute($classname, Sortable::class);
-
         $sortableFields = array_map(fn (\ReflectionProperty $p) => $p->name, $reflectionProperties);
 
         try {
@@ -61,6 +64,32 @@ class AbstractRestController extends AbstractController
         }
 
         return $page;
+    }
+
+    /**
+     * @param string $classname This classname is used to retrieve the filter fields
+     * @param Request $request Request to retrieve the query parameters
+     */
+    public function getFilterParameter(string $classname, Request $request): Filter
+    {
+        $reflectionProperties = $this->attributeParser->getFieldsWithAttribute($classname, Searchable::class);
+        $searchableFields = array_map(fn (\ReflectionProperty $p) => $p->name, $reflectionProperties);
+
+        try {
+            $queryParams = $this->filterOptionsResolver
+                ->configureFilter($searchableFields)
+                ->configureValue($classname)
+                ->setIgnoreUndefined()
+                ->resolve($request->query->all());
+        } catch (\Exception $e) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+
+        try {
+            return $this->denormalizer->denormalize($queryParams, Filter::class);
+        } catch (\Exception $e) {
+            throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
+        }
     }
 
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void

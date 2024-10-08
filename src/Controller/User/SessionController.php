@@ -7,7 +7,6 @@ namespace App\Controller\User;
 use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use App\Entity\User;
-use App\Filter\FilterConverter;
 use App\Repository\SessionRepository;
 use App\Utility\Regex;
 use App\Voter\SessionVoter;
@@ -23,11 +22,11 @@ class SessionController extends AbstractRestController
     public function getAllSessions(
         Request $request,
         SessionRepository $sessionRepository,
-        FilterConverter $filterConverter,
     ): JsonResponse {
-        dd($filterConverter->convert(Session::class, 'id', '3'));
-
         $pagination = $this->getPaginationParameter(Session::class, $request);
+        $filter = $this->getFilterParameter(Session::class, $request);
+
+        dd($filter, $pagination);
 
         /** @var User $user */
         $user = $this->getUser();

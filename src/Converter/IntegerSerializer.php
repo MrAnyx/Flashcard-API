@@ -2,11 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Filter\Converter;
+namespace App\Converter;
 
-class IntegerConverter implements FilterValueConverterInterface
+class IntegerSerializer implements SerializerInterface
 {
-    public function convert(string $value): int
+    public function serialize(mixed $value): string
+    {
+        return (string) $value;
+    }
+
+    public function deserialize(string $value): int
     {
         if (filter_var($value, \FILTER_VALIDATE_INT) === false) {
             throw new \InvalidArgumentException(\sprintf('The filter value "%s" is not a valid integer.', $value));

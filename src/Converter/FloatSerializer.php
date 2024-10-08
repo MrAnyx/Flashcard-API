@@ -2,11 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Filter\Converter;
+namespace App\Converter;
 
-class FloatConverter implements FilterValueConverterInterface
+class FloatSerializer implements SerializerInterface
 {
-    public function convert(string $value): float
+    public function serialize(mixed $value): string
+    {
+        return (string) $value;
+    }
+
+    public function deserialize(string $value): float
     {
         if (filter_var($value, \FILTER_VALIDATE_FLOAT) === false) {
             throw new \InvalidArgumentException(\sprintf('The filter value "%s" is not a valid float.', $value));

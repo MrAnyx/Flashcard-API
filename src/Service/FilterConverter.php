@@ -2,22 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Filter;
+namespace App\Service;
 
 use App\Attribute\Searchable;
-use App\Filter\Converter\BooleanConverter;
-use App\Filter\Converter\FilterValueConverterInterface;
-use App\Filter\Converter\FloatConverter;
-use App\Filter\Converter\IntegerConverter;
-use App\Filter\Converter\StringConverter;
-use App\Service\AttributeParser;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Converter\BooleanSerializer;
+use App\Converter\FloatSerializer;
+use App\Converter\IntegerSerializer;
+use App\Converter\SerializerInterface;
+use App\Converter\StringSerializer;
 
 class FilterConverter
 {
     public function __construct(
         private readonly AttributeParser $attributeParser,
-        private readonly EntityManagerInterface $em,
     ) {
     }
 
@@ -36,7 +33,7 @@ class FilterConverter
 
         $searchableAttribute = $searchableAttributeReflection[0]->newInstance();
 
-        if ($searchableAttribute->converterFqcn === null) {
+        if ($searchableAttribute->serializerFqcn === null) {
             $reflectionType = $reflectionProperty->getType();
 
             if (!$reflectionType instanceof \ReflectionNamedType) {
@@ -45,26 +42,26 @@ class FilterConverter
 
             $converter = $this->getDefaultConverter($reflectionType);
         } else {
-            $converter = $this->instantiateConverter($searchableAttribute->converterFqcn, $searchableAttribute->options);
+            $converter = $this->instantiateConverter($searchableAttribute->serializerFqcn, $searchableAttribute->serializerConstructorParams);
         }
 
-        return $converter->convert($value);
+        return $converter->deserialize($value);
     }
 
-    private function getDefaultConverter(\ReflectionNamedType $reflectionType): FilterValueConverterInterface
+    private function getDefaultConverter(\ReflectionNamedType $reflectionType): SerializerInterface
     {
         $type = $reflectionType->getName();
 
         return match ($type) {
-            'int', 'integer' => new IntegerConverter(),
-            'float' => new FloatConverter(),
-            'bool', 'boolean' => new BooleanConverter(),
-            'string' => new StringConverter(),
+            'int', 'integer' => new IntegerSerializer(),
+            'float', 'double' => new FloatSerializer(),
+            'bool', 'boolean' => new BooleanSerializer(),
+            'string' => new StringSerializer(),
             default => throw new \RuntimeException("No default converter available for type {$type}"),
         };
     }
 
-    private function instantiateConverter(string $converterClass, array $options): FilterValueConverterInterface
+    private function instantiateConverter(string $converterClass, array $options): SerializerInterface
     {
         if (!class_exists($converterClass)) {
             throw new \RuntimeException("Converter {$converterClass} does not exist");
