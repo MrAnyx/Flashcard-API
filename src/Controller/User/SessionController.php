@@ -26,8 +26,6 @@ class SessionController extends AbstractRestController
         $pagination = $this->getPaginationParameter(Session::class, $request);
         $filter = $this->getFilterParameter(Session::class, $request);
 
-        dd($filter, $pagination);
-
         /** @var User $user */
         $user = $this->getUser();
 
