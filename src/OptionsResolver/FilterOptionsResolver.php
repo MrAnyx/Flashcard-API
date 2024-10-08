@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\OptionsResolver;
 
+use App\Enum\OperatorType;
 use App\Service\FilterConverter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,11 +36,18 @@ class FilterOptionsResolver extends OptionsResolver
 
                 $value = trim($rawValue);
 
-                try {
-                    return $this->filterConverter->convert($entityFqcn, $options['filter'], $value);
-                } catch (\Exception $e) {
-                    return null;
-                }
+                $operator = OperatorType::from($options['operator']);
+
+                return $this->filterConverter->convert($entityFqcn, $options['filter'], $value, $operator);
             });
+    }
+
+    public function configureOperator(): self
+    {
+        return $this
+            ->setDefined('operator')
+            ->setAllowedTypes('operator', 'string')
+            ->setAllowedValues('operator', OperatorType::values())
+            ->setDefault('operator', OperatorType::EQUAL->value);
     }
 }

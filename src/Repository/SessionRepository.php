@@ -36,7 +36,7 @@ class SessionRepository extends ServiceEntityRepository
 
         if ($filter->isFullyConfigured()) {
             $query
-                ->andWhere("s.{$filter->filter} {$filter->getDoctrineOperator()} :query")
+                ->andWhere("s.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
                 ->setParameter('query', $filter->getDoctrineParameter());
         }
 

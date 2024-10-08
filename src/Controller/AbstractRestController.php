@@ -77,6 +77,7 @@ class AbstractRestController extends AbstractController
 
         try {
             $queryParams = $this->filterOptionsResolver
+                ->configureOperator()
                 ->configureFilter($searchableFields)
                 ->configureValue($classname)
                 ->setIgnoreUndefined()

@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Attribute\Searchable;
-use App\Serializer\BooleanSerializer;
-use App\Serializer\FloatSerializer;
-use App\Serializer\IntegerSerializer;
-use App\Serializer\SerializerInterface;
-use App\Serializer\StringSerializer;
+use App\Enum\OperatorType;
+use App\FilterConverter\BooleanConverter;
+use App\FilterConverter\FilterConverterInterface;
+use App\FilterConverter\FloatConverter;
+use App\FilterConverter\IntegerConverter;
+use App\FilterConverter\StringConverter;
 
 class FilterConverter
 {
@@ -18,7 +19,7 @@ class FilterConverter
     ) {
     }
 
-    public function convert(string $entityFqcn, string $propertyName, string $value): mixed
+    public function convert(string $entityFqcn, string $propertyName, string $value, OperatorType $operator): mixed
     {
         if (!$this->attributeParser->hasAttribute($entityFqcn, $propertyName, Searchable::class)) {
             throw new \InvalidArgumentException(\sprintf('Property %s in entity %s is not searchable', $propertyName, $entityFqcn));
@@ -45,23 +46,27 @@ class FilterConverter
             $converter = $this->instantiateConverter($searchableAttribute->serializerFqcn, $searchableAttribute->serializerConstructorParams);
         }
 
+        if (!\in_array($operator, $converter->getSupportedOperators())) {
+            throw new \InvalidArgumentException(\sprintf('Operator %s is not supported here. Supported operator are %s', $operator->value, implode(', ', array_map(fn (OperatorType $type) => \sprintf('"%s"', $type->value), $converter->getSupportedOperators()))));
+        }
+
         return $converter->deserialize($value);
     }
 
-    private function getDefaultConverter(\ReflectionNamedType $reflectionType): SerializerInterface
+    private function getDefaultConverter(\ReflectionNamedType $reflectionType): FilterConverterInterface
     {
         $type = $reflectionType->getName();
 
         return match ($type) {
-            'int', 'integer' => new IntegerSerializer(),
-            'float', 'double' => new FloatSerializer(),
-            'bool', 'boolean' => new BooleanSerializer(),
-            'string' => new StringSerializer(),
+            'int', 'integer' => new IntegerConverter(),
+            'float', 'double' => new FloatConverter(),
+            'bool', 'boolean' => new BooleanConverter(),
+            'string' => new StringConverter(),
             default => throw new \RuntimeException("No default converter available for type {$type}"),
         };
     }
 
-    private function instantiateConverter(string $converterClass, array $options): SerializerInterface
+    private function instantiateConverter(string $converterClass, array $options): FilterConverterInterface
     {
         if (!class_exists($converterClass)) {
             throw new \RuntimeException("Converter {$converterClass} does not exist");

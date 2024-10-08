@@ -6,6 +6,8 @@ namespace App\Enum;
 
 enum GradeType: int
 {
+    use EnumUtility;
+
     case AGAIN = 1;     // Complete blackout
 
     case HARD = 2;      // Correct response recalled with serious difficulty
@@ -18,7 +20,7 @@ enum GradeType: int
     {
         return match ($this) {
             self::EASY, self::GOOD, self::HARD => true,
-            default => false
+            default => false,
         };
     }
 }
