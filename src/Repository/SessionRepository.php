@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Session;
 use App\Entity\User;
 use App\Hydrator\VirtualHydrator;
+use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -20,7 +21,7 @@ class SessionRepository extends ServiceEntityRepository
         parent::__construct($registry, Session::class);
     }
 
-    public function findAllWithPagination(Page $page, ?User $user = null)
+    public function paginateAndFilterAll(Page $page, Filter $filter, ?User $user = null)
     {
         $query = $this->createQueryBuilder('s')
             ->select('s, COUNT(r.id) as totalReviews')
@@ -31,6 +32,12 @@ class SessionRepository extends ServiceEntityRepository
             $query
                 ->where('s.author = :user')
                 ->setParameter('user', $user);
+        }
+
+        if ($filter->isFullyConfigured()) {
+            $query
+                ->andWhere("s.{$filter->filter} {$filter->getDoctrineOperator()} :query")
+                ->setParameter('query', $filter->getDoctrineParameter());
         }
 
         $query

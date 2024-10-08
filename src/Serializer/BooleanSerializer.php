@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Converter;
+namespace App\Serializer;
 
 class BooleanSerializer implements SerializerInterface
 {
@@ -14,7 +14,7 @@ class BooleanSerializer implements SerializerInterface
     public function deserialize(string $value): mixed
     {
         if (filter_var($value, \FILTER_VALIDATE_BOOLEAN) === false) {
-            throw new \InvalidArgumentException(\sprintf('The filter value "%s" is not a valid boolean.', $value));
+            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid boolean.', $value));
         }
 
         return (bool) $value;

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Attribute\Searchable;
-use App\Converter\BooleanSerializer;
-use App\Converter\FloatSerializer;
-use App\Converter\IntegerSerializer;
-use App\Converter\SerializerInterface;
-use App\Converter\StringSerializer;
+use App\Serializer\BooleanSerializer;
+use App\Serializer\FloatSerializer;
+use App\Serializer\IntegerSerializer;
+use App\Serializer\SerializerInterface;
+use App\Serializer\StringSerializer;
 
 class FilterConverter
 {

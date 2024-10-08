@@ -12,6 +12,24 @@ class Filter
     ) {
     }
 
+    public function getDoctrineOperator(): string
+    {
+        if (\is_string($this->value)) {
+            return 'LIKE';
+        }
+
+        return '=';
+    }
+
+    public function getDoctrineParameter(): mixed
+    {
+        if (\is_string($this->value)) {
+            return "%{$this->value}%";
+        }
+
+        return $this->value;
+    }
+
     public function isFullyConfigured()
     {
         return $this->filter !== null && $this->value !== null;

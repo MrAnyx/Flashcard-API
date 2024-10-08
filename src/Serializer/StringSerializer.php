@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Converter;
+namespace App\Serializer;
 
 class StringSerializer implements SerializerInterface
 {

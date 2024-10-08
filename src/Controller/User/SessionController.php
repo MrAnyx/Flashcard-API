@@ -29,7 +29,7 @@ class SessionController extends AbstractRestController
         /** @var User $user */
         $user = $this->getUser();
 
-        $sessions = $sessionRepository->findAllWithPagination($pagination, $user);
+        $sessions = $sessionRepository->paginateAndFilterAll($pagination, $filter, $user);
 
         return $this->jsonStd($sessions, context: ['groups' => ['read:session:user']]);
     }
