@@ -22,11 +22,11 @@ class FlashcardAdminController extends AbstractRestController
     #[Route('/flashcards', name: 'get_flashcards', methods: ['GET'])]
     public function getAllFlashcards(
         Request $request,
-        FlashcardRepository $flashcardRepository
+        FlashcardRepository $flashcardRepository,
     ): JsonResponse {
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
 
-        $flashcards = $flashcardRepository->findAllWithPagination($pagination);
+        $flashcards = $flashcardRepository->paginateAndFilterAll($pagination);
 
         return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:admin']]);
     }
@@ -117,7 +117,7 @@ class FlashcardAdminController extends AbstractRestController
         FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
         Request $request,
-        FlashcardOptionsResolver $flashcardOptionsResolver
+        FlashcardOptionsResolver $flashcardOptionsResolver,
     ): JsonResponse {
         // Retrieve the flashcard by id
         $flashcard = $flashcardRepository->find($id);

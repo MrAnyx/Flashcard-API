@@ -11,12 +11,12 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class FlashcardRepositoryTest extends KernelTestCase
 {
-    public function testFindAllWithPagination(): void
+    public function testpaginateAndFilterAll(): void
     {
         /** @var FlashcardRepository $flashcardRepository */
         $flashcardRepository = self::getContainer()->get(FlashcardRepository::class);
 
-        $result = $flashcardRepository->findAllWithPagination(new Page(1, 'id', 'ASC', 25));
+        $result = $flashcardRepository->paginateAndFilterAll(new Page(1, 'id', 'ASC', 25));
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());

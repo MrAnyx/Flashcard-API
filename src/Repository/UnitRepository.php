@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
+use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -27,7 +28,7 @@ class UnitRepository extends ServiceEntityRepository
         parent::__construct($registry, Unit::class);
     }
 
-    public function findAllWithPagination(Page $page, ?User $user = null): Paginator
+    public function paginateAndFilterAll(Page $page, Filter $filter, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('u');
 
@@ -38,17 +39,34 @@ class UnitRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        $query->orderBy("u.{$page->sort}", $page->order);
+        if ($filter->isFullyConfigured()) {
+            $query
+                ->andWhere("u.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
+                ->setParameter('query', $filter->getDoctrineParameter());
+        }
+
+        $query
+            ->addOrderBy("CASE WHEN u.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
+            ->addOrderBy("u.{$page->sort}", $page->order);
 
         return new Paginator($query, $page);
     }
 
-    public function findByTopicWithPagination(Page $page, Topic $topic): Paginator
+    public function paginateAndFilterByTopic(Page $page, Filter $filter, Topic $topic): Paginator
     {
         $query = $this->createQueryBuilder('u')
             ->where('u.topic = :topic')
-            ->setParameter('topic', $topic)
-            ->orderBy("u.{$page->sort}", $page->order);
+            ->setParameter('topic', $topic);
+
+        if ($filter->isFullyConfigured()) {
+            $query
+                ->andWhere("u.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
+                ->setParameter('query', $filter->getDoctrineParameter());
+        }
+
+        $query
+            ->addOrderBy("CASE WHEN u.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
+            ->addOrderBy("u.{$page->sort}", $page->order);
 
         return new Paginator($query, $page);
     }

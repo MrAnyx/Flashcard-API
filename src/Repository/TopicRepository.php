@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Topic;
 use App\Entity\User;
+use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -26,7 +27,7 @@ class TopicRepository extends ServiceEntityRepository
         parent::__construct($registry, Topic::class);
     }
 
-    public function findAllWithPagination(Page $page, ?User $user = null): Paginator
+    public function paginateAndFilterAll(Page $page, Filter $filter, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('t');
 
@@ -36,7 +37,15 @@ class TopicRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        $query->orderBy("t.{$page->sort}", $page->order);
+        if ($filter->isFullyConfigured()) {
+            $query
+                ->andWhere("t.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
+                ->setParameter('query', $filter->getDoctrineParameter());
+        }
+
+        $query
+            ->addOrderBy("CASE WHEN t.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
+            ->addOrderBy("t.{$page->sort}", $page->order);
 
         return new Paginator($query, $page);
     }

@@ -11,12 +11,12 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UnitRepositoryTest extends KernelTestCase
 {
-    public function testFindAllWithPagination(): void
+    public function testpaginateAndFilterAll(): void
     {
         /** @var UnitRepository $unitRepository */
         $unitRepository = self::getContainer()->get(UnitRepository::class);
 
-        $result = $unitRepository->findAllWithPagination(new Page(1, 'id', 'ASC', 25));
+        $result = $unitRepository->paginateAndFilterAll(new Page(1, 'id', 'ASC', 25));
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());

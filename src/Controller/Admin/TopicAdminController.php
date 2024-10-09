@@ -22,12 +22,12 @@ class TopicAdminController extends AbstractRestController
     #[Route('/topics', name: 'get_topics', methods: ['GET'])]
     public function getAllTopics(
         Request $request,
-        TopicRepository $topicRepository
+        TopicRepository $topicRepository,
     ): JsonResponse {
         $pagination = $this->getPaginationParameter(Topic::class, $request);
 
         // Get data with pagination
-        $topics = $topicRepository->findAllWithPagination($pagination);
+        $topics = $topicRepository->paginateAndFilterAll($pagination);
 
         // Return paginate data
         return $this->jsonStd($topics, context: ['groups' => ['read:topic:admin']]);

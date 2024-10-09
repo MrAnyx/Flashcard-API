@@ -29,12 +29,13 @@ class TopicController extends AbstractRestController
     public function getAllTopics(Request $request, TopicRepository $topicRepository): JsonResponse
     {
         $pagination = $this->getPaginationParameter(Topic::class, $request);
+        $filter = $this->getFilterParameter(Topic::class, $request);
 
         /** @var User $user */
         $user = $this->getUser();
 
         // Get data with pagination
-        $topics = $topicRepository->findAllWithPagination($pagination, $user);
+        $topics = $topicRepository->paginateAndFilterAll($pagination, $filter, $user);
 
         // Return paginate data
         return $this->jsonStd($topics, context: ['groups' => ['read:topic:user']]);

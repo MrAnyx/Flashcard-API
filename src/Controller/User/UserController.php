@@ -53,7 +53,7 @@ class UserController extends AbstractRestController
         EntityManagerInterface $em,
         Request $request,
         UserOptionsResolver $userOptionsResolver,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
     ): JsonResponse {
         // Retrieve the request body
         $body = $this->getRequestPayload($request);
@@ -109,7 +109,7 @@ class UserController extends AbstractRestController
     public function createOrUpdateSetting(
         EntityManagerInterface $em,
         Request $request,
-        SettingOptionsResolver $settingOptionsResolver
+        SettingOptionsResolver $settingOptionsResolver,
     ) {
         $body = $this->getRequestPayload($request);
 

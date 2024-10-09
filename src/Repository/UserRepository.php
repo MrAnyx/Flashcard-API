@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -57,9 +58,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getOneOrNullResult();
     }
 
-    public function findAllWithPagination(Page $page): Paginator
+    public function paginateAndFilterAll(Page $page, Filter $filter): Paginator
     {
-        $query = $this->createQueryBuilder('u')->orderBy("u.{$page->sort}", $page->order);
+        $query = $this->createQueryBuilder('u');
+
+        if ($filter->isFullyConfigured()) {
+            $query
+                ->andWhere("u.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
+                ->setParameter('query', $filter->getDoctrineParameter());
+        }
+
+        $query->addOrderBy("CASE WHEN u.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC')
+            ->addOrderBy("u.{$page->sort}", $page->order);
 
         return new Paginator($query, $page);
     }

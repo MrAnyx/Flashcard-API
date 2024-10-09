@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\Searchable;
 use App\Attribute\Sortable;
+use App\FilterConverter\DateTimeConverter;
 use App\Repository\UnitRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -22,6 +24,7 @@ class Unit
     #[ORM\Column]
     #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin'])]
     #[Sortable]
+    #[Searchable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
@@ -29,16 +32,19 @@ class Unit
     #[Assert\Length(max: 35, maxMessage: 'The name of a unit can not exceed {{ limit }} characters')]
     #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin'])]
     #[Sortable]
+    #[Searchable]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
     #[Sortable]
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
     #[Sortable]
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'units')]
@@ -53,11 +59,13 @@ class Unit
     #[Assert\Length(max: 300, maxMessage: 'The description of a unit can not exceed {{ limit }} characters')]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
     #[Sortable]
+    #[Searchable]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Groups(['read:unit:admin', 'read:unit:user'])]
     #[Sortable]
+    #[Searchable]
     private ?bool $favorite = null;
 
     public function __construct()

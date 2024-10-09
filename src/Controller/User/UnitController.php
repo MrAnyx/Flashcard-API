@@ -33,12 +33,13 @@ class UnitController extends AbstractRestController
         UnitRepository $unitRepository,
     ): JsonResponse {
         $pagination = $this->getPaginationParameter(Unit::class, $request);
+        $filter = $this->getFilterParameter(Unit::class, $request);
 
         /** @var User $user */
         $user = $this->getUser();
 
         // Get data with pagination
-        $units = $unitRepository->findAllWithPagination($pagination, $user);
+        $units = $unitRepository->paginateAndFilterAll($pagination, $filter, $user);
 
         // Return paginate data
         return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
@@ -183,9 +184,10 @@ class UnitController extends AbstractRestController
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
 
         $pagination = $this->getPaginationParameter(Unit::class, $request);
+        $filter = $this->getFilterParameter(Unit::class, $request);
 
         // Get data with pagination
-        $units = $unitRepository->findByTopicWithPagination($pagination, $topic);
+        $units = $unitRepository->paginateAndFilterByTopic($pagination, $filter, $topic);
 
         return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
     }

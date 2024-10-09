@@ -12,18 +12,18 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class TopicRepositoryTest extends KernelTestCase
 {
-    public function testFindAllWithPaginationWithoutUser(): void
+    public function testpaginateAndFilterAllWithoutUser(): void
     {
         /** @var TopicRepository $topicRepository */
         $topicRepository = self::getContainer()->get(TopicRepository::class);
 
-        $result = $topicRepository->findAllWithPagination(new Page(1, 'id', 'ASC', 25));
+        $result = $topicRepository->paginateAndFilterAll(new Page(1, 'id', 'ASC', 25));
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());
     }
 
-    public function testFindAllWithPaginationWithUser(): void
+    public function testpaginateAndFilterAllWithUser(): void
     {
         /** @var TopicRepository $topicRepository */
         $topicRepository = self::getContainer()->get(TopicRepository::class);
@@ -33,7 +33,7 @@ class TopicRepositoryTest extends KernelTestCase
 
         $user = $userRepository->find(1);
 
-        $result = $topicRepository->findAllWithPagination(new Page(1, 'id', 'ASC', 25), $user);
+        $result = $topicRepository->paginateAndFilterAll(new Page(1, 'id', 'ASC', 25), $user);
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());

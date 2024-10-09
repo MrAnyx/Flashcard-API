@@ -21,12 +21,12 @@ class __Animal__ implements PasswordAuthenticatedUserInterface
 
 class UserRepositoryTest extends KernelTestCase
 {
-    public function testFindAllWithPagination(): void
+    public function testpaginateAndFilterAll(): void
     {
         /** @var UserRepository $userRepository */
         $userRepository = self::getContainer()->get(UserRepository::class);
 
-        $result = $userRepository->findAllWithPagination(new Page(1, 'id', 'ASC', 25));
+        $result = $userRepository->paginateAndFilterAll(new Page(1, 'id', 'ASC', 25));
 
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertSame(1, $result->getCurrentPage());

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\Searchable;
 use App\Attribute\Sortable;
 use App\Repository\TopicRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,6 +23,7 @@ class Topic
     #[ORM\Column]
     #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin'])]
     #[Sortable]
+    #[Searchable]
     private ?int $id = null;
 
     #[ORM\Column(length: 35)]
@@ -29,6 +31,7 @@ class Topic
     #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
     #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin'])]
     #[Sortable]
+    #[Searchable]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -53,11 +56,13 @@ class Topic
     #[Assert\Length(max: 300, maxMessage: 'The description of a topic can not exceed {{ limit }} characters')]
     #[Groups(['read:topic:admin', 'read:topic:user'])]
     #[Sortable]
+    #[Searchable]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Groups(['read:topic:admin', 'read:topic:user'])]
     #[Sortable]
+    #[Searchable]
     private ?bool $favorite = null;
 
     public function __construct()

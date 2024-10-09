@@ -22,12 +22,12 @@ class UnitAdminController extends AbstractRestController
     #[Route('/units', name: 'get_units', methods: ['GET'])]
     public function getAllUnits(
         Request $request,
-        UnitRepository $unitRepository
+        UnitRepository $unitRepository,
     ): JsonResponse {
         $pagination = $this->getPaginationParameter(Unit::class, $request);
 
         // Get data with pagination
-        $units = $unitRepository->findAllWithPagination($pagination);
+        $units = $unitRepository->paginateAndFilterAll($pagination);
 
         // Return paginate data
         return $this->jsonStd($units, context: ['groups' => ['read:unit:admin']]);

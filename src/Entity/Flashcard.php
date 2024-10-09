@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\Searchable;
 use App\Attribute\Sortable;
 use App\Enum\StateType;
+use App\FilterConverter\DateTimeConverter;
 use App\Repository\FlashcardRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,16 +25,19 @@ class Flashcard
     #[ORM\Column]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255)]
@@ -40,6 +45,7 @@ class Flashcard
     #[Assert\Length(max: 255, maxMessage: 'The front side of a flashcard can not exceed {{ limit }} characters')]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable]
     private ?string $front = null;
 
     #[ORM\Column(length: 255)]
@@ -55,10 +61,14 @@ class Flashcard
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Sortable]
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $nextReview = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Sortable]
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $previousReview = null;
 
     #[ORM\Column(type: Types::INTEGER, enumType: StateType::class)]
@@ -74,11 +84,13 @@ class Flashcard
         notInRangeMessage: 'The difficulty must be between {{ min }} and {{ max }}',
     )]
     #[Sortable]
+    #[Searchable]
     private ?float $difficulty = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable]
     private ?float $stability = null;
 
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
@@ -92,11 +104,14 @@ class Flashcard
     #[ORM\Column]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
     #[Sortable]
+    #[Searchable]
     private bool $favorite = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255, maxMessage: 'The help of a flashcard can not exceed {{ limit }} characters')]
     #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Sortable]
+    #[Searchable]
     private ?string $help = null;
 
     public function __construct()

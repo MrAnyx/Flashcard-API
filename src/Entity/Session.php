@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Attribute\Searchable;
 use App\Attribute\Sortable;
 use App\Attribute\Virtual;
+use App\FilterConverter\DateTimeConverter;
 use App\Repository\SessionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,12 +30,14 @@ class Session
     #[ORM\Column]
     #[Groups(['read:session:user'])]
     #[Sortable]
-    private ?\DateTimeImmutable $started_at = null;
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
+    private ?\DateTimeImmutable $startedAt = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read:session:user'])]
     #[Sortable]
-    private ?\DateTimeImmutable $ended_at = null;
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
+    private ?\DateTimeImmutable $endedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'sessions')]
     #[ORM\JoinColumn(nullable: false)]
@@ -63,25 +66,25 @@ class Session
 
     public function getStartedAt(): ?\DateTimeImmutable
     {
-        return $this->started_at;
+        return $this->startedAt;
     }
 
     #[ORM\PrePersist]
     public function setStartedAt(): static
     {
-        $this->started_at = new \DateTimeImmutable();
+        $this->startedAt = new \DateTimeImmutable();
 
         return $this;
     }
 
     public function getEndedAt(): ?\DateTimeImmutable
     {
-        return $this->ended_at;
+        return $this->endedAt;
     }
 
-    public function setEndedAt(?\DateTimeImmutable $ended_at): static
+    public function setEndedAt(?\DateTimeImmutable $endedAt): static
     {
-        $this->ended_at = $ended_at;
+        $this->endedAt = $endedAt;
 
         return $this;
     }

@@ -71,10 +71,10 @@ class SessionRepository extends ServiceEntityRepository
     {
         // dates are sorted from latest to oldest
         $rawDates = $this->createQueryBuilder('s')
-            ->select('DATE(s.started_at)')
+            ->select('DATE(s.startedAt)')
             ->distinct()
             ->where('s.author = :user')
-            ->orderBy('DATE(s.started_at)', 'DESC')
+            ->orderBy('DATE(s.startedAt)', 'DESC')
             ->setParameter('user', $user)
             ->getQuery()
             ->getSingleColumnResult();

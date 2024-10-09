@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Attribute\Searchable;
 use App\Attribute\Sortable;
 use App\Enum\SettingName;
+use App\FilterConverter\DateTimeConverter;
 use App\Repository\UserRepository;
 use App\Setting\SettingEntry;
 use App\Setting\SettingTemplate;
@@ -32,6 +34,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
+    #[Searchable]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
@@ -40,6 +43,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\Length(max: 180, maxMessage: 'Your email can not exceed {{ limit }} characters')]
     #[Groups(['read:user:admin', 'read:user:user'])]
     #[Sortable]
+    #[Searchable]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 30, unique: true)]
@@ -48,6 +52,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\Regex(pattern: Regex::USERNAME_SLASH, message: 'Your username must only contain letters, numbers, dots, dashes or underscores')]
     #[Groups(['read:user:admin', 'read:user:user', 'read:topic:admin'])]
     #[Sortable]
+    #[Searchable]
     private ?string $username = null;
 
     #[ORM\Column(length: 100)]
@@ -59,11 +64,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:user:admin', 'read:user:user'])]
     #[Sortable]
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['read:user:admin', 'read:user:user'])]
     #[Sortable]
+    #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: Types::JSON)]
@@ -95,6 +102,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column]
     #[Groups(['read:user:admin', 'read:user:user'])]
+    #[Sortable]
+    #[Searchable]
     private bool $premium = false;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]

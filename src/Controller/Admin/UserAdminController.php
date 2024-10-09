@@ -24,13 +24,15 @@ class UserAdminController extends AbstractRestController
     #[Route('/users', name: 'get_users', methods: ['GET'])]
     public function getAllUsers(
         Request $request,
-        UserRepository $userRepository
+        UserRepository $userRepository,
     ): JsonResponse {
         $pagination = $this->getPaginationParameter(User::class, $request);
+        $filter = $this->getFilterParameter(User::class, $request);
 
         // Get data with pagination
-        $users = $userRepository->findAllWithPagination(
-            $pagination
+        $users = $userRepository->paginateAndFilterAll(
+            $pagination,
+            $filter
         );
 
         // Return paginate data
@@ -57,7 +59,7 @@ class UserAdminController extends AbstractRestController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
         UserOptionsResolver $userOptionsResolver,
-        UniqueTokenGenerator $uniqueTokenGenerator
+        UniqueTokenGenerator $uniqueTokenGenerator,
     ): JsonResponse {
         // Retrieve the request body
         $body = $this->getRequestPayload($request);
@@ -127,7 +129,7 @@ class UserAdminController extends AbstractRestController
         EntityManagerInterface $em,
         Request $request,
         UserOptionsResolver $userOptionsResolver,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
     ): JsonResponse {
         // Retrieve the user by id
         $user = $userRepository->find($id);
