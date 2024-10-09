@@ -47,7 +47,9 @@ class FilterConverter
         }
 
         if (!\in_array($operator, $converter->getSupportedOperators())) {
-            throw new \InvalidArgumentException(\sprintf('Operator %s is not supported here. Supported operator are %s', $operator->value, implode(', ', array_map(fn (OperatorType $type) => \sprintf('"%s"', $type->value), $converter->getSupportedOperators()))));
+            $supportedOperators = array_map(fn (OperatorType $type) => $type->value, $converter->getSupportedOperators());
+
+            throw new \InvalidArgumentException(\sprintf('Operator %s is not supported here. Supported operator are %s', $operator->value, implode(', ', $supportedOperators)));
         }
 
         return $converter->deserialize($value);

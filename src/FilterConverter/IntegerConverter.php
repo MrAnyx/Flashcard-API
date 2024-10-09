@@ -10,7 +10,7 @@ use App\Serializer\IntegerSerializer;
 class IntegerConverter extends IntegerSerializer implements FilterConverterInterface
 {
     /**
-     * @return App\Enum\OperatorType[]
+     * @return OperatorType[]
      */
     public function getSupportedOperators(): array
     {

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\FilterConverter;
 
+use App\Enum\OperatorType;
+
 interface FilterConverterInterface
 {
     /**
-     * @return App\Enum\OperatorType[]
+     * @return OperatorType[]
      */
     public function getSupportedOperators(): array;
 

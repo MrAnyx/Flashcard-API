@@ -30,10 +30,7 @@ class UserAdminController extends AbstractRestController
         $filter = $this->getFilterParameter(User::class, $request);
 
         // Get data with pagination
-        $users = $userRepository->paginateAndFilterAll(
-            $pagination,
-            $filter
-        );
+        $users = $userRepository->paginateAndFilterAll($pagination, $filter);
 
         // Return paginate data
         return $this->jsonStd($users, context: ['groups' => ['read:user:admin']]);

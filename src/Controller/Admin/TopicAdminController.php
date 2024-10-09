@@ -25,9 +25,10 @@ class TopicAdminController extends AbstractRestController
         TopicRepository $topicRepository,
     ): JsonResponse {
         $pagination = $this->getPaginationParameter(Topic::class, $request);
+        $filter = $this->getFilterParameter(Topic::class, $request);
 
         // Get data with pagination
-        $topics = $topicRepository->paginateAndFilterAll($pagination);
+        $topics = $topicRepository->paginateAndFilterAll($pagination, $filter);
 
         // Return paginate data
         return $this->jsonStd($topics, context: ['groups' => ['read:topic:admin']]);

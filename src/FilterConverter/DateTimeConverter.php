@@ -10,7 +10,7 @@ use App\Serializer\DateTimeSerializer;
 class DateTimeConverter extends DateTimeSerializer implements FilterConverterInterface
 {
     /**
-     * @return App\Enum\OperatorType[]
+     * @return OperatorType[]
      */
     public function getSupportedOperators(): array
     {

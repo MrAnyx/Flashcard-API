@@ -10,7 +10,7 @@ use App\Serializer\BooleanSerializer;
 class BooleanConverter extends BooleanSerializer implements FilterConverterInterface
 {
     /**
-     * @return App\Enum\OperatorType[]
+     * @return OperatorType[]
      */
     public function getSupportedOperators(): array
     {
