@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SessionController extends AbstractRestController
 {
     #[Route('/sessions', name: 'get_sessions', methods: ['GET'])]
-    public function getAllSessions(
+    public function getSessions(
         Request $request,
         SessionRepository $sessionRepository,
     ): JsonResponse {

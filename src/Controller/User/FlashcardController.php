@@ -34,7 +34,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class FlashcardController extends AbstractRestController
 {
     #[Route('/flashcards', name: 'get_flashcards', methods: ['GET'])]
-    public function getAllFlashcards(Request $request, FlashcardRepository $flashcardRepository): JsonResponse
+    public function getFlashcards(Request $request, FlashcardRepository $flashcardRepository): JsonResponse
     {
         $pagination = $this->getPaginationParameter(Flashcard::class, $request);
         $filter = $this->getFilterParameter(Flashcard::class, $request);
@@ -48,7 +48,7 @@ class FlashcardController extends AbstractRestController
     }
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getOneFlashcard(int $id): JsonResponse
+    public function getFlashcard(int $id): JsonResponse
     {
         $flashcard = $this->getResourceById(Flashcard::class, $id);
 
@@ -258,7 +258,7 @@ class FlashcardController extends AbstractRestController
     }
 
     #[Route('/flashcards/reset', name: 'reset_all_flashcard', methods: ['POST'])]
-    public function resetAllFlashcards(
+    public function resetFlashcards(
         FlashcardRepository $flashcardRepository,
         ReviewRepository $reviewRepository,
     ): JsonResponse {

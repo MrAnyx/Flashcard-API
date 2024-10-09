@@ -49,7 +49,7 @@ class UserController extends AbstractRestController
     }
 
     #[Route('/users/me', name: 'update_me', methods: ['PATCH', 'PUT'])]
-    public function updateUser(
+    public function updateMe(
         EntityManagerInterface $em,
         Request $request,
         UserOptionsResolver $userOptionsResolver,

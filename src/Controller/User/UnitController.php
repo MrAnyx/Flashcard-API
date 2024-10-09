@@ -28,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class UnitController extends AbstractRestController
 {
     #[Route('/units', name: 'get_units', methods: ['GET'])]
-    public function getAllUnits(
+    public function getUnits(
         Request $request,
         UnitRepository $unitRepository,
     ): JsonResponse {
@@ -46,7 +46,7 @@ class UnitController extends AbstractRestController
     }
 
     #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getOneUnit(int $id): JsonResponse
+    public function getUnit(int $id): JsonResponse
     {
         $unit = $this->getResourceById(Unit::class, $id);
 
@@ -177,7 +177,7 @@ class UnitController extends AbstractRestController
     }
 
     #[Route('/topics/{id}/units', name: 'get_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getUnitsFromTopic(int $id, Request $request, UnitRepository $unitRepository): JsonResponse
+    public function getUnitsByTopic(int $id, Request $request, UnitRepository $unitRepository): JsonResponse
     {
         $topic = $this->getResourceById(Topic::class, $id);
 

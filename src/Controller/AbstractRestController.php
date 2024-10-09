@@ -135,11 +135,6 @@ class AbstractRestController extends AbstractController
         return json_decode($request->getContent(), true);
     }
 
-    public function getQueryPayload(Request $request): array
-    {
-        return $request->query->all();
-    }
-
     public function getUserSetting(SettingName $settingName): mixed
     {
         /**

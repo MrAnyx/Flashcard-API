@@ -17,14 +17,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReviewController extends AbstractRestController
 {
     #[Route('/reviews/count', name: 'count_reviews', methods: ['GET'])]
-    public function getCountReviews(
+    public function countReviews(
         ReviewRepository $reviewRepository,
         ReviewOptionsResolver $reviewOptionsResolver,
-        Request $request
+        Request $request,
     ) {
         try {
             // Retrieve the request body
-            $query = $this->getQueryPayload($request);
+            $query = $request->query->all();
 
             // Validate the content of the request body
             $data = $reviewOptionsResolver
