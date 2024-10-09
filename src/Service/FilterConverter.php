@@ -34,7 +34,7 @@ class FilterConverter
 
         $searchableAttribute = $searchableAttributeReflection[0]->newInstance();
 
-        if ($searchableAttribute->serializerFqcn === null) {
+        if ($searchableAttribute->converterFqcn === null) {
             $reflectionType = $reflectionProperty->getType();
 
             if (!$reflectionType instanceof \ReflectionNamedType) {
@@ -43,7 +43,7 @@ class FilterConverter
 
             $converter = $this->getDefaultConverter($reflectionType);
         } else {
-            $converter = $this->instantiateConverter($searchableAttribute->serializerFqcn, $searchableAttribute->serializerConstructorParams);
+            $converter = $this->instantiateConverter($searchableAttribute->converterFqcn, $searchableAttribute->converterConstructorParams);
         }
 
         if (!\in_array($operator, $converter->getSupportedOperators())) {
