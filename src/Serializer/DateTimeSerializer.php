@@ -10,26 +10,31 @@ class DateTimeSerializer implements SerializerInterface
     {
     }
 
-    /**
-     * @param \DateTimeInterface $value
-     */
+    public function canSerialize(mixed $value): bool
+    {
+        return $value instanceof \DateTimeInterface;
+    }
+
     public function serialize(mixed $value): string
     {
-        if (!$value instanceof \DateTimeInterface) {
+        if (!$this->canSerialize($value)) {
             throw new \InvalidArgumentException(\sprintf('"%s" is not a valid datetime.', $value));
         }
 
         return $value->format($this->format);
     }
 
+    public function canDeserialize(string $value): bool
+    {
+        return \DateTimeImmutable::createFromFormat($this->format, $value) !== false;
+    }
+
     public function deserialize(string $value): mixed
     {
-        $dateTime = \DateTimeImmutable::createFromFormat($this->format, $value);
-
-        if (!$dateTime) {
+        if (!$this->canDeserialize($value)) {
             throw new \InvalidArgumentException(\sprintf('"%s" must match the format %s.', $value, $this->format));
         }
 
-        return $dateTime;
+        return \DateTimeImmutable::createFromFormat($this->format, $value);
     }
 }
