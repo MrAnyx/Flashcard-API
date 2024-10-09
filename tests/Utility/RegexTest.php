@@ -23,4 +23,14 @@ class RegexTest extends TestCase
     {
         $this->assertEquals('/^[\\w\\-\\.]*$/', Regex::USERNAME_SLASH);
     }
+
+    public function testPassword(): void
+    {
+        $this->assertEquals('^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\\d]){1,})(?=(.*[\\W]){1,})(?!.*\\s).{8,}$', Regex::PASSWORD);
+    }
+
+    public function testPasswordSlash(): void
+    {
+        $this->assertEquals('/^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\\d]){1,})(?=(.*[\\W]){1,})(?!.*\\s).{8,}$/', Regex::PASSWORD_SLASH);
+    }
 }
