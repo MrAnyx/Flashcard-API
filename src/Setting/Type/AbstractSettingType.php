@@ -14,12 +14,12 @@ abstract class AbstractSettingType
      * @param Constraint[] $constraints
      */
     public function __construct(
-        protected readonly SerializerInterface $serializer,
+        public readonly SerializerInterface $serializer,
         protected readonly array $constraints,
     ) {
     }
 
-    public function canSerializer(mixed $value): void
+    public function canSerialize(mixed $value): void
     {
         $this->serializer->canSerialize($value);
 

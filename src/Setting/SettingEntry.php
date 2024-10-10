@@ -20,7 +20,7 @@ class SettingEntry
 
     private mixed $value;
 
-    private readonly SerializerInterface $type;
+    private readonly AbstractSettingType $type;
 
     private readonly array $options;
 
@@ -37,10 +37,11 @@ class SettingEntry
             throw new \InvalidArgumentException(\sprintf('The type %s must implement AbstractSettingType', $settingTypeFqcn));
         }
 
+        // TODO Ajouter la création dynamique du type
         $this->type = new $settingTypeFqcn();
         $this->constraints = $constraints;
 
-        $this->type->canSerialize($this->value, $this->constraints);
+        $this->type->canSerialize($this->value);
     }
 
     /**
