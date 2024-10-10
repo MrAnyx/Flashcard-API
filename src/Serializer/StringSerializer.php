@@ -6,30 +6,27 @@ namespace App\Serializer;
 
 class StringSerializer implements SerializerInterface
 {
-    public function canSerialize(mixed $value): bool
+    public function canSerialize(mixed $value): void
     {
-        return \is_string($value);
+        if (!\is_string($value)) {
+            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid string.', $value));
+        }
     }
 
     public function serialize(mixed $value): string
     {
-        if (!$this->canSerialize($value)) {
-            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid string.', $value));
-        }
+        $this->canSerialize($value);
 
         return (string) $value;
     }
 
-    public function canDeserialize(string $value): bool
+    public function canDeserialize(string $value): void
     {
-        return true;
     }
 
     public function deserialize(string $value): string
     {
-        if (!$this->canDeserialize($value)) {
-            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid string.', $value));
-        }
+        $this->canDeserialize($value);
 
         return $value;
     }

@@ -6,30 +6,30 @@ namespace App\Serializer;
 
 class BooleanSerializer implements SerializerInterface
 {
-    public function canSerialize(mixed $value): bool
+    public function canSerialize(mixed $value): void
     {
-        return \is_bool($value);
+        if (!\is_bool($value)) {
+            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid boolean.', $value));
+        }
     }
 
     public function serialize(mixed $value): string
     {
-        if (!$this->canSerialize($value)) {
-            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid boolean.', $value));
-        }
+        $this->canSerialize($value);
 
         return (string) $value;
     }
 
-    public function canDeserialize(string $value): bool
+    public function canDeserialize(string $value): void
     {
-        return filter_var($value, \FILTER_VALIDATE_BOOLEAN) !== false;
+        if (filter_var($value, \FILTER_VALIDATE_BOOLEAN) === false) {
+            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid boolean.', $value));
+        }
     }
 
     public function deserialize(string $value): mixed
     {
-        if (!$this->canDeserialize($value)) {
-            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid boolean.', $value));
-        }
+        $this->canDeserialize($value);
 
         return (bool) $value;
     }

@@ -6,30 +6,30 @@ namespace App\Serializer;
 
 class IntegerSerializer implements SerializerInterface
 {
-    public function canSerialize(mixed $value): bool
+    public function canSerialize(mixed $value): void
     {
-        return \is_int($value);
+        if (!\is_int($value)) {
+            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid integer.', $value));
+        }
     }
 
     public function serialize(mixed $value): string
     {
-        if ($this->canSerialize($value)) {
-            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid integer.', $value));
-        }
+        $this->canSerialize($value);
 
         return (string) $value;
     }
 
-    public function canDeserialize(string $value): bool
+    public function canDeserialize(string $value): void
     {
-        return filter_var($value, \FILTER_VALIDATE_INT) !== false;
+        if (!filter_var($value, \FILTER_VALIDATE_INT) !== false) {
+            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid integer.', $value));
+        }
     }
 
     public function deserialize(string $value): int
     {
-        if (!$this->canDeserialize($value)) {
-            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid integer.', $value));
-        }
+        $this->canDeserialize($value);
 
         return (int) $value;
     }

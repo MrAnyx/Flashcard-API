@@ -60,8 +60,6 @@ class Setting
 
         $type = $templateSetting->getType();
 
-        $type->validateOutput($this->value);
-
         return $type->deserialize($this->value, $templateSetting->getOptions());
     }
 

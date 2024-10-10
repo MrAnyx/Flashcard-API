@@ -4,27 +4,16 @@ declare(strict_types=1);
 
 namespace App\Setting\Type;
 
+use App\Serializer\BooleanSerializer;
+use Symfony\Component\Validator\Constraint;
+
 class BooleanType extends AbstractSettingType
 {
-    public function supportedTypes(): array
+    /**
+     * @param Constraint[] $constraints
+     */
+    public function __construct(BooleanSerializer $serializer, array $constraints)
     {
-        return ['boolean'];
-    }
-
-    public function serialize(mixed $value, array $options = []): string
-    {
-        return (string) $value;
-    }
-
-    public function deserialize(string $value, array $options = []): bool
-    {
-        return (bool) $value;
-    }
-
-    public function validateOutput(string $value): void
-    {
-        if (filter_var($value, \FILTER_VALIDATE_BOOLEAN) === null) {
-            throw new \InvalidArgumentException(\sprintf('Setting value "%s" is not a valid boolean.', $value));
-        }
+        parent::__construct($serializer, $constraints);
     }
 }

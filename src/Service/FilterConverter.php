@@ -37,6 +37,7 @@ class FilterConverter
         if ($searchableAttribute->converterFqcn === null) {
             $reflectionType = $reflectionProperty->getType();
 
+            // TODO Refactoring pour prendre en compte les union types
             if (!$reflectionType instanceof \ReflectionNamedType) {
                 throw new \RuntimeException(\sprintf('Property %s on entity %s has invalid type. It must be a named type', $propertyName, $entityFqcn));
             }

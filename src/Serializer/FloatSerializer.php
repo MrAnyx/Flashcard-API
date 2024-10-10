@@ -6,30 +6,30 @@ namespace App\Serializer;
 
 class FloatSerializer implements SerializerInterface
 {
-    public function canSerialize(mixed $value): bool
+    public function canSerialize(mixed $value): void
     {
-        return \is_float($value);
+        if (!\is_float($value)) {
+            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid float.', $value));
+        }
     }
 
     public function serialize(mixed $value): string
     {
-        if (!$this->canSerialize($value)) {
-            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid float.', $value));
-        }
+        $this->canSerialize($value);
 
         return (string) $value;
     }
 
-    public function canDeserialize(string $value): bool
+    public function canDeserialize(string $value): void
     {
-        return filter_var($value, \FILTER_VALIDATE_FLOAT) !== false;
+        if (filter_var($value, \FILTER_VALIDATE_FLOAT) === false) {
+            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid float.', $value));
+        }
     }
 
     public function deserialize(string $value): float
     {
-        if (!$this->canDeserialize($value)) {
-            throw new \InvalidArgumentException(\sprintf('"%s" is not a valid float.', $value));
-        }
+        $this->canDeserialize($value);
 
         return (float) $value;
     }

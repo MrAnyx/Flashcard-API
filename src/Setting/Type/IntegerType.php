@@ -4,30 +4,16 @@ declare(strict_types=1);
 
 namespace App\Setting\Type;
 
+use App\Serializer\IntegerSerializer;
+use Symfony\Component\Validator\Constraint;
+
 class IntegerType extends AbstractSettingType
 {
-    public function supportedTypes(): array
-    {
-        return ['int'];
-    }
-
     /**
-     * @param int $value
+     * @param Constraint[] $constraints
      */
-    public function serialize(mixed $value, array $options = []): string
+    public function __construct(IntegerSerializer $serializer, array $constraints)
     {
-        return (string) $value;
-    }
-
-    public function deserialize(string $value, array $options = []): int
-    {
-        return (int) $value;
-    }
-
-    public function validateOutput(string $value): void
-    {
-        if (filter_var($value, \FILTER_VALIDATE_INT) === false) {
-            throw new \InvalidArgumentException(\sprintf('Setting value "%s" is not a valid integer.', $value));
-        }
+        parent::__construct($serializer, $constraints);
     }
 }

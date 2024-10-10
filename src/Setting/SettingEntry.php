@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setting;
 
 use App\Enum\SettingName;
+use App\Serializer\SerializerInterface;
 use App\Setting\Type\AbstractSettingType;
 use Symfony\Component\Validator\Constraint;
 
@@ -19,27 +20,27 @@ class SettingEntry
 
     private mixed $value;
 
-    private readonly AbstractSettingType $type;
+    private readonly SerializerInterface $type;
 
     private readonly array $options;
 
     /**
      * @param Constraint[] $constraints
      */
-    public function __construct(SettingName $name, mixed $value, string $type, array $constraints = [], array $options = [])
+    public function __construct(SettingName $name, mixed $value, string $settingTypeFqcn, array $constraints = [], array $options = [])
     {
         $this->name = $name;
         $this->value = $value;
         $this->options = $options;
 
-        if (!is_a($type, AbstractSettingType::class, true)) {
-            throw new \InvalidArgumentException(\sprintf('The type %s must implement SettingTypeInterface', $type));
+        if (!is_a($settingTypeFqcn, AbstractSettingType::class, true)) {
+            throw new \InvalidArgumentException(\sprintf('The type %s must implement AbstractSettingType', $settingTypeFqcn));
         }
 
-        $this->type = new $type();
+        $this->type = new $settingTypeFqcn();
         $this->constraints = $constraints;
 
-        $this->type->validateInput($this->value, $this->constraints);
+        $this->type->canSerialize($this->value, $this->constraints);
     }
 
     /**
@@ -60,7 +61,7 @@ class SettingEntry
     public function setValue(mixed $value): static
     {
         $this->value = $value;
-        $this->type->validateInput($this->value, $this->constraints);
+        $this->type->canSerialize($this->value, $this->constraints);
 
         return $this;
     }
@@ -70,7 +71,7 @@ class SettingEntry
         return $this->type->serialize($this->value, $this->options);
     }
 
-    public function getType(): AbstractSettingType
+    public function getType(): SerializerInterface
     {
         return $this->type;
     }
