@@ -53,7 +53,6 @@ final class UserFactory extends ModelFactory
 
     private UniqueTokenGenerator $uniqueTokenGenerator;
 
-    // TODO Recréer la migration avec les nouvelles validation
     public function __construct(UserPasswordHasherInterface $passwordHasher, UniqueTokenGenerator $uniqueTokenGenerator)
     {
         parent::__construct();
