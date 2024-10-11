@@ -16,6 +16,7 @@ use App\Model\Page;
 use App\OptionsResolver\FilterOptionsResolver;
 use App\OptionsResolver\PaginatorOptionsResolver;
 use App\Service\AttributeParser;
+use App\Service\ObjectInitializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,6 +34,7 @@ class AbstractRestController extends AbstractController
         private EntityManagerInterface $em,
         private DenormalizerInterface $denormalizer,
         private ValidatorInterface $validator,
+        private ObjectInitializer $objectInitializer,
     ) {
     }
 
@@ -58,12 +60,11 @@ class AbstractRestController extends AbstractController
         }
 
         try {
-            $page = $this->denormalizer->denormalize($queryParams, Page::class);
+            return $this->objectInitializer->initialize(Page::class, $queryParams);
+            // return $this->denormalizer->denormalize($queryParams, Page::class);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
         }
-
-        return $page;
     }
 
     /**
@@ -87,7 +88,8 @@ class AbstractRestController extends AbstractController
         }
 
         try {
-            return $this->denormalizer->denormalize($queryParams, Filter::class);
+            // return $this->denormalizer->denormalize($queryParams, Filter::class);
+            return $this->objectInitializer->initialize(Filter::class, $queryParams);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
         }

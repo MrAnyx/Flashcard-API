@@ -18,19 +18,19 @@ class SettingTemplate
     public static function getTemplate(): array
     {
         return [
-            new SettingEntry(SettingName::ITEMS_PER_PAGE, 50, IntegerSerializer::class, [
+            new SettingEntry(SettingName::ITEMS_PER_PAGE, 50, IntegerSerializer::class, [], [
                 new Assert\Range(min: 1, max: 1000),
             ]),
-            new SettingEntry(SettingName::FLASHCARD_PER_SESSION, 20, IntegerSerializer::class, [
+            new SettingEntry(SettingName::FLASHCARD_PER_SESSION, 20, IntegerSerializer::class, [], [
                 new Assert\Range(min: 1, max: 50),
             ]),
-            new SettingEntry(SettingName::COLOR_THEME, 'light', StringSerializer::class, [
+            new SettingEntry(SettingName::COLOR_THEME, 'light', StringSerializer::class, [], [
                 new Assert\Choice(['light', 'dark', 'system']),
             ]),
-            new SettingEntry(SettingName::PRIMARY_COLOR, 'sky', StringSerializer::class, [
+            new SettingEntry(SettingName::PRIMARY_COLOR, 'sky', StringSerializer::class, [], [
                 new Assert\Choice(['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']),
             ]),
-            new SettingEntry(SettingName::GRAY_COLOR, 'cool', StringSerializer::class, [
+            new SettingEntry(SettingName::GRAY_COLOR, 'cool', StringSerializer::class, [], [
                 new Assert\Choice(['slate', 'cool', 'zinc', 'neutral', 'stone']),
             ]),
             new SettingEntry(SettingName::SHOW_SESSION_INTRODUCTION, true, BooleanSerializer::class),

@@ -36,9 +36,7 @@ class FilterOptionsResolver extends OptionsResolver
 
                 $value = trim($rawValue);
 
-                $operator = OperatorType::from($options['operator']);
-
-                return $this->filterConverter->convert($entityFqcn, $options['filter'], $value, $operator);
+                return $this->filterConverter->convert($entityFqcn, $options['filter'], $value, $options['operator']);
             });
     }
 
@@ -48,6 +46,7 @@ class FilterOptionsResolver extends OptionsResolver
             ->setDefined('operator')
             ->setAllowedTypes('operator', 'string')
             ->setAllowedValues('operator', OperatorType::values())
-            ->setDefault('operator', OperatorType::EQUAL->value);
+            ->setDefault('operator', OperatorType::EQUAL)
+            ->setNormalizer('value', fn (Options $options, $rawValue) => OperatorType::from($rawValue));
     }
 }

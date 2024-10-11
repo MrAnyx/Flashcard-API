@@ -6,11 +6,14 @@ namespace App\Setting;
 
 use App\Enum\SettingName;
 use App\Serializer\SerializerInterface;
-use App\Setting\Type\AbstractSettingType;
+use App\Service\ObjectInitializer;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Validation;
 
 class SettingEntry
 {
+    public readonly SerializerInterface $serializer;
+
     /**
      * @var Constraint[]
      */
@@ -20,28 +23,22 @@ class SettingEntry
 
     private mixed $value;
 
-    private readonly AbstractSettingType $type;
-
-    private readonly array $options;
-
     /**
      * @param Constraint[] $constraints
      */
-    public function __construct(SettingName $name, mixed $value, string $settingTypeFqcn, array $constraints = [], array $options = [])
+    public function __construct(SettingName $name, mixed $defaultValue, string $serializer, array $serializerConstructorArgs = [], array $constraints = [])
     {
         $this->name = $name;
-        $this->value = $value;
-        $this->options = $options;
+        $this->value = $defaultValue;
 
-        if (!is_a($settingTypeFqcn, AbstractSettingType::class, true)) {
-            throw new \InvalidArgumentException(\sprintf('The type %s must implement AbstractSettingType', $settingTypeFqcn));
+        if (!is_a($serializer, SerializerInterface::class, true)) {
+            throw new \InvalidArgumentException(\sprintf('Serializer %s must implement %s', $serializer, SerializerInterface::class));
         }
 
-        // TODO Ajouter la création dynamique du type
-        $this->type = new $settingTypeFqcn();
+        $this->serializer = ObjectInitializer::initialize($serializer, $serializerConstructorArgs);
         $this->constraints = $constraints;
 
-        $this->type->canSerialize($this->value);
+        $this->canSerialize();
     }
 
     /**
@@ -62,31 +59,25 @@ class SettingEntry
     public function setValue(mixed $value): static
     {
         $this->value = $value;
-        $this->type->canSerialize($this->value, $this->constraints);
+        $this->canSerialize();
 
         return $this;
     }
 
     public function getSerializedValue(): string
     {
-        return $this->type->serialize($this->value, $this->options);
+        return $this->serializer->serialize($this->value);
     }
 
-    public function getType(): SerializerInterface
+    private function canSerialize(): void
     {
-        return $this->type;
-    }
+        $this->serializer->canSerialize($this->value);
 
-    /**
-     * @return Constraint[]
-     */
-    public function getConstraints(): array
-    {
-        return $this->constraints;
-    }
+        $validator = Validation::createValidator();
+        $errors = $validator->validate($this->value, $this->constraints);
 
-    public function getOptions(): array
-    {
-        return $this->options;
+        if (\count($errors) > 0) {
+            throw new \InvalidArgumentException($errors[0]->getMessage());
+        }
     }
 }

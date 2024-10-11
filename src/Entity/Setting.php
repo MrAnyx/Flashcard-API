@@ -58,9 +58,7 @@ class Setting
     {
         $templateSetting = SettingTemplate::getSetting($this->name);
 
-        $type = $templateSetting->getType();
-
-        return $type->deserialize($this->value, $templateSetting->getOptions());
+        return $templateSetting->serializer->deserialize($this->value);
     }
 
     public function setValue(string $value): static

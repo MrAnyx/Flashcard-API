@@ -16,6 +16,7 @@ class FilterConverter
 {
     public function __construct(
         private readonly AttributeParser $attributeParser,
+        private readonly ObjectInitializer $objectInitializer,
     ) {
     }
 
@@ -44,7 +45,7 @@ class FilterConverter
 
             $converter = $this->getDefaultConverter($reflectionType);
         } else {
-            $converter = $this->instantiateConverter($searchableAttribute->converterFqcn, $searchableAttribute->converterConstructorParams);
+            $converter = $this->objectInitializer->initialize($searchableAttribute->converterFqcn, $searchableAttribute->converterConstructorParams);
         }
 
         if (!\in_array($operator, $converter->getSupportedOperators())) {
@@ -67,46 +68,5 @@ class FilterConverter
             'string' => new StringConverter(),
             default => throw new \RuntimeException("No default converter available for type {$type}"),
         };
-    }
-
-    private function instantiateConverter(string $converterClass, array $options): FilterConverterInterface
-    {
-        if (!class_exists($converterClass)) {
-            throw new \RuntimeException("Converter {$converterClass} does not exist");
-        }
-
-        $converter = new \ReflectionClass($converterClass);
-        $constructor = $converter->getConstructor();
-
-        if ($constructor) {
-            $constructorParams = $constructor->getParameters();
-            $constructorArgs = $this->mapOptionsToConstructorArgs($constructorParams, $options);
-        } else {
-            $constructorArgs = []; // No constructor parameters
-        }
-
-        return $converter->newInstanceArgs($constructorArgs);
-    }
-
-    /**
-     * @param \ReflectionParameter[] $constructorParams
-     */
-    private function mapOptionsToConstructorArgs(array $constructorParams, array $options): array
-    {
-        $constructorArgs = [];
-
-        foreach ($constructorParams as $param) {
-            $paramName = $param->getName();
-
-            if (\array_key_exists($paramName, $options)) {
-                $constructorArgs[] = $options[$paramName];
-            } elseif ($param->isOptional()) {
-                $constructorArgs[] = $param->getDefaultValue();
-            } else {
-                throw new \RuntimeException("Missing required option for parameter '{$paramName}' in converter.");
-            }
-        }
-
-        return $constructorArgs;
     }
 }
