@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use App\Setting\SettingEntry;
 use App\Setting\SettingTemplate;
 use App\Utility\Regex;
+use App\Utility\Roles;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -75,7 +76,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(type: Types::JSON)]
     #[Groups(['read:user:user', 'read:user:admin'])]
-    private array $roles = [];
+    private array $roles = [Roles::User];
 
     #[ORM\Column(type: Types::STRING)]
     private ?string $password = null;
@@ -99,12 +100,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\OneToMany(targetEntity: Setting::class, mappedBy: 'user', orphanRemoval: true, cascade: ['persist'])]
     #[Groups(['read:user:user'])]
     private Collection $settings;
-
-    #[ORM\Column]
-    #[Groups(['read:user:admin', 'read:user:user'])]
-    #[Sortable]
-    #[Searchable]
-    private bool $premium = false;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['read:user:admin', 'read:user:user'])]
@@ -206,8 +201,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = Roles::User;
 
         return array_unique($roles);
     }
@@ -223,6 +217,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         $this->roles[] = $role;
         $this->roles = array_unique($this->roles);
+
+        return $this;
+    }
+
+    public function removeRole(string $role): static
+    {
+        $this->roles = array_unique(array_diff($this->roles, [$role]));
 
         return $this;
     }
@@ -348,18 +349,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function isPremium(): bool
-    {
-        return $this->premium;
-    }
-
-    public function setPremium(bool $premium): static
-    {
-        $this->premium = $premium;
-
-        return $this;
-    }
-
     public function getPremiumAt(): ?\DateTimeImmutable
     {
         return $this->premiumAt;
@@ -375,7 +364,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function enablePremium(): static
     {
         $this
-            ->setPremium(true)
+            ->addRole(Roles::Premium)
             ->setPremiumAt(new \DateTimeImmutable());
 
         return $this;
@@ -384,7 +373,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function disablePremium(): static
     {
         $this
-            ->setPremium(false)
+            ->removeRole(Roles::Premium)
             ->setPremiumAt(null);
 
         return $this;

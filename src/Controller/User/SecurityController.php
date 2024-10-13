@@ -15,6 +15,7 @@ use App\OptionsResolver\UserOptionsResolver;
 use App\Repository\PasswordResetRepository;
 use App\Repository\UserRepository;
 use App\UniqueGenerator\UniqueTokenGenerator;
+use App\Utility\Roles;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,7 +69,7 @@ class SecurityController extends AbstractRestController
             ->setEmail($data['email'])
             ->setUsername($data['username'])
             ->setToken($uniqueTokenGenerator->generate(User::class, 'token'))
-            ->setRoles(['ROLE_USER'])
+            ->setRoles([Roles::User])
             ->setRawPassword($data['password']);
 
         $user->setPassword($passwordHasher->hashPassword($user, $data['password']));

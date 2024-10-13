@@ -7,6 +7,7 @@ namespace App\Factory;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\UniqueGenerator\UniqueTokenGenerator;
+use App\Utility\Roles;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -71,7 +72,7 @@ final class UserFactory extends ModelFactory
             'username' => self::faker()->userName(),
             'password' => 'Password1!',
             'token' => $this->uniqueTokenGenerator->generate(User::class, 'token'),
-            'roles' => ['ROLE_USER'],
+            'roles' => [Roles::User],
         ];
     }
 

@@ -1,4 +1,8 @@
 security:
+    role_hierarchy:
+        ROLE_PREMIUM: ROLE_USER
+        ROLE_ADMIN: ROLE_USER
+
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
@@ -43,6 +47,7 @@ security:
     access_control:
         - { path: ^/api/auth, roles: PUBLIC_ACCESS }
         - { path: ^/api/admin, roles: ROLE_ADMIN }
+        - { path: ^/api/analytics, roles: ROLE_PREMIUM }
         - { path: ^/api/_internal, roles: PUBLIC_ACCESS, allow_if: "'%env(APP_ENV)%' in ['dev', 'test']" }
         - { path: ^/api, roles: IS_AUTHENTICATED }
 
