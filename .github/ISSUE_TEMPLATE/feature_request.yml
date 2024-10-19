@@ -20,42 +20,6 @@ body:
           required: true
 
     - type: textarea
-      id: use-case
-      attributes:
-          label: Use Case
-          description: "Describe the specific use case or scenario where this feature would be valuable."
-          placeholder: "Provide a use case..."
-      validations:
-          required: false
-
-    - type: textarea
-      id: proposed-solution
-      attributes:
-          label: Proposed Solution
-          description: "If you have a specific solution or implementation in mind, please describe it here."
-          placeholder: "Describe your proposed solution..."
-      validations:
-          required: false
-
-    - type: textarea
-      id: alternatives
-      attributes:
-          label: Alternatives
-          description: "Are there any alternative solutions or workarounds you've considered?"
-          placeholder: "List any alternatives..."
-      validations:
-          required: false
-
-    - type: textarea
-      id: benefits
-      attributes:
-          label: Benefits
-          description: "Explain how this feature would benefit the project, users, or contributors."
-          placeholder: "List the benefits..."
-      validations:
-          required: false
-
-    - type: textarea
       id: additional-context
       attributes:
           label: Additional Context
@@ -74,14 +38,5 @@ body:
                 required: true
               - label: "I have read and understood the project's contribution guidelines."
                 required: true
-              - label: "I have provided clear and detailed information."
-                required: true
-
-    - type: checkboxes
-      id: terms
-      attributes:
-          label: Code of Conduct
-          description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
-          options:
               - label: I agree to follow this project's Code of Conduct
                 required: true
