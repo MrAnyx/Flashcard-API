@@ -13,7 +13,7 @@ class ObjectInitializer
      *
      * @return ?T
      */
-    public static function initialize(string $classname, array $constructorArgs = []): ?object
+    public static function initialize(string $classname, array $constructorArgs = [])
     {
         if (!class_exists($classname)) {
             throw new \RuntimeException("Class {$classname} does not exist.");
@@ -35,7 +35,7 @@ class ObjectInitializer
     /**
      * @param \ReflectionParameter[] $constructorParams
      */
-    private function mapOptionsToConstructorArgs(array $constructorParams, array $options): array
+    private static function mapOptionsToConstructorArgs(array $constructorParams, array $options): array
     {
         $constructorArgs = [];
 
