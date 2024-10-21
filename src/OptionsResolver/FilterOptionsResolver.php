@@ -46,7 +46,7 @@ class FilterOptionsResolver extends OptionsResolver
             ->setDefined('operator')
             ->setAllowedTypes('operator', 'string')
             ->setAllowedValues('operator', OperatorType::values())
-            ->setDefault('operator', OperatorType::EQUAL)
-            ->setNormalizer('value', fn (Options $options, $rawValue) => OperatorType::from($rawValue));
+            ->setDefault('operator', OperatorType::EQUAL->value)
+            ->setNormalizer('operator', fn (Options $options, $rawValue) => OperatorType::from($rawValue));
     }
 }
