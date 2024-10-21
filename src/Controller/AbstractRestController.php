@@ -32,7 +32,7 @@ class AbstractRestController extends AbstractController
         private PaginatorOptionsResolver $paginatorOptionsResolver,
         private FilterOptionsResolver $filterOptionsResolver,
         private EntityManagerInterface $em,
-        private DenormalizerInterface $denormalizer,
+        // private DenormalizerInterface $denormalizer,
         private ValidatorInterface $validator,
         private ObjectInitializer $objectInitializer,
     ) {
