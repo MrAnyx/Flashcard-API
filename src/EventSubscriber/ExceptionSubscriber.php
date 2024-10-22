@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class ExceptionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        public NormalizerInterface $normalizer
+        public NormalizerInterface $normalizer,
     ) {
     }
 

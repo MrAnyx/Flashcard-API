@@ -10,7 +10,7 @@ readonly class Page
         public int $page,
         public string $sort,
         public string $order,
-        public int $itemsPerPage
+        public int $itemsPerPage,
     ) {
     }
 }

@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SpacedRepetitionOptionsResolver extends OptionsResolver
 {
     public function __construct(
-        private SessionRepository $sessionRepository
+        private SessionRepository $sessionRepository,
     ) {
     }
 

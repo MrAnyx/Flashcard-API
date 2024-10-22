@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class UnitOptionsResolver extends OptionsResolver
 {
     public function __construct(
-        private TopicRepository $topicRepository
+        private TopicRepository $topicRepository,
     ) {
     }
 

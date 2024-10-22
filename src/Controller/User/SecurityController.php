@@ -47,7 +47,7 @@ class SecurityController extends AbstractRestController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
         UserOptionsResolver $userOptionsResolver,
-        UniqueTokenGenerator $uniqueTokenGenerator
+        UniqueTokenGenerator $uniqueTokenGenerator,
     ): JsonResponse {
         // Retrieve the request body
         $body = $this->getRequestPayload($request);
@@ -92,7 +92,7 @@ class SecurityController extends AbstractRestController
         UserRepository $userRepository,
         PasswordResetRepository $passwordResetRepository,
         UniqueTokenGenerator $uniqueTokenGenerator,
-        MessageBusInterface $messageBusInterface
+        MessageBusInterface $messageBusInterface,
     ): JsonResponse {
         // Retrieve the request body
         $body = $this->getRequestPayload($request);

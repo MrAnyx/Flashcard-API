@@ -12,7 +12,7 @@ abstract class AbstractUniqueGenerator
     public const MAX_TRIES = 50;
 
     public function __construct(
-        protected EntityManagerInterface $em
+        protected EntityManagerInterface $em,
     ) {
     }
 

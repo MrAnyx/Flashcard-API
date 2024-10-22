@@ -40,7 +40,7 @@ class UnitVoter extends Voter
 
         return match ($attribute) {
             self::OWNER => $this->canView($unit, $user),
-            default => false
+            default => false,
         };
     }
 

@@ -40,7 +40,7 @@ class TopicVoter extends Voter
 
         return match ($attribute) {
             self::OWNER => $this->canView($topic, $user),
-            default => false
+            default => false,
         };
     }
 

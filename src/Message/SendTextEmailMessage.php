@@ -11,7 +11,7 @@ final class SendTextEmailMessage
         public readonly string $username,
         public readonly int $priority,
         public readonly string $subject,
-        public readonly string $message
+        public readonly string $message,
     ) {
     }
 }

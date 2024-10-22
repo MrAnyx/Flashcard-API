@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class ExtraLogProcessor
 {
     public function __construct(
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
     ) {
     }
 

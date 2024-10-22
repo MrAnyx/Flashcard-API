@@ -40,7 +40,7 @@ class SessionVoter extends Voter
 
         return match ($attribute) {
             self::OWNER => $this->canView($session, $user),
-            default => false
+            default => false,
         };
     }
 
