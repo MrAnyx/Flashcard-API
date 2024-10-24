@@ -30,11 +30,12 @@ class UnitRepository extends ServiceEntityRepository
 
     public function paginateAndFilterAll(Page $page, Filter $filter, ?User $user = null): Paginator
     {
-        $query = $this->createQueryBuilder('u');
+        $query = $this->createQueryBuilder('u')
+            ->select('u', 't')
+            ->join('u.topic', 't');
 
         if ($user !== null) {
             $query
-                ->join('u.topic', 't')
                 ->where('t.author = :user')
                 ->setParameter('user', $user);
         }
@@ -55,6 +56,8 @@ class UnitRepository extends ServiceEntityRepository
     public function paginateAndFilterByTopic(Page $page, Filter $filter, Topic $topic): Paginator
     {
         $query = $this->createQueryBuilder('u')
+            ->select('u', 't')
+            ->join('u.topic', 't')
             ->where('u.topic = :topic')
             ->setParameter('topic', $topic);
 
@@ -74,7 +77,7 @@ class UnitRepository extends ServiceEntityRepository
     public function findRecentUnitsByTopic(User $user, ?Topic $topic, int $maxResults = 4): array
     {
         $query = $this->createQueryBuilder('u')
-            ->select('u', 'COUNT(r.id) AS HIDDEN nbReviews')
+            ->select('u', 't', 'COUNT(r.id) AS HIDDEN nbReviews')
             ->join('u.topic', 't')
             ->join('u.flashcards', 'f')
             ->join('f.reviewHistory', 'r')

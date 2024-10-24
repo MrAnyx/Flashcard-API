@@ -10,9 +10,9 @@ use App\Entity\Review;
 use App\Entity\Session;
 use App\Entity\Unit;
 use App\Entity\User;
+use App\Enum\CountCriteria\FlashcardCountCriteria;
 use App\Enum\SettingName;
 use App\Exception\ApiException;
-use App\Exception\ExceptionCode;
 use App\OptionsResolver\FlashcardOptionsResolver;
 use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 use App\Repository\FlashcardRepository;
@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api', 'api_', format: 'json')]
 // #[IsGranted('IS_AUTHENTICATED', exceptionCode: 450)] --> Marche pas
@@ -323,35 +322,18 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/count', name: 'flashcard_count', methods: ['GET'])]
     public function countFlashcards(
         FlashcardRepository $flashcardRepository,
+        Request $request,
     ): JsonResponse {
+        $criteria = $this->getCountCriteria($request, FlashcardCountCriteria::class, FlashcardCountCriteria::ALL->value);
+
         /** @var User $user */
         $user = $this->getUser();
 
-        $count = $flashcardRepository->countAll($user);
-
-        return $this->jsonStd($count);
-    }
-
-    #[Route('/flashcards/reviews/count', name: 'flashcard_reviews_count', methods: ['GET'])]
-    public function countFlashcardsToReview(
-        FlashcardRepository $flashcardRepository,
-    ): JsonResponse {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $count = $flashcardRepository->countFlashcardsToReview($user);
-
-        return $this->jsonStd($count);
-    }
-
-    #[Route('/flashcards/correct/count', name: 'flashcard_correct_count', methods: ['GET'])]
-    public function countCorrectFlashcards(
-        FlashcardRepository $flashcardRepository,
-    ): JsonResponse {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $count = $flashcardRepository->countCorrectFlashcards($user);
+        $count = match ($criteria) {
+            FlashcardCountCriteria::ALL => $flashcardRepository->countAll($user),
+            FlashcardCountCriteria::TO_REVIEW => $flashcardRepository->countFlashcardsToReview($user),
+            FlashcardCountCriteria::CORRECT => $flashcardRepository->countCorrectFlashcards($user),
+        };
 
         return $this->jsonStd($count);
     }

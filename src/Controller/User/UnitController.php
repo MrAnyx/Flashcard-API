@@ -9,6 +9,7 @@ use App\Entity\Session;
 use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
+use App\Enum\CountCriteria\UnitCountCriteria;
 use App\Enum\SettingName;
 use App\Exception\ApiException;
 use App\OptionsResolver\UnitOptionsResolver;
@@ -275,11 +276,16 @@ class UnitController extends AbstractRestController
     #[Route('/units/count', name: 'unit_count', methods: ['GET'])]
     public function countUnits(
         UnitRepository $unitRepository,
+        Request $request,
     ): JsonResponse {
+        $criteria = $this->getCountCriteria($request, UnitCountCriteria::class, UnitCountCriteria::ALL->value);
+
         /** @var User $user */
         $user = $this->getUser();
 
-        $count = $unitRepository->countAll($user);
+        $count = match ($criteria) {
+            UnitCountCriteria::ALL => $unitRepository->countAll($user),
+        };
 
         return $this->jsonStd($count);
     }

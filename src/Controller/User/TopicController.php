@@ -8,6 +8,7 @@ use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use App\Entity\Topic;
 use App\Entity\User;
+use App\Enum\CountCriteria\TopicCountCriteria;
 use App\Enum\SettingName;
 use App\Exception\ApiException;
 use App\OptionsResolver\TopicOptionsResolver;
@@ -234,11 +235,16 @@ class TopicController extends AbstractRestController
     #[Route('/topics/count', name: 'topic_count', methods: ['GET'])]
     public function countTopics(
         TopicRepository $topicRepository,
+        Request $request,
     ): JsonResponse {
+        $criteria = $this->getCountCriteria($request, TopicCountCriteria::class, TopicCountCriteria::ALL->value);
+
         /** @var User $user */
         $user = $this->getUser();
 
-        $count = $topicRepository->countAll($user);
+        $count = match ($criteria) {
+            TopicCountCriteria::ALL => $topicRepository->countAll($user),
+        };
 
         return $this->jsonStd($count);
     }

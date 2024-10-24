@@ -50,7 +50,7 @@ class FlashcardRepository extends ServiceEntityRepository
     public function paginateAndFilterAll(Page $page, Filter $filter, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('f')
-            ->select('f, u, t')
+            ->select('f', 'u', 't')
             ->join('f.unit', 'u')
             ->join('u.topic', 't');
 
@@ -76,7 +76,7 @@ class FlashcardRepository extends ServiceEntityRepository
     public function paginateAndFilterByUnit(Page $page, Filter $filter, Unit $unit): Paginator
     {
         $query = $this->createQueryBuilder('f')
-            ->select('f, u, t')
+            ->select('f', 'u', 't')
             ->join('f.unit', 'u')
             ->join('u.topic', 't')
             ->where('f.unit = :unit')
@@ -139,7 +139,7 @@ class FlashcardRepository extends ServiceEntityRepository
     public function findFlashcardToReview(User $user, int $cardsToReview)
     {
         $result = $this->createQueryBuilder('f')
-            ->select('f, u, t')
+            ->select('f', 'u', 't')
             ->join('f.unit', 'u')
             ->join('u.topic', 't')
             ->where('t.author = :user')
@@ -160,7 +160,7 @@ class FlashcardRepository extends ServiceEntityRepository
     public function findFlashcardToReviewBy(Unit|Topic $reviewBy, User $user, int $cardsToReview): array
     {
         $qb = $this->createQueryBuilder('f')
-            ->select('f, u, t')
+            ->select('f', 'u', 't')
             ->join('f.unit', 'u')
             ->join('u.topic', 't')
             ->where('t.author = :user')

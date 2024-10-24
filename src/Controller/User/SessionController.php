@@ -7,6 +7,7 @@ namespace App\Controller\User;
 use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use App\Entity\User;
+use App\Enum\CountCriteria\SessionCountCriteria;
 use App\Repository\SessionRepository;
 use App\Utility\Regex;
 use App\Voter\SessionVoter;
@@ -51,11 +52,16 @@ class SessionController extends AbstractRestController
     #[Route('/sessions/count', name: 'sessions_count', methods: ['GET'])]
     public function countSessions(
         SessionRepository $sessionRepository,
-    ): JsonResponse {
+        Request $request,
+    ) {
+        $criteria = $this->getCountCriteria($request, SessionCountCriteria::class, SessionCountCriteria::ALL->value);
+
         /** @var User $user */
         $user = $this->getUser();
 
-        $count = $sessionRepository->countAll($user);
+        $count = match ($criteria) {
+            SessionCountCriteria::ALL => $sessionRepository->countAll($user),
+        };
 
         return $this->jsonStd($count);
     }

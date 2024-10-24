@@ -13,6 +13,7 @@ use App\Exception\ApiException;
 use App\Model\Filter;
 use App\Model\JsonStandard;
 use App\Model\Page;
+use App\OptionsResolver\CriteriaOptionsResolver;
 use App\OptionsResolver\FilterOptionsResolver;
 use App\OptionsResolver\PaginatorOptionsResolver;
 use App\Service\AttributeParser;
@@ -22,7 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AbstractRestController extends AbstractController
@@ -32,9 +32,9 @@ class AbstractRestController extends AbstractController
         private PaginatorOptionsResolver $paginatorOptionsResolver,
         private FilterOptionsResolver $filterOptionsResolver,
         private EntityManagerInterface $em,
-        // private DenormalizerInterface $denormalizer,
         private ValidatorInterface $validator,
         private ObjectInitializer $objectInitializer,
+        private CriteriaOptionsResolver $criteriaOptionsResolver,
     ) {
     }
 
@@ -93,6 +93,24 @@ class AbstractRestController extends AbstractController
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
         }
+    }
+
+    public function getCountCriteria(Request $request, string $criteriaEnum, string $defaultValue): mixed
+    {
+        try {
+            $data = $this->criteriaOptionsResolver
+                ->configureCriteria($criteriaEnum, $defaultValue)
+                ->setIgnoreUndefined()
+                ->resolve($request->query->all());
+        } catch (\Exception $e) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+
+        if (!\array_key_exists('criteria', $data)) {
+            throw new \RuntimeException("Option resolver doesn't have the 'criteria' key");
+        }
+
+        return $data['criteria'];
     }
 
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void
