@@ -22,7 +22,7 @@ class BooleanSerializer implements SerializerInterface
 
     public function canDeserialize(string $value): void
     {
-        if (filter_var($value, \FILTER_VALIDATE_BOOLEAN) === false) {
+        if (filter_var($value, \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE) === null) {
             throw new \InvalidArgumentException(\sprintf('"%s" is not a valid boolean.', $value));
         }
     }

@@ -22,7 +22,7 @@ class FloatSerializer implements SerializerInterface
 
     public function canDeserialize(string $value): void
     {
-        if (filter_var($value, \FILTER_VALIDATE_FLOAT) === false) {
+        if (filter_var($value, \FILTER_VALIDATE_FLOAT, \FILTER_NULL_ON_FAILURE) === null) {
             throw new \InvalidArgumentException(\sprintf('"%s" is not a valid float.', $value));
         }
     }
