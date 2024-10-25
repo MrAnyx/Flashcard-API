@@ -47,7 +47,8 @@
                 "junstyle.php-cs-fixer",
                 "Postman.postman-for-vscode",
                 "matthewpi.caddyfile-support",
-                "liamhammett.temphpest"
+                "liamhammett.temphpest",
+                "ckolkman.vscode-postgres"
             ]
         }
     },
