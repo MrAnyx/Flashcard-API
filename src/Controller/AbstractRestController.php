@@ -95,6 +95,15 @@ class AbstractRestController extends AbstractController
         }
     }
 
+    /**
+     * @template T
+     *
+     * @param Request $request The HTTP request
+     * @param class-string<T> $criteriaEnum Fully qualified class CriteriaOptionsResolver (FQCN) of the enum CriteriaOptionsResolver. The enum CriteriaOptionsResolver should implement string-backed cases.
+     * @param string $defaultValue the default value for the 'criteria' option
+     *
+     * @return T
+     */
     public function getCountCriteria(Request $request, string $criteriaEnum, string $defaultValue): mixed
     {
         try {
@@ -110,7 +119,10 @@ class AbstractRestController extends AbstractController
             throw new \RuntimeException("Option resolver doesn't have the 'criteria' key");
         }
 
-        return $data['criteria'];
+        /** @var T $criteria */
+        $criteria = $data['criteria'];
+
+        return $criteria;
     }
 
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void

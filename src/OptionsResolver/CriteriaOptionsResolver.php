@@ -10,9 +10,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CriteriaOptionsResolver extends OptionsResolver
 {
     /**
-     * Configures the criteria option with a specified enum type and default value.
+     * Configures the criteria option with a specified enum CriteriaOptionsResolver and default value.
      *
-     * @param class-string<T> $criteriaEnum Fully qualified class name (FQCN) of the enum class. The enum class should implement string-backed cases.
+     * @template T
+     *
+     * @param class-string<T> $criteriaEnum Fully qualified class CriteriaOptionsResolver (FQCN) of the enum CriteriaOptionsResolver. The enum CriteriaOptionsResolver should implement string-backed cases.
      * @param string $defaultValue the default value for the 'criteria' option
      *
      * @return self returns the current instance of the CriteriaOptionsResolver
