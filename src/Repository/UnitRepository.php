@@ -83,7 +83,7 @@ class UnitRepository extends ServiceEntityRepository
             ->join('f.reviewHistory', 'r')
             ->where('t.author = :user')
             ->andWhere('r.reset = :reset')
-            ->groupBy('u.id', 'r.date')
+            ->groupBy('u.id', 't.id', 'r.date')
             ->orderBy('DATE(r.date)', 'DESC')
             ->addOrderBy('nbReviews', 'DESC')
             ->addOrderBy('r.date', 'DESC')
