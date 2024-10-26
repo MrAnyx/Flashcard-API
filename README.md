@@ -16,27 +16,25 @@
   </p>
 </div>
 
-<div align="center">
-<a href="https://github.com/MrAnyx/Flashcard-API/tags" style="text-decoration: none">
-  <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/MrAnyx/Flashcard-API">
-</a>
-<a href="https://github.com/MrAnyx/Flashcard-API/stargazers" style="text-decoration: none">
-  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/MrAnyx/Flashcard-API?style=flat">
-</a>
-<a href="https://github.com/MrAnyx/Flashcard-API/graphs/contributors" style="text-decoration: none">
-  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/MrAnyx/Flashcard-API?style=flat">
-</a>
-<a href="https://github.com/MrAnyx/Flashcard-API/issues" style="text-decoration: none">
-  <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues-raw/MrAnyx/Flashcard-API?style=flat">
-</a>
-<a href="https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE" style="text-decoration: none">
-  <img alt="GitHub License" src="https://img.shields.io/github/license/MrAnyx/Flashcard-API?style=flat">
-</a>
-</div>
-
-<br />
-
 ## About The Project
+
+<p>
+  <a href="https://github.com/MrAnyx/Flashcard-API/tags">
+    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/MrAnyx/Flashcard-API">
+  </a>
+  <a href="https://github.com/MrAnyx/Flashcard-API/stargazers">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/MrAnyx/Flashcard-API?style=flat">
+  </a>
+  <a href="https://github.com/MrAnyx/Flashcard-API/graphs/contributors">
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/MrAnyx/Flashcard-API?style=flat">
+  </a>
+  <a href="https://github.com/MrAnyx/Flashcard-API/issues">
+    <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues-raw/MrAnyx/Flashcard-API?style=flat">
+  </a>
+  <a href="https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE">
+    <img alt="GitHub License" src="https://img.shields.io/github/license/MrAnyx/Flashcard-API?style=flat">
+  </a>
+</p>
 
 ![Product example gif](assets/product-example.gif)
 
