@@ -35,7 +35,7 @@ class ReviewRepository extends ServiceEntityRepository
             ->select('r2.id')
             ->join('r2.flashcard', 'f2')
             ->join('f2.unit', 'u2')
-            ->where('r2.user = :user');
+            ->where('f2.author = :user');
 
         if ($resetBy instanceof Flashcard) {
             $reviewsToUpdate->andWhere('f2 = :resetBy');
@@ -67,7 +67,8 @@ class ReviewRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('r')
             ->select('count(r.id)')
-            ->where('r.user = :user')
+            ->join('r.user', 'u')
+            ->where('u = :user')
             ->setParameter('user', $user);
 
         if (!$withReset) {
@@ -86,8 +87,9 @@ class ReviewRepository extends ServiceEntityRepository
             ->join('r.flashcard', 'f')
             ->join('f.unit', 'u')
             ->join('u.topic', 't')
-            ->where('r.user = :user')
-            ->setParameter('user', $session->getAuthor());
+            ->join('r.session', 's')
+            ->where('s = :session')
+            ->setParameter('session', $session);
 
         if (!$withReset) {
             $query
