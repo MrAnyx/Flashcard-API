@@ -29,9 +29,9 @@
 ## About The Project
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="assets/light.png">
-  <img" src="assets/dark.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/light.png">
+  <img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/dark.png">
 </picture>
 
 > [!NOTE]
