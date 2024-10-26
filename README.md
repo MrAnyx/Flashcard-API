@@ -1,4 +1,5 @@
-<!-- PROJECT LOGO -->
+[![Contributors](https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=flat)](https://github.com/othneildrew/Best-README-Template/graphs/contributors)
+
 <br />
 <div align="center">
   <a href="https://github.com/MrAnyx/Flashcard-API">
