@@ -100,7 +100,7 @@ class SecurityController extends AbstractRestController
         try {
             // Validate the content of the request body
             $data = $userOptionsResolver
-                ->configureEmail(true)
+                ->configureIdentifier(true)
                 ->resolve($body);
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
