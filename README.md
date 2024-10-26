@@ -26,6 +26,9 @@
 
 <br />
 
+> [!NOTE]
+> This project is still in active development. It may change in the future.
+
 ## About The Project
 
 <picture>
@@ -33,11 +36,6 @@
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/light.png">
   <img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/dark.png">
 </picture>
-
-<br />
-
-> [!NOTE]
-> This project is still in active development. It may change in the future.
 
 This project is the [Symfony backend REST API](https://github.com/MrAnyx/Flashcard-API) for a [flashcard](https://en.wikipedia.org/wiki/Flashcard) platform.
 
