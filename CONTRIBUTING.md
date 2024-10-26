@@ -37,6 +37,7 @@ Make sure you have the following installed:
 
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
+- [Visual Studio Code](https://code.visualstudio.com/)
 
 ### Installation
 
@@ -46,6 +47,10 @@ Make sure you have the following installed:
    git clone https://github.com/MrAnyx/Flashcard-API.git
    cd Flashcard-API
    ```
+
+> [!IMPORTANT]
+> Once cloned, the recommended way to work is by using the **devcontainer** prebuilt file. Is contains everything you want to work properly. For that, we recommend using the **Visual Studio Code** editor.
+Otherwise, you can still do the manual way.
 
 2. **Build the Docker containers**:
 
