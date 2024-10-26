@@ -1,4 +1,3 @@
-<br />
 <div align="center">
   <a href="https://github.com/MrAnyx/Flashcard-API">
     <img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-App/refs/heads/master/assets/images/logo.png" alt="Logo" width="50" height="50">
