@@ -49,64 +49,9 @@ While I have always worked with [Symfony](https://symfony.com/) for both fronten
 
 This project merges these goals by offering an intuitive platform that makes studying both efficient and enjoyable.
 
-### Built With
+## Built With
 
 This project is entirely built using [Symfony](https://symfony.com/) and its ecosystem like [Doctrine](https://www.doctrine-project.org/). It also uses [Docker](https://www.docker.com/) and [Devcontainer](https://containers.dev/) when developing.
-
-## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/github_username/repo_name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = "ENTER YOUR API";
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
-   ```
-
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-  - [ ] Chinese
-  - [ ] Spanish
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 
 ## Contributing
 
@@ -115,13 +60,56 @@ Contributions are what make the open source community such an amazing place to l
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. **Fork the repository**
 
-### Top contributors:
+   Start by forking the project repository on GitHub. This creates a copy of the project in your account where you can freely make changes.
+
+2. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/<your-username>/Flashcard-API.git
+   ```
+
+3. **Create a new branch**
+
+   Use a descriptive branch name that reflects the purpose of your changes. For example:
+
+   ```bash
+   git checkout -b feature/new-feature
+   ```
+
+4. **Make changes**
+
+   Implement your changes. Make sure to follow coding standards and write clear, maintainable code. Add tests where appropriate, especially if your changes affect core functionality.
+
+5. **Test your changes**
+
+   Ensure that your changes don’t break existing functionality by running the test suite:
+
+   ```bash
+   # Unit tests
+   ./vendor/bin/pest
+
+   # Static tests
+   vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 500M  --ansi --error-format=table
+
+   # Code style
+   ./vendor/bin/php-cs-fixer fix --dry-run
+   ```
+
+6. **Sync your changes**
+
+   Write clear and concise commit messages that describe what you’ve done. It must follow the [Conventional Commit](https://www.conventionalcommits.org/) standard. Then, push your changes and open a pull request.
+
+## Code of Conduct
+
+Please respect other contributors and maintainers by following our Code of Conduct. Contributions should align with the values of inclusivity, transparency, and respect for everyone involved in the project.
+
+## Need Help?
+
+If you’re new to open-source contribution or have questions, feel free to open an [issue](https://github.com/MrAnyx/Flashcard-API/issues/new/choose) or open a [discussion thread](https://github.com/MrAnyx/Flashcard-API/discussions). We’re happy to guide you through your first contribution!
+
+## Top contributors:
 
 <a href="https://github.com/MrAnyx/Flashcard-API/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=MrAnyx/Flashcard-API" alt="contrib.rocks image" />
@@ -129,21 +117,18 @@ Don't forget to give the project a star! Thanks again!
 
 ## License
 
-Distributed under the GPL-3.0 License. See [License](https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE) for more information.
+Distributed under the AGPL-3.0 License. See [License](https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE) for more information.
 
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+This project wouldn’t be possible without the resources from the following individuals and communities:
 
-- [Choose an Open Source License](https://choosealicense.com)
-- [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-- [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-- [Malven's Grid Cheatsheet](https://grid.malven.co/)
-- [Img Shields](https://shields.io)
-- [GitHub Pages](https://pages.github.com)
-- [Font Awesome](https://fontawesome.com)
-- [React Icons](https://react-icons.github.io/react-icons/search)
-- https://github.com/othneildrew/Best-README-Template
+- [Grafikart](https://grafikart.fr/) for all the great tutorials about Symfony
+- [Symfony](https://symfony.com/) for all the great tools and ecosystem they created
+- [Doctrine ORM](https://www.doctrine-project.org/index.html) for their easy to use ORM for PHP and Symfony
+- [Symfony Cast](https://symfonycasts.com/) for all the Symfony tips
+- [Open Spaced Repetition]() for their amazing [Free Spaced Repetition Scheduler (FSRS)](https://github.com/open-spaced-repetition/fsrs4anki/wiki) algorithm
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) for this beautiful README template
 
 ## Useful links
 
