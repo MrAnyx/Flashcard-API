@@ -31,6 +31,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/dark.png">
   <source media="(prefers-color-scheme: light)" srcset="assets/light.png">
+  <img" src="assets/dark.png">
 </picture>
 
 > [!NOTE]
