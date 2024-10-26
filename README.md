@@ -29,9 +29,12 @@
 ## About The Project
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/product-dark.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/product-light.gif">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/light.png">
 </picture>
+
+> [!NOTE]
+> This project is still in active development. It may change in the future.
 
 This project is the [Symfony backend REST API](https://github.com/MrAnyx/Flashcard-API) for a [flashcard](https://en.wikipedia.org/wiki/Flashcard) platform.
 
