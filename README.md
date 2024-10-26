@@ -28,7 +28,10 @@
 
 ## About The Project
 
-![Product example gif](assets/product-example.gif)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/product-dark.gif">
+  <source media="(prefers-color-scheme: light)" srcset="assets/product-light.gif">
+</picture>
 
 This project is the [Symfony backend REST API](https://github.com/MrAnyx/Flashcard-API) for a [flashcard](https://en.wikipedia.org/wiki/Flashcard) platform.
 
