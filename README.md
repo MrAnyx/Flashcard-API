@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/MrAnyx/Flashcard-API">
     <img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-App/refs/heads/master/assets/images/logo.png" alt="Logo" width="50" height="50">
   </a>
 
@@ -33,71 +33,29 @@
 <a href="https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE">
   <img alt="GitHub License" src="https://img.shields.io/github/license/MrAnyx/Flashcard-API?style=flat">
 </a>
-
-
 </div>
 
 <br />
-<br />
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-<!-- ABOUT THE PROJECT -->
 
 ## About The Project
 
-![alt text](assets/product-example.gif)
+![Product example gif](assets/product-example.gif)
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+This project is the [Symfony backend REST API](https://github.com/MrAnyx/Flashcard-API) for a [flashcard](https://en.wikipedia.org/wiki/Flashcard) platform.
 
-Here's why:
+I started this project because I couldn’t find a flashcard app that combined both a modern, visually appealing interface and effective functionality.
 
-- Your time should be focused on creating something amazing. A project that solves a problem and helps others
-- You shouldn't be doing the same tasks over and over like creating a README from scratch
-- You should implement DRY principles to the rest of your life :smile:
+My goal was to create a good-looking flashcard app that provides a streamlined user experience.
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+Additionally, I wanted to deepen my understanding of the algorithms that drive flashcard-based learning, particularly those focused on optimizing review timing and content retention.
 
-Use the `BLANK_README.md` to get started.
+While I have always worked with [Symfony](https://symfony.com/) for both frontend and backend, I wanted to expand into using a dedicated frontend framework like [Nuxt](https://nuxt.com/) to take advantage of [Vue.js](https://vuejs.org/), which I really enjoy working with.
+
+This project merges these goals by offering an intuitive platform that makes studying both efficient and enjoyable.
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-- [![Next][Next.js]][Next-url]
-- [![React][React.js]][React-url]
-- [![Vue][Vue.js]][Vue-url]
-- [![Angular][Angular.io]][Angular-url]
-- [![Svelte][Svelte.dev]][Svelte-url]
-- [![Laravel][Laravel.com]][Laravel-url]
-- [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-- [![JQuery][JQuery.com]][JQuery-url]
-
-<!-- GETTING STARTED -->
+This project is entirely built using [Symfony](https://symfony.com/) and its ecosystem like [Doctrine](https://www.doctrine-project.org/). It also uses [Docker](https://www.docker.com/) and [Devcontainer](https://containers.dev/) when developing.
 
 ## Getting Started
 
@@ -136,15 +94,11 @@ _Below is an example of how you can instruct your audience on installing and set
    git remote -v # confirm the changes
    ```
 
-<!-- USAGE EXAMPLES -->
-
 ## Usage
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 _For more examples, please refer to the [Documentation](https://example.com)_
-
-<!-- ROADMAP -->
 
 ## Roadmap
 
@@ -157,8 +111,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
   - [ ] Spanish
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
-
-<!-- CONTRIBUTING -->
 
 ## Contributing
 
@@ -175,25 +127,13 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/othneildrew/Best-README-Template/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image" />
+<a href="https://github.com/MrAnyx/Flashcard-API/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=MrAnyx/Flashcard-API" alt="contrib.rocks image" />
 </a>
-
-<!-- LICENSE -->
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<!-- CONTACT -->
-
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-<!-- ACKNOWLEDGMENTS -->
+Distributed under the GPL-3.0 License. See [License](https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE) for more information.
 
 ## Acknowledgments
 
