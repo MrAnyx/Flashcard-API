@@ -18,13 +18,23 @@
 </div>
 
 <div align="center">
-<a>
+<a href="https://github.com/MrAnyx/Flashcard-API/tags">
   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/MrAnyx/Flashcard-API">
 </a>
-  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/MrAnyx/Flashcard-API?style=flat&link=https%3A%2F%2Fgithub.com%2FMrAnyx%2FFlashcard-API%2Fstargazers">
-  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/MrAnyx/Flashcard-API?style=flat&link=https%3A%2F%2Fgithub.com%2FMrAnyx%2FFlashcard-API%2Fgraphs%2Fcontributors">
-  <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues-raw/MrAnyx/Flashcard-API?style=flat&link=https%3A%2F%2Fgithub.com%2FMrAnyx%2FFlashcard-API%2Fissues">
-  <img alt="GitHub License" src="https://img.shields.io/github/license/MrAnyx/Flashcard-API?style=flat&link=https%3A%2F%2Fgithub.com%2FMrAnyx%2FFlashcard-API%3Ftab%3DGPL-3.0-1-ov-file%23readme">
+<a href="https://github.com/MrAnyx/Flashcard-API/stargazers">
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/MrAnyx/Flashcard-API?style=flat">
+</a>
+<a href="https://github.com/MrAnyx/Flashcard-API/graphs/contributors">
+  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/MrAnyx/Flashcard-API?style=flat">
+</a>
+<a href="https://github.com/MrAnyx/Flashcard-API/issues">
+  <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues-raw/MrAnyx/Flashcard-API?style=flat">
+</a>
+<a href="https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE">
+  <img alt="GitHub License" src="https://img.shields.io/github/license/MrAnyx/Flashcard-API?style=flat">
+</a>
+
+
 </div>
 
 <br />
