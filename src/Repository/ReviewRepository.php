@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Flashcard;
 use App\Entity\Review;
+use App\Entity\Session;
 use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
@@ -76,5 +77,24 @@ class ReviewRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function findAllBySession(Session $session, bool $withReset): array
+    {
+        $query = $this->createQueryBuilder('r')
+            ->select('r, f, u, t')
+            ->join('r.flashcard', 'f')
+            ->join('f.unit', 'u')
+            ->join('u.topic', 't')
+            ->where('r.user = :user')
+            ->setParameter('user', $session->getAuthor());
+
+        if (!$withReset) {
+            $query
+                ->andWhere('r.reset = :withReset')
+                ->setParameter('withReset', false);
+        }
+
+        return $query->getQuery()->getResult();
     }
 }

@@ -23,7 +23,7 @@ class Flashcard
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
     #[Sortable]
     #[Searchable]
     private ?int $id = null;
@@ -43,7 +43,7 @@ class Flashcard
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'The front side of a flashcard can not be blank')]
     #[Assert\Length(max: 255, maxMessage: 'The front side of a flashcard can not exceed {{ limit }} characters')]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
     #[Sortable]
     #[Searchable]
     private ?string $front = null;
@@ -51,7 +51,7 @@ class Flashcard
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'The back side of a flashcard can not be blank')]
     #[Assert\Length(max: 255, maxMessage: 'The back side of a flashcard can not exceed {{ limit }} characters')]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
     private ?string $back = null;
 
     #[ORM\Column(length: 1000, nullable: true)]
@@ -95,7 +95,7 @@ class Flashcard
 
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
     #[Assert\NotBlank(message: 'You must associate a unit to this flashcard')]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
     private ?Unit $unit = null;
 
     #[ORM\OneToMany(mappedBy: 'flashcard', targetEntity: Review::class, orphanRemoval: true)]

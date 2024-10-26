@@ -23,10 +23,10 @@ jobs:
                     POSTGRES_USER: user
                     POSTGRES_PASSWORD: password
                 options: >-
-                  --health-cmd pg_isready
-                  --health-interval 10s
-                  --health-timeout 5s
-                  --health-retries 5
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
 
         steps:
             - uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
 
             - name: Copy test files
               run: |
-                  cp .env.test .env
+                  cp .github/.env.test .env
 
             - name: Cache Composer packages
               id: composer-cache

@@ -239,15 +239,13 @@ class FlashcardController extends AbstractRestController
         $spacedRepetitionScheduler->review($flashcard, $data['grade'], new Fsrs4_5Algorithm());
         $this->validateEntity($flashcard);
 
-        /** @var User $user */
-        $user = $this->getUser();
-
         $review = new Review();
         $review
             ->setFlashcard($flashcard)
-            ->setUser($user)
             ->setGrade($data['grade'])
-            ->setSession($data['session']);
+            ->setSession($data['session'])
+            ->setDifficulty($flashcard->getDifficulty())
+            ->setStability($flashcard->getStability());
 
         $this->validateEntity($review);
         $em->persist($review);

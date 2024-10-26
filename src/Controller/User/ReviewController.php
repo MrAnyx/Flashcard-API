@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Controller\User;
 
 use App\Controller\AbstractRestController;
+use App\Entity\Session;
 use App\Entity\User;
 use App\Enum\CountCriteria\ReviewCountCriteria;
 use App\Repository\ReviewRepository;
+use App\Utility\Regex;
+use App\Voter\SessionVoter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,5 +34,21 @@ class ReviewController extends AbstractRestController
         };
 
         return $this->jsonStd($count);
+    }
+
+    #[Route('/sessions/{id}/reviews', name: 'get_reviews_by_session', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
+    public function getReviewsBySession(
+        int $id,
+        ReviewRepository $reviewRepository,
+    ): JsonResponse {
+        $session = $this->getResourceById(Session::class, $id);
+
+        $this->denyAccessUnlessGranted(SessionVoter::OWNER, $session, 'You can not access this resource');
+
+        $reviews = $reviewRepository->findAllBySession($session, true);
+
+        return $this->jsonStd($reviews, context: [
+            'groups' => ['read:review:user'],
+        ]);
     }
 }

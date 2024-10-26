@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return (new PhpCsFixer\Config())
+    ->setParallelConfig(new PhpCsFixer\Runner\Parallel\ParallelConfig(4, 20))
     ->setRiskyAllowed(true)
     ->setFinder(PhpCsFixer\Finder::create()
         ->in(__DIR__)

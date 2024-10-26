@@ -91,9 +91,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Topic::class, orphanRemoval: true)]
     private Collection $topics;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class, orphanRemoval: true)]
-    private Collection $reviewHistory;
-
     /**
      * @var Collection<int, Setting>
      */
@@ -114,7 +111,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function __construct()
     {
         $this->topics = new ArrayCollection();
-        $this->reviewHistory = new ArrayCollection();
         $this->settings = new ArrayCollection();
         $this->sessions = new ArrayCollection();
     }
@@ -292,14 +288,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         }
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, Review>
-     */
-    public function getReviewHistory(): Collection
-    {
-        return $this->reviewHistory;
     }
 
     /**

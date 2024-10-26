@@ -22,7 +22,7 @@ class Unit
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
     #[Sortable]
     #[Searchable]
     private ?int $id = null;
@@ -30,7 +30,7 @@ class Unit
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a unit can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a unit can not exceed {{ limit }} characters')]
-    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
     #[Sortable]
     #[Searchable]
     private ?string $name = null;
@@ -49,7 +49,7 @@ class Unit
 
     #[ORM\ManyToOne(inversedBy: 'units')]
     #[Assert\NotBlank(message: 'You must associate a topic to this unit')]
-    #[Groups(['read:unit:admin', 'read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:unit:admin', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
     private ?Topic $topic = null;
 
     #[ORM\OneToMany(mappedBy: 'unit', targetEntity: Flashcard::class, orphanRemoval: true)]

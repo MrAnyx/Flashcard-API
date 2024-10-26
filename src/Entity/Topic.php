@@ -21,7 +21,7 @@ class Topic
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
     #[Sortable]
     #[Searchable]
     private ?int $id = null;
@@ -29,7 +29,7 @@ class Topic
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a topic can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
-    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
     #[Sortable]
     #[Searchable]
     private ?string $name = null;
