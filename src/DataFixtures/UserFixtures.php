@@ -13,6 +13,11 @@ use function Zenstruck\Foundry\Persistence\flush_after;
 
 class UserFixtures extends Fixture
 {
+    public static function getGroups(): array
+    {
+        return ['all', 'only_user'];
+    }
+
     public function load(ObjectManager $manager): void
     {
         flush_after(function (): void {

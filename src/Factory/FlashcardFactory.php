@@ -7,6 +7,7 @@ namespace App\Factory;
 use App\Entity\Flashcard;
 use App\Repository\FlashcardRepository;
 use Zenstruck\Foundry\ModelFactory;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
@@ -45,7 +46,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  * @phpstan-method static list<Proxy<Flashcard>> randomRange(int $min, int $max, array $attributes = [])
  * @phpstan-method static list<Proxy<Flashcard>> randomSet(int $number, array $attributes = [])
  */
-final class FlashcardFactory extends ModelFactory
+final class FlashcardFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -55,10 +56,15 @@ final class FlashcardFactory extends ModelFactory
         parent::__construct();
     }
 
+    public static function class(): string
+    {
+        return Flashcard::class;
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'front' => self::faker()->text(255),
@@ -73,14 +79,9 @@ final class FlashcardFactory extends ModelFactory
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
      */
-    protected function initialize(): self
+    protected function initialize(): static
     {
         return $this;
         // ->afterInstantiate(function(Flashcard $flashcard): void {})
-    }
-
-    protected static function getClass(): string
-    {
-        return Flashcard::class;
     }
 }

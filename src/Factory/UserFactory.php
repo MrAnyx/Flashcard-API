@@ -10,6 +10,7 @@ use App\UniqueGenerator\UniqueTokenGenerator;
 use App\Utility\Roles;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\ModelFactory;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
@@ -48,7 +49,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  * @phpstan-method static list<Proxy<User>> randomRange(int $min, int $max, array $attributes = [])
  * @phpstan-method static list<Proxy<User>> randomSet(int $number, array $attributes = [])
  */
-final class UserFactory extends ModelFactory
+final class UserFactory extends PersistentProxyObjectFactory
 {
     private UserPasswordHasherInterface $passwordHasher;
 
@@ -62,10 +63,15 @@ final class UserFactory extends ModelFactory
         $this->uniqueTokenGenerator = $uniqueTokenGenerator;
     }
 
+    public static function class(): string
+    {
+        return User::class;
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'email' => self::faker()->email(),
@@ -85,10 +91,5 @@ final class UserFactory extends ModelFactory
             ->afterInstantiate(function (User $user): void {
                 $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
             });
-    }
-
-    protected static function getClass(): string
-    {
-        return User::class;
     }
 }

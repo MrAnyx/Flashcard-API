@@ -7,6 +7,7 @@ namespace App\Factory;
 use App\Entity\Topic;
 use App\Repository\TopicRepository;
 use Zenstruck\Foundry\ModelFactory;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
@@ -45,7 +46,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  * @phpstan-method static list<Proxy<Topic>> randomRange(int $min, int $max, array $attributes = [])
  * @phpstan-method static list<Proxy<Topic>> randomSet(int $number, array $attributes = [])
  */
-final class TopicFactory extends ModelFactory
+final class TopicFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -55,10 +56,15 @@ final class TopicFactory extends ModelFactory
         parent::__construct();
     }
 
+    public static function class(): string
+    {
+        return Topic::class;
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'name' => self::faker()->text(35),
@@ -71,14 +77,9 @@ final class TopicFactory extends ModelFactory
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
      */
-    protected function initialize(): self
+    protected function initialize(): static
     {
         return $this;
         // ->afterInstantiate(function(Topic $topic): void {})
-    }
-
-    protected static function getClass(): string
-    {
-        return Topic::class;
     }
 }

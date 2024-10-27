@@ -7,6 +7,7 @@ namespace App\Factory;
 use App\Entity\Unit;
 use App\Repository\UnitRepository;
 use Zenstruck\Foundry\ModelFactory;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
@@ -45,7 +46,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  * @phpstan-method static list<Proxy<Unit>> randomRange(int $min, int $max, array $attributes = [])
  * @phpstan-method static list<Proxy<Unit>> randomSet(int $number, array $attributes = [])
  */
-final class UnitFactory extends ModelFactory
+final class UnitFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -55,10 +56,15 @@ final class UnitFactory extends ModelFactory
         parent::__construct();
     }
 
+    public static function class(): string
+    {
+        return Unit::class;
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'name' => self::faker()->text(35),
@@ -75,10 +81,5 @@ final class UnitFactory extends ModelFactory
     {
         return $this;
         // ->afterInstantiate(function(Unit $unit): void {})
-    }
-
-    protected static function getClass(): string
-    {
-        return Unit::class;
     }
 }

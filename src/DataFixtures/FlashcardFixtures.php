@@ -13,6 +13,11 @@ use function Zenstruck\Foundry\Persistence\flush_after;
 
 class FlashcardFixtures extends Fixture implements DependentFixtureInterface
 {
+    public static function getGroups(): array
+    {
+        return ['all'];
+    }
+
     public function getDependencies()
     {
         return [
