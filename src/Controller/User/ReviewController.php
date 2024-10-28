@@ -9,6 +9,7 @@ use App\Entity\Session;
 use App\Entity\User;
 use App\Enum\CountCriteria\ReviewCountCriteria;
 use App\Repository\ReviewRepository;
+use App\Service\PeriodService;
 use App\Utility\Regex;
 use App\Voter\SessionVoter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,15 +23,19 @@ class ReviewController extends AbstractRestController
     public function countReviews(
         ReviewRepository $reviewRepository,
         Request $request,
+        PeriodService $periodService,
     ) {
         $criteria = $this->getCountCriteria($request, ReviewCountCriteria::class, ReviewCountCriteria::ONLY_VALID->value);
+        $periodType = $this->getPeriodParameter($request);
+
+        $period = $periodService->getDateTimePeriod($periodType);
 
         /** @var User $user */
         $user = $this->getUser();
 
         $count = match ($criteria) {
-            ReviewCountCriteria::ALL => $reviewRepository->countReviews($user, true),
-            ReviewCountCriteria::ONLY_VALID => $reviewRepository->countReviews($user, false),
+            ReviewCountCriteria::ALL => $reviewRepository->countReviews($user, $period, true),
+            ReviewCountCriteria::ONLY_VALID => $reviewRepository->countReviews($user, $period, false),
         };
 
         return $this->jsonStd($count);

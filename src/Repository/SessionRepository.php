@@ -10,6 +10,7 @@ use App\Hydrator\VirtualHydrator;
 use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
+use App\Model\Period;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,7 +48,7 @@ class SessionRepository extends ServiceEntityRepository
         return new Paginator($query, $page, VirtualHydrator::class);
     }
 
-    public function countAll(?User $user): int
+    public function countAll(?User $user, Period $period): int
     {
         $query = $this->createQueryBuilder('s')
             ->select('count(s.id)');
@@ -57,6 +58,11 @@ class SessionRepository extends ServiceEntityRepository
                 ->where('s.author = :user')
                 ->setParameter('user', $user);
         }
+
+        $query
+            ->andWhere('s.startedAt BETWEEN :start AND :end')
+            ->setParameter('start', $period->start)
+            ->setParameter('end', $period->end);
 
         return $query->getQuery()->getSingleScalarResult();
     }

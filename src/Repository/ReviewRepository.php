@@ -10,6 +10,7 @@ use App\Entity\Session;
 use App\Entity\Topic;
 use App\Entity\Unit;
 use App\Entity\User;
+use App\Model\Period;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -35,14 +36,15 @@ class ReviewRepository extends ServiceEntityRepository
             ->select('r2.id')
             ->join('r2.flashcard', 'f2')
             ->join('f2.unit', 'u2')
-            ->where('f2.author = :user');
+            ->join('u2.topic', 't2')
+            ->where('t2.author = :user');
 
         if ($resetBy instanceof Flashcard) {
             $reviewsToUpdate->andWhere('f2 = :resetBy');
         } elseif ($resetBy instanceof Unit) {
             $reviewsToUpdate->andWhere('u2 = :resetBy');
         } elseif ($resetBy instanceof Topic) {
-            $reviewsToUpdate->andWhere('u2.topic = :resetBy');
+            $reviewsToUpdate->andWhere('t2 = :resetBy');
         }
 
         $qb = $this->createQueryBuilder('r');
@@ -63,12 +65,14 @@ class ReviewRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function countReviews(User $user, bool $withReset = false)
+    public function countReviews(User $user, Period $period, bool $withReset)
     {
         $query = $this->createQueryBuilder('r')
             ->select('count(r.id)')
-            ->join('r.user', 'u')
-            ->where('u = :user')
+            ->join('r.flashcard', 'f')
+            ->join('f.unit', 'u')
+            ->join('u.topic', 't')
+            ->where('t.author = :user')
             ->setParameter('user', $user);
 
         if (!$withReset) {
@@ -76,6 +80,11 @@ class ReviewRepository extends ServiceEntityRepository
                 ->andWhere('r.reset = :withReset')
                 ->setParameter('withReset', false);
         }
+
+        $query
+            ->andWhere('r.date BETWEEN :start AND :end')
+            ->setParameter('start', $period->start)
+            ->setParameter('end', $period->end);
 
         return $query->getQuery()->getSingleScalarResult();
     }
@@ -87,8 +96,7 @@ class ReviewRepository extends ServiceEntityRepository
             ->join('r.flashcard', 'f')
             ->join('f.unit', 'u')
             ->join('u.topic', 't')
-            ->join('r.session', 's')
-            ->where('s = :session')
+            ->where('r.session = :session')
             ->setParameter('session', $session);
 
         if (!$withReset) {

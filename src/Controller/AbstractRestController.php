@@ -8,6 +8,7 @@ use App\Attribute\Searchable;
 use App\Attribute\Sortable;
 use App\Entity\User;
 use App\Enum\JsonStandardStatus;
+use App\Enum\PeriodType;
 use App\Enum\SettingName;
 use App\Exception\ApiException;
 use App\Model\Filter;
@@ -16,6 +17,7 @@ use App\Model\Page;
 use App\OptionsResolver\CriteriaOptionsResolver;
 use App\OptionsResolver\FilterOptionsResolver;
 use App\OptionsResolver\PaginatorOptionsResolver;
+use App\OptionsResolver\PeriodOptionsResolver;
 use App\Service\AttributeParser;
 use App\Service\ObjectInitializer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +37,7 @@ class AbstractRestController extends AbstractController
         private ValidatorInterface $validator,
         private ObjectInitializer $objectInitializer,
         private CriteriaOptionsResolver $criteriaOptionsResolver,
+        private PeriodOptionsResolver $periodOptionsResolver,
     ) {
     }
 
@@ -123,6 +126,27 @@ class AbstractRestController extends AbstractController
         $criteria = $data['criteria'];
 
         return $criteria;
+    }
+
+    public function getPeriodParameter(Request $request): PeriodType
+    {
+        try {
+            $data = $this->periodOptionsResolver
+                ->configurePeriod()
+                ->setIgnoreUndefined()
+                ->resolve($request->query->all());
+        } catch (\Exception $e) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+
+        if (!\array_key_exists('period', $data)) {
+            throw new \RuntimeException("Option resolver doesn't have the 'period' key");
+        }
+
+        /** @var PeriodType $criteria */
+        $period = $data['period'];
+
+        return $period;
     }
 
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void

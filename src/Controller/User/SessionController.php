@@ -9,6 +9,7 @@ use App\Entity\Session;
 use App\Entity\User;
 use App\Enum\CountCriteria\SessionCountCriteria;
 use App\Repository\SessionRepository;
+use App\Service\PeriodService;
 use App\Utility\Regex;
 use App\Voter\SessionVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,14 +54,18 @@ class SessionController extends AbstractRestController
     public function countSessions(
         SessionRepository $sessionRepository,
         Request $request,
+        PeriodService $periodService,
     ) {
         $criteria = $this->getCountCriteria($request, SessionCountCriteria::class, SessionCountCriteria::ALL->value);
+        $periodType = $this->getPeriodParameter($request);
+
+        $period = $periodService->getDateTimePeriod($periodType);
 
         /** @var User $user */
         $user = $this->getUser();
 
         $count = match ($criteria) {
-            SessionCountCriteria::ALL => $sessionRepository->countAll($user),
+            SessionCountCriteria::ALL => $sessionRepository->countAll($user, $period),
         };
 
         return $this->jsonStd($count);
