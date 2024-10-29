@@ -66,6 +66,7 @@ class SessionController extends AbstractRestController
 
         $count = match ($criteria) {
             SessionCountCriteria::ALL => $sessionRepository->countAll($user, $period),
+            SessionCountCriteria::GROUP_BY_DATE => $sessionRepository->countAllByDate($user, $period),
         };
 
         return $this->jsonStd($count);

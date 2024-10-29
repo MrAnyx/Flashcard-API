@@ -97,7 +97,8 @@ class ReviewRepository extends ServiceEntityRepository
             ->join('f.unit', 'u')
             ->join('u.topic', 't')
             ->where('r.session = :session')
-            ->setParameter('session', $session);
+            ->setParameter('session', $session)
+            ->orderBy('r.date', 'ASC');
 
         if (!$withReset) {
             $query
@@ -106,5 +107,20 @@ class ReviewRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->getResult();
+    }
+
+    public function countAllByDate(User $user, Period $period)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('DATE(r.date) AS date, count(r.id) total')
+            ->join('r.session', 's')
+            ->where('s.author = :user')
+            ->andWhere('r.date BETWEEN :start AND :end')
+            ->groupBy('date')
+            ->setParameter('user', $user)
+            ->setParameter('start', $period->start)
+            ->setParameter('end', $period->end)
+            ->getQuery()
+            ->getResult();
     }
 }

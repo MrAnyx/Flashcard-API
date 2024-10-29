@@ -13,4 +13,6 @@ enum ReviewCountCriteria: string
     case ALL = 'all';
 
     case ONLY_VALID = 'only_valid';
+
+    case GROUP_BY_DATE = 'group_by_date';
 }

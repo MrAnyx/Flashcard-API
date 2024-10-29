@@ -36,6 +36,7 @@ class ReviewController extends AbstractRestController
         $count = match ($criteria) {
             ReviewCountCriteria::ALL => $reviewRepository->countReviews($user, $period, true),
             ReviewCountCriteria::ONLY_VALID => $reviewRepository->countReviews($user, $period, false),
+            ReviewCountCriteria::GROUP_BY_DATE => $reviewRepository->countAllByDate($user, $period),
         };
 
         return $this->jsonStd($count);

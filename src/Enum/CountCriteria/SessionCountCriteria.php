@@ -11,4 +11,6 @@ enum SessionCountCriteria: string
     use EnumUtility;
 
     case ALL = 'all';
+
+    case GROUP_BY_DATE = 'group_by_date';
 }

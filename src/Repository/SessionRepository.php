@@ -136,4 +136,20 @@ class SessionRepository extends ServiceEntityRepository
             'longest' => $longestStreak,
         ];
     }
+
+    public function countAllByDate(User $user, Period $period)
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('DATE(s.startedAt) AS date, count(s.id) total')
+            ->where('s.author = :user')
+            ->andWhere('s.startedAt BETWEEN :start AND :end')
+            ->groupBy('date')
+            ->setParameter('user', $user)
+            ->setParameter('start', $period->start)
+            ->setParameter('end', $period->end);
+
+        return $query
+            ->getQuery()
+            ->getResult();
+    }
 }
