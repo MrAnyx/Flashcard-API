@@ -27,10 +27,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class TopicController extends AbstractRestController
 {
     #[Route('/topics', name: 'get_topics', methods: ['GET'])]
-    public function getTopics(Request $request, TopicRepository $topicRepository): JsonResponse
+    public function getTopics(
+        #[QueryObject(["className" => Topic::class])] Page $page,
+        #[QueryObject(["className" => Topic::class])] Filter $page,
+        Request $request,
+        TopicRepository $topicRepository
+    ): JsonResponse
     {
-        $pagination = $this->getPaginationParameter(Topic::class, $request);
-        $filter = $this->getFilterParameter(Topic::class, $request);
+        // $pagination = $this->getPaginationParameter(Topic::class, $request);
+        // $filter = $this->getFilterParameter(Topic::class, $request);
 
         /** @var User $user */
         $user = $this->getUser();
