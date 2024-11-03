@@ -6,13 +6,12 @@ namespace App\Factory;
 
 use App\Entity\Flashcard;
 use App\Repository\FlashcardRepository;
-use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @extends ModelFactory<Flashcard>
+ * @extends PersistentProxyObjectFactory<Flashcard>
  *
  * @method Flashcard|Proxy create(array|callable $attributes = [])
  * @method static Flashcard|Proxy createOne(array $attributes = [])

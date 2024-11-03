@@ -6,13 +6,12 @@ namespace App\Factory;
 
 use App\Entity\Topic;
 use App\Repository\TopicRepository;
-use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @extends ModelFactory<Topic>
+ * @extends PersistentProxyObjectFactory<Topic>
  *
  * @method Topic|Proxy create(array|callable $attributes = [])
  * @method static Topic|Proxy createOne(array $attributes = [])

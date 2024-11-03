@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
+use App\Attribute\Resource;
 use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use App\Entity\User;
@@ -11,10 +12,13 @@ use App\Enum\CountCriteria\ReviewCountCriteria;
 use App\Repository\ReviewRepository;
 use App\Service\PeriodService;
 use App\Utility\Regex;
+use App\ValueResolver\ResourceByIdResolver;
 use App\Voter\SessionVoter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
 class ReviewController extends AbstractRestController
@@ -24,14 +28,12 @@ class ReviewController extends AbstractRestController
         ReviewRepository $reviewRepository,
         Request $request,
         PeriodService $periodService,
+        #[CurrentUser] User $user,
     ) {
         $criteria = $this->getCountCriteria($request, ReviewCountCriteria::class, ReviewCountCriteria::ONLY_VALID->value);
         $periodType = $this->getPeriodParameter($request);
 
         $period = $periodService->getDateTimePeriod($periodType);
-
-        /** @var User $user */
-        $user = $this->getUser();
 
         $count = match ($criteria) {
             ReviewCountCriteria::ALL => $reviewRepository->countReviews($user, $period, true),
@@ -44,13 +46,9 @@ class ReviewController extends AbstractRestController
 
     #[Route('/sessions/{id}/reviews', name: 'get_reviews_by_session', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getReviewsBySession(
-        int $id,
         ReviewRepository $reviewRepository,
+        #[Resource(SessionVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Session $session,
     ): JsonResponse {
-        $session = $this->getResourceById(Session::class, $id);
-
-        $this->denyAccessUnlessGranted(SessionVoter::OWNER, $session, 'You can not access this resource');
-
         $reviews = $reviewRepository->findAllBySession($session, true);
 
         return $this->jsonStd($reviews, context: [

@@ -4,46 +4,46 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
+use App\Attribute\RelativeToEntity;
+use App\Attribute\Resource;
 use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use App\Entity\User;
 use App\Enum\CountCriteria\SessionCountCriteria;
+use App\Model\Filter;
+use App\Model\Page;
 use App\Repository\SessionRepository;
 use App\Service\PeriodService;
 use App\Utility\Regex;
+use App\ValueResolver\ResourceByIdResolver;
 use App\Voter\SessionVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
 class SessionController extends AbstractRestController
 {
     #[Route('/sessions', name: 'get_sessions', methods: ['GET'])]
     public function getSessions(
-        Request $request,
         SessionRepository $sessionRepository,
+        #[RelativeToEntity(Session::class)] Page $page,
+        #[RelativeToEntity(Session::class)] Filter $filter,
+        #[CurrentUser] User $user,
     ): JsonResponse {
-        $pagination = $this->getPaginationParameter(Session::class, $request);
-        $filter = $this->getFilterParameter(Session::class, $request);
-
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $sessions = $sessionRepository->paginateAndFilterAll($pagination, $filter, $user);
+        $sessions = $sessionRepository->paginateAndFilterAll($page, $filter, $user);
 
         return $this->jsonStd($sessions, context: ['groups' => ['read:session:user']]);
     }
 
     #[Route('/sessions/{id}/stop', name: 'session_stop', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function stopSession(
-        int $id,
         EntityManagerInterface $em,
+        #[Resource(SessionVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Session $session,
     ): JsonResponse {
-        $session = $this->getResourceById(Session::class, $id);
-        $this->denyAccessUnlessGranted(SessionVoter::OWNER, $session, 'You can not update this resource');
-
         $session->setEndedAt(new \DateTimeImmutable());
         $em->flush();
 
@@ -55,14 +55,12 @@ class SessionController extends AbstractRestController
         SessionRepository $sessionRepository,
         Request $request,
         PeriodService $periodService,
+        #[CurrentUser] User $user,
     ) {
         $criteria = $this->getCountCriteria($request, SessionCountCriteria::class, SessionCountCriteria::ALL->value);
         $periodType = $this->getPeriodParameter($request);
 
         $period = $periodService->getDateTimePeriod($periodType);
-
-        /** @var User $user */
-        $user = $this->getUser();
 
         $count = match ($criteria) {
             SessionCountCriteria::ALL => $sessionRepository->countAll($user, $period),

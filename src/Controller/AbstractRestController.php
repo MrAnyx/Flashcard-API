@@ -4,23 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Attribute\Searchable;
-use App\Attribute\Sortable;
 use App\Entity\User;
 use App\Enum\JsonStandardStatus;
 use App\Enum\PeriodType;
 use App\Enum\SettingName;
 use App\Exception\ApiException;
-use App\Model\Filter;
 use App\Model\JsonStandard;
-use App\Model\Page;
 use App\OptionsResolver\CriteriaOptionsResolver;
-use App\OptionsResolver\FilterOptionsResolver;
-use App\OptionsResolver\PaginatorOptionsResolver;
 use App\OptionsResolver\PeriodOptionsResolver;
-use App\Service\AttributeParser;
-use App\Service\ObjectInitializer;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,72 +21,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class AbstractRestController extends AbstractController
 {
     public function __construct(
-        private AttributeParser $attributeParser,
-        private PaginatorOptionsResolver $paginatorOptionsResolver,
-        private FilterOptionsResolver $filterOptionsResolver,
-        private EntityManagerInterface $em,
         private ValidatorInterface $validator,
-        private ObjectInitializer $objectInitializer,
         private CriteriaOptionsResolver $criteriaOptionsResolver,
         private PeriodOptionsResolver $periodOptionsResolver,
     ) {
-    }
-
-    /**
-     * @param string $classname This classname is used to retrieve the sortable fields
-     * @param Request $request Request to retrieve the query parameters
-     */
-    public function getPaginationParameter(string $classname, Request $request): Page
-    {
-        $reflectionProperties = $this->attributeParser->getFieldsWithAttribute($classname, Sortable::class);
-        $sortableFields = array_map(fn (\ReflectionProperty $p) => $p->name, $reflectionProperties);
-
-        try {
-            $queryParams = $this->paginatorOptionsResolver
-                ->configurePage()
-                ->configureSort($sortableFields)
-                ->configureOrder()
-                ->configureItemsPerPage()
-                ->setIgnoreUndefined()
-                ->resolve($request->query->all());
-        } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
-        }
-
-        try {
-            return $this->objectInitializer->initialize(Page::class, $queryParams);
-            // return $this->denormalizer->denormalize($queryParams, Page::class);
-        } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
-        }
-    }
-
-    /**
-     * @param string $classname This classname is used to retrieve the filter fields
-     * @param Request $request Request to retrieve the query parameters
-     */
-    public function getFilterParameter(string $classname, Request $request): Filter
-    {
-        $reflectionProperties = $this->attributeParser->getFieldsWithAttribute($classname, Searchable::class);
-        $searchableFields = array_map(fn (\ReflectionProperty $p) => $p->name, $reflectionProperties);
-
-        try {
-            $queryParams = $this->filterOptionsResolver
-                ->configureOperator()
-                ->configureFilter($searchableFields)
-                ->configureValue($classname)
-                ->setIgnoreUndefined()
-                ->resolve($request->query->all());
-        } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
-        }
-
-        try {
-            // return $this->denormalizer->denormalize($queryParams, Filter::class);
-            return $this->objectInitializer->initialize(Filter::class, $queryParams);
-        } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
-        }
     }
 
     /**
@@ -103,9 +32,9 @@ class AbstractRestController extends AbstractController
      *
      * @param Request $request The HTTP request
      * @param class-string<T> $criteriaEnum Fully qualified class CriteriaOptionsResolver (FQCN) of the enum CriteriaOptionsResolver. The enum CriteriaOptionsResolver should implement string-backed cases.
-     * @param string $defaultValue the default value for the 'criteria' option
+     * @param string $defaultValue The default value for the 'criteria' option
      *
-     * @return T
+     * @return T The resolved criteria from the enum
      */
     public function getCountCriteria(Request $request, string $criteriaEnum, string $defaultValue): mixed
     {
@@ -116,10 +45,6 @@ class AbstractRestController extends AbstractController
                 ->resolve($request->query->all());
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
-        }
-
-        if (!\array_key_exists('criteria', $data)) {
-            throw new \RuntimeException("Option resolver doesn't have the 'criteria' key");
         }
 
         /** @var T $criteria */
@@ -139,11 +64,7 @@ class AbstractRestController extends AbstractController
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
 
-        if (!\array_key_exists('period', $data)) {
-            throw new \RuntimeException("Option resolver doesn't have the 'period' key");
-        }
-
-        /** @var PeriodType $criteria */
+        /** @var PeriodType $period */
         $period = $data['period'];
 
         return $period;
@@ -157,38 +78,9 @@ class AbstractRestController extends AbstractController
         }
     }
 
-    /**
-     * @template T
-     *
-     * @param class-string<T> $classname
-     *
-     * @return T
-     */
-    public function getResourceById(string $classname, int $id): mixed
-    {
-        // Retrieve the resource by id
-        $resource = $this->em->find($classname, $id);
-
-        // Check if the flashcard exists
-        if ($resource === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Resource with id %d was not found', [$id]);
-        }
-
-        return $resource;
-    }
-
     public function jsonStd(mixed $data, int $status = 200, array $headers = [], array $context = [], JsonStandardStatus $jsonStatus = JsonStandardStatus::VALID): JsonResponse
     {
         return $this->json(new JsonStandard($data, $jsonStatus), $status, $headers, $context);
-    }
-
-    public function getRequestPayload(Request $request): mixed
-    {
-        if (!json_validate($request->getContent())) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, 'The request contains an invalid body that can not be parsed. Please verify the json body of the request.');
-        }
-
-        return json_decode($request->getContent(), true);
     }
 
     public function getUserSetting(SettingName $settingName): mixed

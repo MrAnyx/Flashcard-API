@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
+use App\Attribute\Body;
+use App\Attribute\RelativeToEntity;
+use App\Attribute\Resource;
 use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use App\Entity\Topic;
@@ -11,61 +14,53 @@ use App\Entity\User;
 use App\Enum\CountCriteria\TopicCountCriteria;
 use App\Enum\SettingName;
 use App\Exception\ApiException;
+use App\Model\Filter;
+use App\Model\Page;
 use App\OptionsResolver\TopicOptionsResolver;
 use App\Repository\FlashcardRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\TopicRepository;
 use App\Utility\Regex;
+use App\ValueResolver\BodyResolver;
+use App\ValueResolver\ResourceByIdResolver;
 use App\Voter\TopicVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
 class TopicController extends AbstractRestController
 {
     #[Route('/topics', name: 'get_topics', methods: ['GET'])]
     public function getTopics(
-        #[QueryObject(["className" => Topic::class])] Page $page,
-        #[QueryObject(["className" => Topic::class])] Filter $page,
-        Request $request,
-        TopicRepository $topicRepository
-    ): JsonResponse
-    {
-        // $pagination = $this->getPaginationParameter(Topic::class, $request);
-        // $filter = $this->getFilterParameter(Topic::class, $request);
+        TopicRepository $topicRepository,
+        #[RelativeToEntity(Topic::class)] Page $page,
+        #[RelativeToEntity(Topic::class)] Filter $filter,
+        #[CurrentUser] User $user,
+    ): JsonResponse {
+        $topics = $topicRepository->paginateAndFilterAll($page, $filter, $user);
 
-        /** @var User $user */
-        $user = $this->getUser();
-
-        // Get data with pagination
-        $topics = $topicRepository->paginateAndFilterAll($pagination, $filter, $user);
-
-        // Return paginate data
         return $this->jsonStd($topics, context: ['groups' => ['read:topic:user']]);
     }
 
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getTopic(int $id): JsonResponse
-    {
-        $topic = $this->getResourceById(Topic::class, $id);
-
-        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not access this resource');
-
+    public function getTopic(
+        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
+    ): JsonResponse {
         return $this->jsonStd($topic, context: ['groups' => ['read:topic:user']]);
     }
 
     #[Route('/topics', name: 'create_topic', methods: ['POST'])]
     public function createTopic(
-        Request $request,
         EntityManagerInterface $em,
         TopicOptionsResolver $topicOptionsResolver,
+        #[CurrentUser] User $user,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
-
         try {
             // Validate the content of the request body
             $data = $topicOptionsResolver
@@ -76,9 +71,6 @@ class TopicController extends AbstractRestController
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
-
-        /** @var User $user */
-        $user = $this->getUser();
 
         // Temporarly create the element
         $topic = new Topic();
@@ -105,34 +97,24 @@ class TopicController extends AbstractRestController
     }
 
     #[Route('/topics/{id}', name: 'delete_topic', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
-    public function deleteTopic(int $id, EntityManagerInterface $em): JsonResponse
-    {
-        $topic = $this->getResourceById(Topic::class, $id);
-
-        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not delete this resource');
-
-        // Remove the element
+    public function deleteTopic(
+        EntityManagerInterface $em,
+        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
+    ): JsonResponse {
         $em->remove($topic);
         $em->flush();
 
-        // Return a response with status 204 (No Content)
         return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/topics/{id}', name: 'update_topic', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
     public function updateTopic(
-        int $id,
         EntityManagerInterface $em,
         Request $request,
         TopicOptionsResolver $flashcardOptionsResolver,
+        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
-        $topic = $this->getResourceById(Topic::class, $id);
-
-        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
-
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
-
         try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
             // Otherwise, all parameters are optional.
@@ -175,16 +157,11 @@ class TopicController extends AbstractRestController
 
     #[Route('/topics/{id}/reset', name: 'reset_topic', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]
     public function resetTopic(
-        int $id,
         ReviewRepository $reviewRepository,
         FlashcardRepository $flashcardRepository,
+        #[CurrentUser] User $user,
+        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
     ): JsonResponse {
-        $topic = $this->getResourceById(Topic::class, $id);
-        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
-
-        /** @var User $user */
-        $user = $this->getUser();
-
         $reviewRepository->resetBy($user, $topic);
         $flashcardRepository->resetBy($user, $topic);
 
@@ -193,16 +170,11 @@ class TopicController extends AbstractRestController
 
     #[Route('/topics/{id}/session', name: 'session_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getFlashcardSession(
-        int $id,
         FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
+        #[CurrentUser] User $user,
+        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
     ): JsonResponse {
-        $topic = $this->getResourceById(Topic::class, $id);
-        $this->denyAccessUnlessGranted(TopicVoter::OWNER, $topic, 'You can not update this resource');
-
-        /** @var User $user */
-        $user = $this->getUser();
-
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($topic, $user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
 
         if (\count($cardsToReview) === 0) {
@@ -217,6 +189,7 @@ class TopicController extends AbstractRestController
         $session = new Session();
         $session->setAuthor($user);
         $this->validateEntity($session);
+
         $em->persist($session);
         $em->flush();
 
@@ -227,11 +200,10 @@ class TopicController extends AbstractRestController
     }
 
     #[Route('/topics/recent', name: 'recent_topic', methods: ['GET'])]
-    public function getRecentTopics(TopicRepository $topicRepository): JsonResponse
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
+    public function getRecentTopics(
+        TopicRepository $topicRepository,
+        #[CurrentUser] User $user,
+    ): JsonResponse {
         $recentTopics = $topicRepository->findRecentTopics($user, 5);
 
         return $this->jsonStd($recentTopics, context: ['groups' => ['read:topic:user']]);
@@ -241,11 +213,9 @@ class TopicController extends AbstractRestController
     public function countTopics(
         TopicRepository $topicRepository,
         Request $request,
+        #[CurrentUser] User $user,
     ): JsonResponse {
         $criteria = $this->getCountCriteria($request, TopicCountCriteria::class, TopicCountCriteria::ALL->value);
-
-        /** @var User $user */
-        $user = $this->getUser();
 
         $count = match ($criteria) {
             TopicCountCriteria::ALL => $topicRepository->countAll($user),

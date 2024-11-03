@@ -4,28 +4,30 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
+use App\Attribute\Body;
 use App\Controller\AbstractRestController;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\OptionsResolver\SettingOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
 use App\Setting\SettingTemplate;
+use App\ValueResolver\BodyResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
 class UserController extends AbstractRestController
 {
     #[Route('/users/me', name: 'get_me', methods: ['GET'])]
-    public function getMe()
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
+    public function getMe(
+        #[CurrentUser] User $user,
+    ) {
         return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
     }
 
@@ -54,10 +56,9 @@ class UserController extends AbstractRestController
         Request $request,
         UserOptionsResolver $userOptionsResolver,
         UserPasswordHasherInterface $passwordHasher,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        #[CurrentUser] User $user,
     ): JsonResponse {
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
-
         try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
             // Otherwise, all parameters are optional.
@@ -72,9 +73,6 @@ class UserController extends AbstractRestController
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
-
-        /** @var User $user */
-        $user = $this->getUser();
 
         $validationGroups = ['Default'];
 
@@ -108,11 +106,10 @@ class UserController extends AbstractRestController
     #[Route('/users/settings', name: 'create_update_setting', methods: ['POST'])]
     public function createOrUpdateSetting(
         EntityManagerInterface $em,
-        Request $request,
         SettingOptionsResolver $settingOptionsResolver,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        #[CurrentUser] User $user,
     ) {
-        $body = $this->getRequestPayload($request);
-
         try {
             $data = $settingOptionsResolver
                 ->configureName()
@@ -121,9 +118,6 @@ class UserController extends AbstractRestController
         } catch (\Exception $e) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
-
-        /** @var User $user */
-        $user = $this->getUser();
 
         try {
             $setting = SettingTemplate::getSetting($data['name']);

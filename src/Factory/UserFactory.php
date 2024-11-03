@@ -9,13 +9,12 @@ use App\Repository\UserRepository;
 use App\UniqueGenerator\UniqueTokenGenerator;
 use App\Utility\Roles;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @extends ModelFactory<User>
+ * @extends PersistentProxyObjectFactory<User>
  *
  * @method User|Proxy create(array|callable $attributes = [])
  * @method static User|Proxy createOne(array $attributes = [])

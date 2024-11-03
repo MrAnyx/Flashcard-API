@@ -19,159 +19,159 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/admin', 'api_admin_', format: 'json')]
 class UnitAdminController extends AbstractRestController
 {
-    #[Route('/units', name: 'get_units', methods: ['GET'])]
-    public function getAllUnits(
-        Request $request,
-        UnitRepository $unitRepository,
-    ): JsonResponse {
-        $pagination = $this->getPaginationParameter(Unit::class, $request);
-        $filter = $this->getFilterParameter(Unit::class, $request);
+    // #[Route('/units', name: 'get_units', methods: ['GET'])]
+    // public function getAllUnits(
+    //     Request $request,
+    //     UnitRepository $unitRepository,
+    // ): JsonResponse {
+    //     $pagination = $this->getPaginationParameter(Unit::class, $request);
+    //     $filter = $this->getFilterParameter(Unit::class, $request);
 
-        // Get data with pagination
-        $units = $unitRepository->paginateAndFilterAll($pagination, $filter);
+    //     // Get data with pagination
+    //     $units = $unitRepository->paginateAndFilterAll($pagination, $filter);
 
-        // Return paginate data
-        return $this->jsonStd($units, context: ['groups' => ['read:unit:admin']]);
-    }
+    //     // Return paginate data
+    //     return $this->jsonStd($units, context: ['groups' => ['read:unit:admin']]);
+    // }
 
-    #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getOneUnit(int $id, UnitRepository $unitRepository): JsonResponse
-    {
-        // Retrieve the element by id
-        $unit = $unitRepository->find($id);
+    // #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
+    // public function getOneUnit(int $id, UnitRepository $unitRepository): JsonResponse
+    // {
+    //     // Retrieve the element by id
+    //     $unit = $unitRepository->find($id);
 
-        // Check if the element exists
-        if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
-        }
+    //     // Check if the element exists
+    //     if ($unit === null) {
+    //         throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
+    //     }
 
-        return $this->jsonStd($unit, context: ['groups' => ['read:unit:admin']]);
-    }
+    //     return $this->jsonStd($unit, context: ['groups' => ['read:unit:admin']]);
+    // }
 
-    #[Route('/units', name: 'create_unit', methods: ['POST'])]
-    public function createUnit(
-        Request $request,
-        EntityManagerInterface $em,
-        UnitOptionsResolver $unitOptionsResolver,
-    ): JsonResponse {
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
+    // #[Route('/units', name: 'create_unit', methods: ['POST'])]
+    // public function createUnit(
+    //     Request $request,
+    //     EntityManagerInterface $em,
+    //     UnitOptionsResolver $unitOptionsResolver,
+    // ): JsonResponse {
+    //     // Retrieve the request body
+    //     $body = $this->getRequestPayload($request);
 
-        try {
-            // Validate the content of the request body
-            $data = $unitOptionsResolver
-                ->configureName(true)
-                ->configureTopic(true)
-                ->configureDescription(true)
-                ->configureFavorite(true)
-                ->resolve($body);
-        } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
-        }
+    //     try {
+    //         // Validate the content of the request body
+    //         $data = $unitOptionsResolver
+    //             ->configureName(true)
+    //             ->configureTopic(true)
+    //             ->configureDescription(true)
+    //             ->configureFavorite(true)
+    //             ->resolve($body);
+    //     } catch (\Exception $e) {
+    //         throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+    //     }
 
-        // Temporarly create the element
-        $unit = new Unit();
-        $unit
-            ->setName($data['name'])
-            ->setTopic($data['topic'])
-            ->setDescription($data['description'])
-            ->setFavorite($data['favorite']);
+    //     // Temporarly create the element
+    //     $unit = new Unit();
+    //     $unit
+    //         ->setName($data['name'])
+    //         ->setTopic($data['topic'])
+    //         ->setDescription($data['description'])
+    //         ->setFavorite($data['favorite']);
 
-        // Second validation using the validation constraints
-        $this->validateEntity($unit);
+    //     // Second validation using the validation constraints
+    //     $this->validateEntity($unit);
 
-        // Save the new element
-        $em->persist($unit);
-        $em->flush();
+    //     // Save the new element
+    //     $em->persist($unit);
+    //     $em->flush();
 
-        // Return the element with the the status 201 (Created)
-        return $this->jsonStd(
-            $unit,
-            Response::HTTP_CREATED,
-            ['Location' => $this->generateUrl('api_admin_get_unit', ['id' => $unit->getId()])],
-            ['groups' => ['read:unit:admin']]
-        );
-    }
+    //     // Return the element with the the status 201 (Created)
+    //     return $this->jsonStd(
+    //         $unit,
+    //         Response::HTTP_CREATED,
+    //         ['Location' => $this->generateUrl('api_admin_get_unit', ['id' => $unit->getId()])],
+    //         ['groups' => ['read:unit:admin']]
+    //     );
+    // }
 
-    #[Route('/units/{id}', name: 'delete_unit', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
-    public function deleteUnit(int $id, UnitRepository $unitRepository, EntityManagerInterface $em): JsonResponse
-    {
-        // Retrieve the element by id
-        $unit = $unitRepository->find($id);
+    // #[Route('/units/{id}', name: 'delete_unit', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
+    // public function deleteUnit(int $id, UnitRepository $unitRepository, EntityManagerInterface $em): JsonResponse
+    // {
+    //     // Retrieve the element by id
+    //     $unit = $unitRepository->find($id);
 
-        // Check if the element exists
-        if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
-        }
+    //     // Check if the element exists
+    //     if ($unit === null) {
+    //         throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
+    //     }
 
-        // Remove the element
-        $em->remove($unit);
-        $em->flush();
+    //     // Remove the element
+    //     $em->remove($unit);
+    //     $em->flush();
 
-        // Return a response with status 204 (No Content)
-        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
-    }
+    //     // Return a response with status 204 (No Content)
+    //     return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
+    // }
 
-    #[Route('/units/{id}', name: 'update_unit', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
-    public function updateUnit(
-        int $id,
-        UnitRepository $unitRepository,
-        EntityManagerInterface $em,
-        Request $request,
-        UnitOptionsResolver $unitOptionsResolver,
-    ): JsonResponse {
-        // Retrieve the element by id
-        $unit = $unitRepository->find($id);
+    // #[Route('/units/{id}', name: 'update_unit', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
+    // public function updateUnit(
+    //     int $id,
+    //     UnitRepository $unitRepository,
+    //     EntityManagerInterface $em,
+    //     Request $request,
+    //     UnitOptionsResolver $unitOptionsResolver,
+    // ): JsonResponse {
+    //     // Retrieve the element by id
+    //     $unit = $unitRepository->find($id);
 
-        // Check if the element exists
-        if ($unit === null) {
-            throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
-        }
+    //     // Check if the element exists
+    //     if ($unit === null) {
+    //         throw new ApiException(Response::HTTP_NOT_FOUND, 'Unit with id %d was not found', [$id]);
+    //     }
 
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
+    //     // Retrieve the request body
+    //     $body = $this->getRequestPayload($request);
 
-        try {
-            // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
-            // Otherwise, all parameters are optional.
-            $mandatoryParameters = $request->getMethod() === 'PUT';
+    //     try {
+    //         // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
+    //         // Otherwise, all parameters are optional.
+    //         $mandatoryParameters = $request->getMethod() === 'PUT';
 
-            // Validate the content of the request body
-            $data = $unitOptionsResolver
-                ->configureName($mandatoryParameters)
-                ->configureTopic($mandatoryParameters)
-                ->configureDescription($mandatoryParameters)
-                ->configureFavorite($mandatoryParameters)
-                ->resolve($body);
-        } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
-        }
+    //         // Validate the content of the request body
+    //         $data = $unitOptionsResolver
+    //             ->configureName($mandatoryParameters)
+    //             ->configureTopic($mandatoryParameters)
+    //             ->configureDescription($mandatoryParameters)
+    //             ->configureFavorite($mandatoryParameters)
+    //             ->resolve($body);
+    //     } catch (\Exception $e) {
+    //         throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+    //     }
 
-        // Update each fields if necessary
-        foreach ($data as $field => $value) {
-            switch ($field) {
-                case 'name':
-                    $unit->setName($value);
-                    break;
-                case 'topic':
-                    $unit->setTopic($value);
-                    break;
-                case 'description':
-                    $unit->setDescription($value);
-                    break;
-                case 'favorite':
-                    $unit->setFavorite($value);
-                    break;
-            }
-        }
+    //     // Update each fields if necessary
+    //     foreach ($data as $field => $value) {
+    //         switch ($field) {
+    //             case 'name':
+    //                 $unit->setName($value);
+    //                 break;
+    //             case 'topic':
+    //                 $unit->setTopic($value);
+    //                 break;
+    //             case 'description':
+    //                 $unit->setDescription($value);
+    //                 break;
+    //             case 'favorite':
+    //                 $unit->setFavorite($value);
+    //                 break;
+    //         }
+    //     }
 
-        // Second validation using the validation constraints
-        $this->validateEntity($unit);
+    //     // Second validation using the validation constraints
+    //     $this->validateEntity($unit);
 
-        // Save the element information
-        $em->flush();
+    //     // Save the element information
+    //     $em->flush();
 
-        // Return the element
-        return $this->jsonStd($unit, context: ['groups' => ['read:unit:admin']]);
-    }
+    //     // Return the element
+    //     return $this->jsonStd($unit, context: ['groups' => ['read:unit:admin']]);
+    // }
 }

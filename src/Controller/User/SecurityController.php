@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
+use App\Attribute\Body;
 use App\Controller\AbstractRestController;
 use App\Entity\PasswordReset;
 use App\Entity\User;
@@ -16,24 +17,25 @@ use App\Repository\PasswordResetRepository;
 use App\Repository\UserRepository;
 use App\UniqueGenerator\UniqueTokenGenerator;
 use App\Utility\Roles;
+use App\ValueResolver\BodyResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api/auth', 'api_auth_', format: 'json')]
 class SecurityController extends AbstractRestController
 {
     #[Route('/login', name: 'login', methods: ['POST'])]
-    public function login(): JsonResponse
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
+    public function login(
+        #[CurrentUser] ?User $user,
+    ): JsonResponse {
         if ($user === null) {
             throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Unauthenticated user');
         }
@@ -43,15 +45,12 @@ class SecurityController extends AbstractRestController
 
     #[Route('/register', name: 'register', methods: ['POST'])]
     public function register(
-        Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
         UserOptionsResolver $userOptionsResolver,
         UniqueTokenGenerator $uniqueTokenGenerator,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
-
         try {
             // Validate the content of the request body
             $data = $userOptionsResolver
@@ -86,17 +85,14 @@ class SecurityController extends AbstractRestController
 
     #[Route('/reset-password/request', name: 'password_reset_request', methods: ['POST'])]
     public function requestPasswordReset(
-        Request $request,
         EntityManagerInterface $em,
         UserOptionsResolver $userOptionsResolver,
         UserRepository $userRepository,
         PasswordResetRepository $passwordResetRepository,
         UniqueTokenGenerator $uniqueTokenGenerator,
         MessageBusInterface $messageBusInterface,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
-
         try {
             // Validate the content of the request body
             $data = $userOptionsResolver
@@ -151,15 +147,11 @@ class SecurityController extends AbstractRestController
 
     #[Route('/reset-password/proceed', name: 'password_reset_proceed', methods: ['POST'])]
     public function checkToken(
-        Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
         PasswordResetOptionsResolver $passwordResetOptionsResolver,
-        PasswordResetRepository $passwordResetRepository,
+        PasswordResetRepository $passwordResetRepository, #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
-
         try {
             // Validate the content of the request body
             $data = $passwordResetOptionsResolver

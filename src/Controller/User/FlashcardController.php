@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
+use App\Attribute\Body;
+use App\Attribute\RelativeToEntity;
+use App\Attribute\Resource;
 use App\Controller\AbstractRestController;
 use App\Entity\Flashcard;
 use App\Entity\Review;
@@ -13,6 +16,8 @@ use App\Entity\User;
 use App\Enum\CountCriteria\FlashcardCountCriteria;
 use App\Enum\SettingName;
 use App\Exception\ApiException;
+use App\Model\Filter;
+use App\Model\Page;
 use App\OptionsResolver\FlashcardOptionsResolver;
 use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 use App\Repository\FlashcardRepository;
@@ -20,51 +25,49 @@ use App\Repository\ReviewRepository;
 use App\SpacedRepetition\Fsrs4_5Algorithm;
 use App\SpacedRepetition\SpacedRepetitionScheduler;
 use App\Utility\Regex;
+use App\ValueResolver\BodyResolver;
+use App\ValueResolver\ResourceByIdResolver;
 use App\Voter\FlashcardVoter;
 use App\Voter\UnitVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
 // #[IsGranted('IS_AUTHENTICATED', exceptionCode: 450)] --> Marche pas
 class FlashcardController extends AbstractRestController
 {
     #[Route('/flashcards', name: 'get_flashcards', methods: ['GET'])]
-    public function getFlashcards(Request $request, FlashcardRepository $flashcardRepository): JsonResponse
-    {
-        $pagination = $this->getPaginationParameter(Flashcard::class, $request);
-        $filter = $this->getFilterParameter(Flashcard::class, $request);
-
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $flashcards = $flashcardRepository->paginateAndFilterAll($pagination, $filter, $user);
+    public function getFlashcards(
+        FlashcardRepository $flashcardRepository,
+        #[RelativeToEntity(Flashcard::class)] Page $page,
+        #[RelativeToEntity(Flashcard::class)] Filter $filter,
+        #[CurrentUser] User $user,
+    ): JsonResponse {
+        $flashcards = $flashcardRepository->paginateAndFilterAll($page, $filter, $user);
 
         return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getFlashcard(int $id): JsonResponse
-    {
-        $flashcard = $this->getResourceById(Flashcard::class, $id);
-
-        $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not access this resource');
-
+    public function getFlashcard(
+        #[ValueResolver(ResourceByIdResolver::class)]
+        #[Resource(FlashcardVoter::OWNER)]
+        Flashcard $flashcard,
+    ): JsonResponse {
         return $this->jsonStd($flashcard, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards', name: 'create_flashcard', methods: ['POST'])]
     public function createFlashcard(
-        Request $request,
         EntityManagerInterface $em,
         FlashcardOptionsResolver $flashcardOptionsResolver,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
-
         try {
             // Validate the content of the request body
             $data = $flashcardOptionsResolver
@@ -108,12 +111,10 @@ class FlashcardController extends AbstractRestController
     }
 
     #[Route('/flashcards/{id}', name: 'delete_flashcard', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
-    public function deleteFlashcard(int $id, EntityManagerInterface $em): JsonResponse
-    {
-        $flashcard = $this->getResourceById(Flashcard::class, $id);
-
-        $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not delete this resource');
-
+    public function deleteFlashcard(
+        EntityManagerInterface $em,
+        #[Resource(FlashcardVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Flashcard $flashcard,
+    ): JsonResponse {
         // Remove the flashcard
         $em->remove($flashcard);
         $em->flush();
@@ -124,18 +125,12 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/{id}', name: 'update_flashcard', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
     public function updateFlashcard(
-        int $id,
         EntityManagerInterface $em,
         Request $request,
         FlashcardOptionsResolver $flashcardOptionsResolver,
+        #[Resource(FlashcardVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Flashcard $flashcard,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
-        $flashcard = $this->getResourceById(Flashcard::class, $id);
-
-        $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
-
-        // Retrieve the request body
-        $body = $this->getRequestPayload($request);
-
         try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
             // Otherwise, all parameters are optional.
@@ -190,38 +185,28 @@ class FlashcardController extends AbstractRestController
     }
 
     #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
-    public function getFlashcardsByUnit(int $id, Request $request, FlashcardRepository $flashcardRepository): JsonResponse
-    {
-        $unit = $this->getResourceById(Unit::class, $id);
-
-        $this->denyAccessUnlessGranted(UnitVoter::OWNER, $unit, 'You can not access this resource');
-
-        $pagination = $this->getPaginationParameter(Flashcard::class, $request);
-        $filter = $this->getFilterParameter(Flashcard::class, $request);
-
-        // Get data with pagination
-        $flashcards = $flashcardRepository->paginateAndFilterByUnit($pagination, $filter, $unit);
+    public function getFlashcardsByUnit(
+        FlashcardRepository $flashcardRepository,
+        #[RelativeToEntity(Flashcard::class)] Page $page,
+        #[RelativeToEntity(Flashcard::class)] Filter $filter,
+        #[Resource(UnitVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Unit $unit,
+    ): JsonResponse {
+        $flashcards = $flashcardRepository->paginateAndFilterByUnit($page, $filter, $unit);
 
         return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards/{id}/review', name: 'review_flashcard', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function reviewFlashcard(
-        int $id,
         EntityManagerInterface $em,
-        Request $request,
         SpacedRepetitionOptionsResolver $spacedRepetitionOptionsResolver,
         SpacedRepetitionScheduler $spacedRepetitionScheduler,
+        #[Resource(FlashcardVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Flashcard $flashcard,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
-        $flashcard = $this->getResourceById(Flashcard::class, $id);
-        $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
-
-        // If the next review is in the future
         if ($flashcard->getNextReview() > (new \DateTimeImmutable())) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [$flashcard->getId(), $flashcard->getNextReview()->format('jS \\of F Y')]);
         }
-
-        $body = $this->getRequestPayload($request);
 
         try {
             $data = $spacedRepetitionOptionsResolver
@@ -258,10 +243,8 @@ class FlashcardController extends AbstractRestController
     public function resetFlashcards(
         FlashcardRepository $flashcardRepository,
         ReviewRepository $reviewRepository,
+        #[CurrentUser] User $user,
     ): JsonResponse {
-        /** @var User $user */
-        $user = $this->getUser();
-
         $reviewRepository->resetBy($user);
         $flashcardRepository->resetBy($user);
 
@@ -270,16 +253,11 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/{id}/reset', name: 'reset_flashcard', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function resetFlashcard(
-        int $id,
         FlashcardRepository $flashcardRepository,
         ReviewRepository $reviewRepository,
+        #[Resource(FlashcardVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Flashcard $flashcard,
+        #[CurrentUser] User $user,
     ): JsonResponse {
-        $flashcard = $this->getResourceById(Flashcard::class, $id);
-        $this->denyAccessUnlessGranted(FlashcardVoter::OWNER, $flashcard, 'You can not update this resource');
-
-        /** @var User $user */
-        $user = $this->getUser();
-
         $reviewRepository->resetBy($user, $flashcard);
         $flashcardRepository->resetBy($user, $flashcard);
 
@@ -290,10 +268,8 @@ class FlashcardController extends AbstractRestController
     public function getFlashcardSession(
         FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
+        #[CurrentUser] User $user,
     ): JsonResponse {
-        /** @var User $user */
-        $user = $this->getUser();
-
         $cardsToReview = $flashcardRepository->findFlashcardToReview($user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
 
         if (\count($cardsToReview) === 0) {
@@ -321,11 +297,9 @@ class FlashcardController extends AbstractRestController
     public function countFlashcards(
         FlashcardRepository $flashcardRepository,
         Request $request,
+        #[CurrentUser] User $user,
     ): JsonResponse {
         $criteria = $this->getCountCriteria($request, FlashcardCountCriteria::class, FlashcardCountCriteria::ALL->value);
-
-        /** @var User $user */
-        $user = $this->getUser();
 
         $count = match ($criteria) {
             FlashcardCountCriteria::ALL => $flashcardRepository->countAll($user),
@@ -339,10 +313,8 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/averageGrade', name: 'flashcard_average_grade', methods: ['GET'])]
     public function getAverageGrade(
         FlashcardRepository $flashcardRepository,
+        #[CurrentUser] User $user,
     ): JsonResponse {
-        /** @var User $user */
-        $user = $this->getUser();
-
         $count = $flashcardRepository->averageGrade($user);
 
         return $this->jsonStd($count);
