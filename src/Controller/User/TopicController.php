@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
-use App\Attribute\Body;
 use App\Attribute\RelativeToEntity;
 use App\Attribute\Resource;
 use App\Controller\AbstractRestController;
+use App\DTO\TopicDTO;
 use App\Entity\Session;
 use App\Entity\Topic;
 use App\Entity\User;
 use App\Enum\CountCriteria\TopicCountCriteria;
 use App\Enum\SettingName;
-use App\Exception\ApiException;
 use App\Model\Filter;
 use App\Model\Page;
-use App\OptionsResolver\TopicOptionsResolver;
 use App\Repository\FlashcardRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\TopicRepository;
@@ -26,6 +24,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -54,37 +53,23 @@ class TopicController extends AbstractRestController
     #[Route('/topics', name: 'create_topic', methods: ['POST'])]
     public function createTopic(
         EntityManagerInterface $em,
-        TopicOptionsResolver $topicOptionsResolver,
         #[CurrentUser] User $user,
-        #[Body] mixed $body,
+        #[MapRequestPayload('json')] TopicDTO $topicBodyPayload,
     ): JsonResponse {
-        try {
-            // Validate the content of the request body
-            $data = $topicOptionsResolver
-                ->configureName(true)
-                ->configureDescription(true)
-                ->configureFavorite(true)
-                ->resolve($body);
-        } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
-        }
+        $this->validateEntity($topicBodyPayload, ['post']);
 
-        // Temporarly create the element
         $topic = new Topic();
         $topic
-            ->setName($data['name'])
+            ->setName($topicBodyPayload->name)
             ->setAuthor($user)
-            ->setDescription($data['description'])
-            ->setFavorite($data['favorite']);
+            ->setDescription($topicBodyPayload->description)
+            ->setFavorite($topicBodyPayload->favorite);
 
-        // Second validation using the validation constraints
         $this->validateEntity($topic);
 
-        // Save the new element
         $em->persist($topic);
         $em->flush();
 
-        // Return the element with the the status 201 (Created)
         return $this->jsonStd(
             $topic,
             Response::HTTP_CREATED,
@@ -108,47 +93,27 @@ class TopicController extends AbstractRestController
     public function updateTopic(
         EntityManagerInterface $em,
         Request $request,
-        TopicOptionsResolver $flashcardOptionsResolver,
         #[Resource(TopicVoter::OWNER)] Topic $topic,
-        #[Body] mixed $body,
+        #[MapRequestPayload('json')] TopicDTO $topicBodyPayload,
     ): JsonResponse {
-        try {
-            // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
-            // Otherwise, all parameters are optional.
-            $mandatoryParameters = $request->getMethod() === 'PUT';
+        $validationGroups = $request->getMethod() === 'PUT' ? ['put'] : ['patch'];
 
-            // Validate the content of the request body
-            $data = $flashcardOptionsResolver
-                ->configureName($mandatoryParameters)
-                ->configureDescription($mandatoryParameters)
-                ->configureFavorite($mandatoryParameters)
-                ->resolve($body);
-        } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        $this->validateEntity($topicBodyPayload, $validationGroups);
+
+        if (isset($topicBodyPayload->name)) {
+            $topic->setName($topicBodyPayload->name);
+        }
+        if (isset($topicBodyPayload->description)) {
+            $topic->setDescription($topicBodyPayload->description);
+        }
+        if (isset($topicBodyPayload->favorite)) {
+            $topic->setFavorite($topicBodyPayload->favorite);
         }
 
-        // Update each fields if necessary
-        foreach ($data as $field => $value) {
-            switch ($field) {
-                case 'name':
-                    $topic->setName($value);
-                    break;
-                case 'description':
-                    $topic->setDescription($value);
-                    break;
-                case 'favorite':
-                    $topic->setFavorite($value);
-                    break;
-            }
-        }
-
-        // Second validation using the validation constraints
         $this->validateEntity($topic);
 
-        // Save the element information
         $em->flush();
 
-        // Return the element
         return $this->jsonStd($topic, context: ['groups' => ['read:topic:user']]);
     }
 

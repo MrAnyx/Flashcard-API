@@ -47,7 +47,7 @@ jobs:
 
             - name: Copy test files
               run: |
-                  cp .github/.env.test .env
+                  mv .github/.env.test .env
 
             - name: Cache Composer packages
               id: composer-cache

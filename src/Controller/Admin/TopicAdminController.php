@@ -7,7 +7,6 @@ namespace App\Controller\Admin;
 use App\Controller\AbstractRestController;
 use App\Entity\Topic;
 use App\Exception\ApiException;
-use App\OptionsResolver\TopicOptionsResolver;
 use App\Repository\TopicRepository;
 use App\Utility\Regex;
 use Doctrine\ORM\EntityManagerInterface;
