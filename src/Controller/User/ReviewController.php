@@ -12,11 +12,9 @@ use App\Enum\CountCriteria\ReviewCountCriteria;
 use App\Repository\ReviewRepository;
 use App\Service\PeriodService;
 use App\Utility\Regex;
-use App\ValueResolver\ResourceByIdResolver;
 use App\Voter\SessionVoter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -47,7 +45,7 @@ class ReviewController extends AbstractRestController
     #[Route('/sessions/{id}/reviews', name: 'get_reviews_by_session', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getReviewsBySession(
         ReviewRepository $reviewRepository,
-        #[Resource(SessionVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Session $session,
+        #[Resource(SessionVoter::OWNER)] Session $session,
     ): JsonResponse {
         $reviews = $reviewRepository->findAllBySession($session, true);
 

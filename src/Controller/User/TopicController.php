@@ -21,14 +21,11 @@ use App\Repository\FlashcardRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\TopicRepository;
 use App\Utility\Regex;
-use App\ValueResolver\BodyResolver;
-use App\ValueResolver\ResourceByIdResolver;
 use App\Voter\TopicVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -99,7 +96,7 @@ class TopicController extends AbstractRestController
     #[Route('/topics/{id}', name: 'delete_topic', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
     public function deleteTopic(
         EntityManagerInterface $em,
-        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
+        #[Resource(TopicVoter::OWNER)] Topic $topic,
     ): JsonResponse {
         $em->remove($topic);
         $em->flush();
@@ -112,8 +109,8 @@ class TopicController extends AbstractRestController
         EntityManagerInterface $em,
         Request $request,
         TopicOptionsResolver $flashcardOptionsResolver,
-        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
-        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        #[Resource(TopicVoter::OWNER)] Topic $topic,
+        #[Body] mixed $body,
     ): JsonResponse {
         try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
@@ -160,7 +157,7 @@ class TopicController extends AbstractRestController
         ReviewRepository $reviewRepository,
         FlashcardRepository $flashcardRepository,
         #[CurrentUser] User $user,
-        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
+        #[Resource(TopicVoter::OWNER)] Topic $topic,
     ): JsonResponse {
         $reviewRepository->resetBy($user, $topic);
         $flashcardRepository->resetBy($user, $topic);
@@ -173,7 +170,7 @@ class TopicController extends AbstractRestController
         FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
         #[CurrentUser] User $user,
-        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
+        #[Resource(TopicVoter::OWNER)] Topic $topic,
     ): JsonResponse {
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($topic, $user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
 

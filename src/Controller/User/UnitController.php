@@ -22,14 +22,12 @@ use App\Repository\FlashcardRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\UnitRepository;
 use App\Utility\Regex;
-use App\ValueResolver\BodyResolver;
 use App\Voter\TopicVoter;
 use App\Voter\UnitVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -59,7 +57,7 @@ class UnitController extends AbstractRestController
     public function createUnit(
         EntityManagerInterface $em,
         UnitOptionsResolver $unitOptionsResolver,
-        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        #[Body] mixed $body,
     ): JsonResponse {
         try {
             // Validate the content of the request body
@@ -116,7 +114,7 @@ class UnitController extends AbstractRestController
         Request $request,
         UnitOptionsResolver $unitOptionsResolver,
         #[Resource(UnitVoter::OWNER)] Unit $unit,
-        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        #[Body] mixed $body,
     ): JsonResponse {
         try {
             // Check if the request method is PUT. In this case, all parameters must be provided in the request body.

@@ -15,12 +15,10 @@ use App\Model\Page;
 use App\Repository\SessionRepository;
 use App\Service\PeriodService;
 use App\Utility\Regex;
-use App\ValueResolver\ResourceByIdResolver;
 use App\Voter\SessionVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -42,7 +40,7 @@ class SessionController extends AbstractRestController
     #[Route('/sessions/{id}/stop', name: 'session_stop', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function stopSession(
         EntityManagerInterface $em,
-        #[Resource(SessionVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Session $session,
+        #[Resource(SessionVoter::OWNER)] Session $session,
     ): JsonResponse {
         $session->setEndedAt(new \DateTimeImmutable());
         $em->flush();

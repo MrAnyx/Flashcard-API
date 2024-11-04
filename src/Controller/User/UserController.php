@@ -56,7 +56,7 @@ class UserController extends AbstractRestController
         Request $request,
         UserOptionsResolver $userOptionsResolver,
         UserPasswordHasherInterface $passwordHasher,
-        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        #[Body] mixed $body,
         #[CurrentUser] User $user,
     ): JsonResponse {
         try {
