@@ -49,7 +49,7 @@ class TopicController extends AbstractRestController
 
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getTopic(
-        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
+        #[Resource(TopicVoter::OWNER)] Topic $topic,
     ): JsonResponse {
         return $this->jsonStd($topic, context: ['groups' => ['read:topic:user']]);
     }
@@ -59,7 +59,7 @@ class TopicController extends AbstractRestController
         EntityManagerInterface $em,
         TopicOptionsResolver $topicOptionsResolver,
         #[CurrentUser] User $user,
-        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        #[Body] mixed $body,
     ): JsonResponse {
         try {
             // Validate the content of the request body

@@ -24,8 +24,14 @@ class ResourceByIdResolver implements ValueResolverInterface
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
+        $resourceAttribute = $argument->getAttributes(Resource::class, ArgumentMetadata::IS_INSTANCEOF)[0] ?? null;
+
+        if (!($resourceAttribute instanceof Resource)) {
+            return [];
+        }
+
         $entityClass = $argument->getType();
-        $id = $request->attributes->get('id');
+        $id = $request->attributes->get($resourceAttribute->idUrlSegment);
 
         $resource = $this->entityManager->find($entityClass, $id);
 
@@ -33,10 +39,7 @@ class ResourceByIdResolver implements ValueResolverInterface
             throw new ApiException(Response::HTTP_NOT_FOUND, 'Resource of type %s with id %d was not found', [$entityClass, $id]);
         }
 
-        $resourceAttribute = $argument->getAttributes(Resource::class)[0] ?? null;
-        $voterAttribute = $resourceAttribute?->voterAttribute ?? null;
-
-        if ($voterAttribute && !$this->security->isGranted($resourceAttribute->voterAttribute, $resource)) {
+        if ($resourceAttribute->voterAttribute && !$this->security->isGranted($resourceAttribute->voterAttribute, $resource)) {
             throw new AccessDeniedHttpException('You cannot access this resource');
         }
 

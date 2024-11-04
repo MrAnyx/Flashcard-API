@@ -23,7 +23,6 @@ use App\Repository\ReviewRepository;
 use App\Repository\UnitRepository;
 use App\Utility\Regex;
 use App\ValueResolver\BodyResolver;
-use App\ValueResolver\ResourceByIdResolver;
 use App\Voter\TopicVoter;
 use App\Voter\UnitVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,7 +50,7 @@ class UnitController extends AbstractRestController
 
     #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getUnit(
-        #[Resource(UnitVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Unit $unit,
+        #[Resource(UnitVoter::OWNER)] Unit $unit,
     ): JsonResponse {
         return $this->jsonStd($unit, context: ['groups' => ['read:unit:user']]);
     }
@@ -103,7 +102,7 @@ class UnitController extends AbstractRestController
     #[Route('/units/{id}', name: 'delete_unit', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
     public function deleteUnit(
         EntityManagerInterface $em,
-        #[Resource(UnitVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Unit $unit,
+        #[Resource(UnitVoter::OWNER)] Unit $unit,
     ): JsonResponse {
         $em->remove($unit);
         $em->flush();
@@ -116,7 +115,7 @@ class UnitController extends AbstractRestController
         EntityManagerInterface $em,
         Request $request,
         UnitOptionsResolver $unitOptionsResolver,
-        #[Resource(UnitVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Unit $unit,
+        #[Resource(UnitVoter::OWNER)] Unit $unit,
         #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
         try {
@@ -169,7 +168,7 @@ class UnitController extends AbstractRestController
         UnitRepository $unitRepository,
         #[RelativeToEntity(Unit::class)] Page $page,
         #[RelativeToEntity(Unit::class)] Filter $filter,
-        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
+        #[Resource(TopicVoter::OWNER)] Topic $topic,
     ): JsonResponse {
         $units = $unitRepository->paginateAndFilterByTopic($page, $filter, $topic);
 
@@ -180,7 +179,7 @@ class UnitController extends AbstractRestController
     public function resetUnit(
         ReviewRepository $reviewRepository,
         FlashcardRepository $flashcardRepository,
-        #[Resource(UnitVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Unit $unit,
+        #[Resource(UnitVoter::OWNER)] Unit $unit,
         #[CurrentUser] User $user,
     ): JsonResponse {
         $reviewRepository->resetBy($user, $unit);
@@ -193,7 +192,7 @@ class UnitController extends AbstractRestController
     public function getFlashcardSession(
         FlashcardRepository $flashcardRepository,
         EntityManagerInterface $em,
-        #[Resource(UnitVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Unit $unit,
+        #[Resource(UnitVoter::OWNER)] Unit $unit,
         #[CurrentUser] User $user,
     ): JsonResponse {
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($unit, $user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
@@ -232,7 +231,7 @@ class UnitController extends AbstractRestController
     #[Route('/topics/{id}/units/recent', name: 'recent_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getRecentUnitsByTopic(
         UnitRepository $unitRepository,
-        #[Resource(TopicVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Topic $topic,
+        #[Resource(TopicVoter::OWNER)] Topic $topic,
         #[CurrentUser] User $user,
     ): JsonResponse {
         $recentUnits = $unitRepository->findRecentUnitsByTopic($user, $topic, 4);

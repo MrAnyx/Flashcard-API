@@ -26,7 +26,6 @@ use App\SpacedRepetition\Fsrs4_5Algorithm;
 use App\SpacedRepetition\SpacedRepetitionScheduler;
 use App\Utility\Regex;
 use App\ValueResolver\BodyResolver;
-use App\ValueResolver\ResourceByIdResolver;
 use App\Voter\FlashcardVoter;
 use App\Voter\UnitVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -55,9 +54,7 @@ class FlashcardController extends AbstractRestController
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getFlashcard(
-        #[ValueResolver(ResourceByIdResolver::class)]
-        #[Resource(FlashcardVoter::OWNER)]
-        Flashcard $flashcard,
+        #[Resource(FlashcardVoter::OWNER)] Flashcard $flashcard,
     ): JsonResponse {
         return $this->jsonStd($flashcard, context: ['groups' => ['read:flashcard:user']]);
     }
@@ -113,7 +110,7 @@ class FlashcardController extends AbstractRestController
     #[Route('/flashcards/{id}', name: 'delete_flashcard', methods: ['DELETE'], requirements: ['id' => Regex::INTEGER])]
     public function deleteFlashcard(
         EntityManagerInterface $em,
-        #[Resource(FlashcardVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Flashcard $flashcard,
+        #[Resource(FlashcardVoter::OWNER)] Flashcard $flashcard,
     ): JsonResponse {
         // Remove the flashcard
         $em->remove($flashcard);
@@ -128,7 +125,7 @@ class FlashcardController extends AbstractRestController
         EntityManagerInterface $em,
         Request $request,
         FlashcardOptionsResolver $flashcardOptionsResolver,
-        #[Resource(FlashcardVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Flashcard $flashcard,
+        #[Resource(FlashcardVoter::OWNER)] Flashcard $flashcard,
         #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
         try {
@@ -189,7 +186,7 @@ class FlashcardController extends AbstractRestController
         FlashcardRepository $flashcardRepository,
         #[RelativeToEntity(Flashcard::class)] Page $page,
         #[RelativeToEntity(Flashcard::class)] Filter $filter,
-        #[Resource(UnitVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Unit $unit,
+        #[Resource(UnitVoter::OWNER)] Unit $unit,
     ): JsonResponse {
         $flashcards = $flashcardRepository->paginateAndFilterByUnit($page, $filter, $unit);
 
@@ -201,8 +198,8 @@ class FlashcardController extends AbstractRestController
         EntityManagerInterface $em,
         SpacedRepetitionOptionsResolver $spacedRepetitionOptionsResolver,
         SpacedRepetitionScheduler $spacedRepetitionScheduler,
-        #[Resource(FlashcardVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Flashcard $flashcard,
-        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        #[Resource(FlashcardVoter::OWNER)] Flashcard $flashcard,
+        #[Body] mixed $body,
     ): JsonResponse {
         if ($flashcard->getNextReview() > (new \DateTimeImmutable())) {
             throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [$flashcard->getId(), $flashcard->getNextReview()->format('jS \\of F Y')]);
@@ -255,7 +252,7 @@ class FlashcardController extends AbstractRestController
     public function resetFlashcard(
         FlashcardRepository $flashcardRepository,
         ReviewRepository $reviewRepository,
-        #[Resource(FlashcardVoter::OWNER), ValueResolver(ResourceByIdResolver::class)] Flashcard $flashcard,
+        #[Resource(FlashcardVoter::OWNER)] Flashcard $flashcard,
         #[CurrentUser] User $user,
     ): JsonResponse {
         $reviewRepository->resetBy($user, $flashcard);
