@@ -9,6 +9,7 @@ readonly class ErrorStandard
     public function __construct(
         public string $message,
         public string $details,
+        public ?string $trace = null,
     ) {
     }
 }

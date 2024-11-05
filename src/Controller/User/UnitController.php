@@ -14,7 +14,6 @@ use App\Entity\Unit;
 use App\Entity\User;
 use App\Enum\CountCriteria\UnitCountCriteria;
 use App\Enum\SettingName;
-use App\Exception\ApiException;
 use App\Model\Filter;
 use App\Model\Page;
 use App\OptionsResolver\UnitOptionsResolver;
@@ -28,6 +27,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -68,7 +68,7 @@ class UnitController extends AbstractRestController
                 ->configureFavorite(true)
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         $this->denyAccessUnlessGranted(TopicVoter::OWNER, $data['topic'], 'You can not use this resource');
@@ -129,7 +129,7 @@ class UnitController extends AbstractRestController
                 ->configureFavorite($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         // Update each fields if necessary

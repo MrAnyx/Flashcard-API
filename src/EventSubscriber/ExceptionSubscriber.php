@@ -38,7 +38,8 @@ class ExceptionSubscriber implements EventSubscriberInterface
 
         $error = new ErrorStandard(
             Response::$statusTexts[$statusCode],
-            $exception->getMessage()
+            $exception->getMessage(),
+            $exception->getTraceAsString()
         );
 
         $response = new JsonResponse(

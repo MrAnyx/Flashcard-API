@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use App\Exception\ApiException;
+use App\Exception\Http\UnauthorizedHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -33,8 +33,7 @@ class TokenAuthenticator extends AbstractAuthenticator
         $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
 
         if (empty($token)) {
-            // Code 401 "Unauthorized"
-            throw new ApiException(Response::HTTP_UNAUTHORIZED, 'No API token provided');
+            throw new UnauthorizedHttpException('No API token provided');
         }
 
         return new SelfValidatingPassport(new UserBadge($token));
@@ -48,6 +47,6 @@ class TokenAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Invalid API token');
+        throw new UnauthorizedHttpException('Invalid API token');
     }
 }

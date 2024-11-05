@@ -7,7 +7,6 @@ namespace App\Controller\User;
 use App\Attribute\Body;
 use App\Controller\AbstractRestController;
 use App\Entity\User;
-use App\Exception\ApiException;
 use App\OptionsResolver\SettingOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
 use App\Setting\SettingTemplate;
@@ -17,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -71,7 +71,7 @@ class UserController extends AbstractRestController
                 ->configurePassword($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         $validationGroups = ['Default'];
@@ -116,7 +116,7 @@ class UserController extends AbstractRestController
                 ->configureValue()
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         try {
@@ -124,7 +124,7 @@ class UserController extends AbstractRestController
 
             $setting->setValue($data['value']);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         $user->updateSetting($setting);

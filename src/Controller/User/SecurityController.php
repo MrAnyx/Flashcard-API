@@ -8,7 +8,7 @@ use App\Attribute\Body;
 use App\Controller\AbstractRestController;
 use App\Entity\PasswordReset;
 use App\Entity\User;
-use App\Exception\ApiException;
+use App\Exception\Http\UnauthorizedHttpException;
 use App\Exception\MaxTriesReachedException;
 use App\Message\SendTextEmailMessage;
 use App\OptionsResolver\PasswordResetOptionsResolver;
@@ -20,9 +20,11 @@ use App\Utility\Roles;
 use App\ValueResolver\BodyResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -37,7 +39,7 @@ class SecurityController extends AbstractRestController
         #[CurrentUser] ?User $user,
     ): JsonResponse {
         if ($user === null) {
-            throw new ApiException(Response::HTTP_UNAUTHORIZED, 'Unauthenticated user');
+            throw new UnauthorizedHttpException('Unauthenticated user');
         }
 
         return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
@@ -59,7 +61,7 @@ class SecurityController extends AbstractRestController
                 ->configurePassword(true)
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         // Temporarly create the element
@@ -99,25 +101,25 @@ class SecurityController extends AbstractRestController
                 ->configureIdentifier(true)
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         $associatedUser = $userRepository->loadUserByIdentifier($data['identifier']);
 
         if ($associatedUser == null) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, "This email or username doesn't exist");
+            throw new BadRequestHttpException("This email or username doesn't exist");
         }
 
         if ($passwordResetRepository->getLastRequest($associatedUser) !== null) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, 'A password reset request is already in progress. Please try again later');
+            throw new BadRequestHttpException('A password reset request is already in progress. Please try again later');
         }
 
         try {
             $token = $uniqueTokenGenerator->generate(PasswordReset::class, 'token');
         } catch (MaxTriesReachedException $e) {
-            throw new ApiException(Response::HTTP_PRECONDITION_FAILED, $e->getMessage());
+            throw new PreconditionFailedHttpException($e->getMessage(), $e);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured');
+            throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, 'An error occured', $e);
         }
 
         // Temporarly create the element
@@ -150,7 +152,8 @@ class SecurityController extends AbstractRestController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
         PasswordResetOptionsResolver $passwordResetOptionsResolver,
-        PasswordResetRepository $passwordResetRepository, #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        PasswordResetRepository $passwordResetRepository,
+        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
     ): JsonResponse {
         try {
             // Validate the content of the request body
@@ -159,13 +162,13 @@ class SecurityController extends AbstractRestController
                 ->configurePassword(true)
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         $associatedPasswordResetRequest = $passwordResetRepository->findByToken($data['token']);
 
         if ($associatedPasswordResetRequest == null) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, 'No token found');
+            throw new BadRequestHttpException('No token found');
         }
 
         $associatedPasswordResetRequest->setUsed(true);

@@ -8,14 +8,13 @@ use App\Entity\User;
 use App\Enum\JsonStandardStatus;
 use App\Enum\PeriodType;
 use App\Enum\SettingName;
-use App\Exception\ApiException;
 use App\Model\JsonStandard;
 use App\OptionsResolver\CriteriaOptionsResolver;
 use App\OptionsResolver\PeriodOptionsResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AbstractRestController extends AbstractController
@@ -44,7 +43,7 @@ class AbstractRestController extends AbstractController
                 ->setIgnoreUndefined()
                 ->resolve($request->query->all());
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         /** @var T $criteria */
@@ -61,7 +60,7 @@ class AbstractRestController extends AbstractController
                 ->setIgnoreUndefined()
                 ->resolve($request->query->all());
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         /** @var PeriodType $period */
@@ -74,7 +73,7 @@ class AbstractRestController extends AbstractController
     {
         $errors = $this->validator->validate($entity, groups: $validationGroups);
         if (\count($errors) > 0) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, (string) $errors[0]->getMessage());
+            throw new BadRequestHttpException((string) $errors[0]->getMessage());
         }
     }
 

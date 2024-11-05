@@ -6,7 +6,6 @@ namespace App\ValueResolver;
 
 use App\Attribute\RelativeToEntity;
 use App\Attribute\Sortable;
-use App\Exception\ApiException;
 use App\Model\Page;
 use App\OptionsResolver\PaginatorOptionsResolver;
 use App\Service\AttributeParser;
@@ -15,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class PageResolver implements ValueResolverInterface
 {
@@ -49,7 +50,7 @@ class PageResolver implements ValueResolverInterface
                 ->setIgnoreUndefined()
                 ->resolve($request->query->all());
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage());
         }
 
         try {
@@ -57,7 +58,7 @@ class PageResolver implements ValueResolverInterface
                 $this->objectInitializer->initialize(Page::class, $queryParams),
             ];
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'Can not initialize a %s object', [Page::class]);
+            throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, \sprintf('Can not initialize a %s object', Page::class));
         }
     }
 }

@@ -15,7 +15,6 @@ use App\Entity\Unit;
 use App\Entity\User;
 use App\Enum\CountCriteria\FlashcardCountCriteria;
 use App\Enum\SettingName;
-use App\Exception\ApiException;
 use App\Model\Filter;
 use App\Model\Page;
 use App\OptionsResolver\FlashcardOptionsResolver;
@@ -33,6 +32,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -76,7 +76,7 @@ class FlashcardController extends AbstractRestController
                 ->configureHelp(true)
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         $this->denyAccessUnlessGranted(UnitVoter::OWNER, $data['unit'], 'You can not use this resource');
@@ -143,7 +143,7 @@ class FlashcardController extends AbstractRestController
                 ->configureHelp($mandatoryParameters)
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         // Update each fields if necessary
@@ -202,7 +202,7 @@ class FlashcardController extends AbstractRestController
         #[Body] mixed $body,
     ): JsonResponse {
         if ($flashcard->getNextReview() > (new \DateTimeImmutable())) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, 'You can not review the flashcard with id %d yet. The next review is scheduled for %s', [$flashcard->getId(), $flashcard->getNextReview()->format('jS \\of F Y')]);
+            throw new BadRequestHttpException(\sprintf('You can not review the flashcard with id %d yet. The next review is scheduled for %s', $flashcard->getId(), $flashcard->getNextReview()->format('jS \\of F Y')));
         }
 
         try {
@@ -211,11 +211,11 @@ class FlashcardController extends AbstractRestController
                 ->configureSession()
                 ->resolve($body);
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         if ($data['session']->getEndedAt() !== null) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, 'The session with id %d ended at %s. You can not associate a new review with this session', [$data['session']->getId(), $data['session']->getEndedAt()->format('jS \\of F Y')]);
+            throw new BadRequestHttpException(\sprintf('The session with id %d ended at %s. You can not associate a new review with this session', $data['session']->getId(), $data['session']->getEndedAt()->format('jS \\of F Y')));
         }
 
         $spacedRepetitionScheduler->review($flashcard, $data['grade'], new Fsrs4_5Algorithm());

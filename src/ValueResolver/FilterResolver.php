@@ -6,7 +6,6 @@ namespace App\ValueResolver;
 
 use App\Attribute\RelativeToEntity;
 use App\Attribute\Searchable;
-use App\Exception\ApiException;
 use App\Model\Filter;
 use App\OptionsResolver\FilterOptionsResolver;
 use App\Service\AttributeParser;
@@ -15,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FilterResolver implements ValueResolverInterface
 {
@@ -48,7 +49,7 @@ class FilterResolver implements ValueResolverInterface
                 ->setIgnoreUndefined()
                 ->resolve($request->query->all());
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+            throw new BadRequestHttpException($e->getMessage());
         }
 
         try {
@@ -56,7 +57,7 @@ class FilterResolver implements ValueResolverInterface
                 $this->objectInitializer->initialize(Filter::class, $queryParams),
             ];
         } catch (\Exception $e) {
-            throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, 'Can not initialize a %s object', [Filter::class]);
+            throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, \sprintf('Can not initialize a %s object', Filter::class));
         }
     }
 }
