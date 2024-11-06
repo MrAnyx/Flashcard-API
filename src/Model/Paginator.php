@@ -11,79 +11,38 @@ use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 
 class Paginator extends DoctrinePaginator
 {
-    private int $total;
+    public readonly array $data;
 
-    private array $data;
-
-    private int $count;
-
-    private int $totalpages;
-
-    private int $page;
-
-    private int $itemsPerPage;
-
-    private int $offset;
+    public readonly Pagination $pagination;
 
     public function __construct(QueryBuilder|Query $query, Page $pagination, string|int $hydrationMode = AbstractQuery::HYDRATE_OBJECT, bool $fetchJoinCollection = true)
     {
-        $this->itemsPerPage = $pagination->itemsPerPage;
-        $this->offset = ($pagination->page - 1) * $this->itemsPerPage;
+        $offset = ($pagination->page - 1) * $pagination->itemsPerPage;
 
-        $query->setFirstResult($this->offset);
-        $query->setMaxResults($this->itemsPerPage);
+        $query->setFirstResult($offset);
+        $query->setMaxResults($pagination->itemsPerPage);
 
         parent::__construct($query, $fetchJoinCollection);
-        $this->total = $this->count();
         $this->data = $query->getQuery()->getResult($hydrationMode);
-        $this->count = \count($this->data);
-        $this->page = $pagination->page;
+        $total = $this->count();
 
-        $this->totalpages = (int) ceil($this->total / $this->itemsPerPage);
-    }
-
-    public function getTotal(): int
-    {
-        return $this->total;
-    }
-
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    public function getCount(): int
-    {
-        return $this->count;
-    }
-
-    public function getTotalPages(): int
-    {
-        return $this->totalpages;
-    }
-
-    public function getCurrentPage(): int
-    {
-        return $this->page;
-    }
-
-    public function getItemsPerPage(): ?int
-    {
-        return $this->itemsPerPage;
-    }
-
-    public function getOffset(): int
-    {
-        return $this->offset;
+        $this->pagination = new Pagination(
+            total: $total,
+            itemsPerPage: $pagination->itemsPerPage,
+            count: \count($this->data),
+            totalpages: (int) ceil($total / $pagination->itemsPerPage),
+            page: $pagination->page,
+            offset: $offset
+        );
     }
 
     public function hasNextPage(): bool
     {
-        return $this->getCurrentPage() >= 1 && $this->getCurrentPage() < $this->getTotalPages();
+        return $this->pagination->page >= 1 && $this->pagination->page < $this->pagination->totalpages;
     }
 
     public function hasPreviousPage(): bool
     {
-        return $this->getCurrentPage() > 1 && $this->getCurrentPage() <= $this->getTotalPages();
+        return $this->pagination->page > 1 && $this->pagination->page <= $this->pagination->totalpages;
     }
 }

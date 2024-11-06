@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Logger;
 
 use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class ExtraLogProcessor
+class ExtraLogProcessor implements ProcessorInterface
 {
     public function __construct(
         private RequestStack $requestStack,

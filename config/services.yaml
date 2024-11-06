@@ -24,10 +24,3 @@ services:
         class: Monolog\Formatter\LineFormatter
         arguments:
             - "[%%datetime%%] %%channel%%.%%level_name%% [%%extra.ip%% %%extra.method%% %%extra.url%%] %%message%% %%context%% %%extra%%\n"
-
-    App\Logger\ExtraLogProcessor:
-        tags:
-            - { name: monolog.processor }
-
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones

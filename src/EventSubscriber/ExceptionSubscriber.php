@@ -14,13 +14,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private NormalizerInterface $normalizer,
-        private LoggerInterface $logger,
+        private readonly NormalizerInterface $normalizer,
+        private readonly LoggerInterface $logger,
+        private readonly KernelInterface $kernel,
     ) {
     }
 
@@ -39,7 +41,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $error = new ErrorStandard(
             Response::$statusTexts[$statusCode],
             $exception->getMessage(),
-            $exception->getTraceAsString()
+            $this->kernel->getEnvironment() === 'dev' ? $exception->getTrace() : null
         );
 
         $response = new JsonResponse(

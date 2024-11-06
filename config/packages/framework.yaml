@@ -8,6 +8,7 @@ framework:
     http_method_override: false
     handle_all_throwables: true
 
+    # To make sure that every payload are in JSON
     request:
         formats:
             json: application/json

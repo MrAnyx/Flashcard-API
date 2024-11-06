@@ -12,7 +12,7 @@ readonly class JsonStandard
 
     public JsonStandardStatus $status;
 
-    public ?array $pagination;
+    public ?Pagination $pagination;
 
     public mixed $data;
 
@@ -22,19 +22,8 @@ readonly class JsonStandard
         $this->status = $status;
 
         if ($data instanceof Paginator) {
-            $this->data = $data->getData();
-
-            // TODO Refacto
-            $this->pagination = [
-                'total' => $data->getTotal(),
-                'count' => $data->getCount(),
-                'offset' => $data->getOffset(),
-                'items_per_page' => $data->getItemsPerPage(),
-                'total_pages' => $data->getTotalPages(),
-                'current_page' => $data->getCurrentPage(),
-                'has_next_page' => $data->hasNextPage(),
-                'has_previous_page' => $data->hasPreviousPage(),
-            ];
+            $this->data = $data->data;
+            $this->pagination = $data->pagination;
         } else {
             $this->data = $data;
             $this->pagination = null;

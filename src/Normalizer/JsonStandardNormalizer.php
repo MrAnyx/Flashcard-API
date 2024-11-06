@@ -7,12 +7,16 @@ namespace App\Normalizer;
 use App\Model\JsonStandard;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class JsonStandardNormalizer implements NormalizerInterface
 {
     public function __construct(
-        #[Autowire(service: 'serializer.normalizer.object')]
-        private readonly NormalizerInterface $normalizer,
+        #[Autowire(service: ObjectNormalizer::class)]
+        private readonly NormalizerInterface $objectNormalizer,
+
+        #[Autowire(service: PaginationNormalizer::class)]
+        private readonly NormalizerInterface $paginationNormalizer,
     ) {
     }
 
@@ -24,7 +28,7 @@ class JsonStandardNormalizer implements NormalizerInterface
         return [
             '@timestamp' => $data->timestamp->format(\DateTimeImmutable::ATOM),
             '@status' => $data->status,
-            '@pagination' => $data->pagination,
+            '@pagination' => $data->pagination ? $this->paginationNormalizer->normalize($data->pagination, $format) : null,
             'data' => $this->normalizeData($data->data, $format, $context),
         ];
     }
@@ -43,25 +47,19 @@ class JsonStandardNormalizer implements NormalizerInterface
 
     private function normalizeData($data, ?string $format = null, array $context = []): mixed
     {
+        // If the data is scalar (string, int, float, bool, null), return as is
+        if (\is_scalar($data) || $data === null) {
+            return $data;
+        }
+
         // Check if the data is an object
         if (\is_object($data)) {
-            return $this->normalizer->normalize($data, $format, $context);
+            return $this->objectNormalizer->normalize($data, $format, $context);
         }
 
         // Check if the data is an array
         if (\is_array($data)) {
-            $normalizedArray = [];
-            foreach ($data as $key => $value) {
-                // Recursively normalize the value
-                $normalizedArray[$key] = $this->normalizeData($value, $format, $context);
-            }
-
-            return $normalizedArray;
-        }
-
-        // If the data is scalar (string, int, float, bool, null), return as is
-        if (\is_scalar($data) || $data === null) {
-            return $data;
+            return array_map(fn ($item) => $this->normalizeData($item, $format, $context), $data);
         }
 
         // If it's a type we didn't handle, throw an exception (optional)
