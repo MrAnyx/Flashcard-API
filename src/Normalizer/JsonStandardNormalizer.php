@@ -14,9 +14,6 @@ class JsonStandardNormalizer implements NormalizerInterface
     public function __construct(
         #[Autowire(service: ObjectNormalizer::class)]
         private readonly NormalizerInterface $objectNormalizer,
-
-        #[Autowire(service: PaginationNormalizer::class)]
-        private readonly NormalizerInterface $paginationNormalizer,
     ) {
     }
 
@@ -28,7 +25,7 @@ class JsonStandardNormalizer implements NormalizerInterface
         return [
             '@timestamp' => $data->timestamp->format(\DateTimeImmutable::ATOM),
             '@status' => $data->status,
-            '@pagination' => $data->pagination ? $this->paginationNormalizer->normalize($data->pagination, $format) : null,
+            '@pagination' => $data->pagination ? $this->objectNormalizer->normalize($data->pagination, $format) : null,
             'data' => $this->normalizeData($data->data, $format, $context),
         ];
     }

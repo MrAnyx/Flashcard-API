@@ -14,5 +14,6 @@ class TopicDTO
     #[Assert\NotBlank(groups: ['post', 'put'])]
     public string $description;
 
-    public bool $favorite = false;
+    #[Assert\NotBlank(groups: ['post', 'put'])]
+    public bool $favorite;
 }
