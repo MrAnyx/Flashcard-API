@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Normalizer;
 
 use App\Model\JsonStandard;
+use Exception;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;

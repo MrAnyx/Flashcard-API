@@ -41,7 +41,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $error = new ErrorStandard(
             Response::$statusTexts[$statusCode],
             $exception->getMessage(),
-            $this->kernel->getEnvironment() === 'dev' ? $exception->getTrace() : null
+            null
         );
 
         $response = new JsonResponse(

@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\User;
+namespace App\Controller;
 
 use App\Attribute\Body;
-use App\Controller\AbstractRestController;
 use App\Entity\PasswordReset;
 use App\Entity\User;
 use App\Exception\Http\UnauthorizedHttpException;

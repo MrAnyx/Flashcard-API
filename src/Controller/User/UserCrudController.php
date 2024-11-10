@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
-class UserController extends AbstractRestController
+class UserCrudController extends AbstractRestController
 {
     #[Route('/users/me', name: 'get_me', methods: ['GET'])]
     public function getMe(

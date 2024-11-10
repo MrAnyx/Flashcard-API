@@ -14,8 +14,6 @@ class TestController extends AbstractRestController
     #[Route('/test', name: 'test')]
     public function index(Request $request): JsonResponse
     {
-        throw new \Exception('Test');
-
         return $this->jsonStd($request);
     }
 }
