@@ -16,14 +16,14 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 #[Route('/api', 'api_', format: 'json')]
 class ReviewScalarController extends AbstractRestController
 {
-    #[Route('/reviews/count', name: 'count_reviews', methods: ['GET'])]
+    #[Route('/reviews/count/{criteria}', name: 'count_reviews', methods: ['GET'])]
     public function countReviews(
         ReviewRepository $reviewRepository,
         Request $request,
         PeriodService $periodService,
         #[CurrentUser] User $user,
+        ReviewCountCriteria $criteria = ReviewCountCriteria::ONLY_VALID,
     ) {
-        $criteria = $this->getCountCriteria($request, ReviewCountCriteria::class, ReviewCountCriteria::ONLY_VALID->value);
         $periodType = $this->getPeriodParameter($request);
 
         $period = $periodService->getDateTimePeriod($periodType);

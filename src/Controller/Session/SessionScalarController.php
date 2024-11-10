@@ -16,14 +16,14 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 #[Route('/api', 'api_', format: 'json')]
 class SessionScalarController extends AbstractRestController
 {
-    #[Route('/sessions/count', name: 'sessions_count', methods: ['GET'])]
+    #[Route('/sessions/count/{criteria}', name: 'sessions_count', methods: ['GET'])]
     public function countSessions(
         SessionRepository $sessionRepository,
         Request $request,
         PeriodService $periodService,
         #[CurrentUser] User $user,
+        SessionCountCriteria $criteria = SessionCountCriteria::ALL,
     ) {
-        $criteria = $this->getCountCriteria($request, SessionCountCriteria::class, SessionCountCriteria::ALL->value);
         $periodType = $this->getPeriodParameter($request);
 
         $period = $periodService->getDateTimePeriod($periodType);
