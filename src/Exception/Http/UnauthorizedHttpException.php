@@ -10,6 +10,6 @@ class UnauthorizedHttpException extends SymfonyUnauthorizedHttpException
 {
     public function __construct(string $message = '', ?\Throwable $previous = null, int $code = 0, array $headers = [])
     {
-        parent::__construct('bearer', $message, $previous, $headers, $code);
+        parent::__construct('bearer', $message, $previous, $code, $headers);
     }
 }

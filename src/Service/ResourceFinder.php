@@ -28,7 +28,10 @@ class ResourceFinder
     {
         $resource = $this->em->find($classname, $id);
 
-        if ($resource === null && $allowNull) {
+        if ($resource === null) {
+            if ($allowNull) {
+                return $resource;
+            }
             throw new NotFoundException(\sprintf('Resource of type %s with id %s was not found', $classname, $id));
         }
 

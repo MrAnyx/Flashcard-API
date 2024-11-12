@@ -9,7 +9,6 @@ use App\Enum\JsonStandardStatus;
 use App\Enum\PeriodType;
 use App\Enum\SettingName;
 use App\Model\JsonStandard;
-use App\OptionsResolver\CriteriaOptionsResolver;
 use App\OptionsResolver\PeriodOptionsResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,35 +20,8 @@ class AbstractRestController extends AbstractController
 {
     public function __construct(
         private ValidatorInterface $validator,
-        private CriteriaOptionsResolver $criteriaOptionsResolver,
         private PeriodOptionsResolver $periodOptionsResolver,
     ) {
-    }
-
-    /**
-     * @template T
-     *
-     * @param Request $request The HTTP request
-     * @param class-string<T> $criteriaEnum Fully qualified class CriteriaOptionsResolver (FQCN) of the enum CriteriaOptionsResolver. The enum CriteriaOptionsResolver should implement string-backed cases.
-     * @param string $defaultValue The default value for the 'criteria' option
-     *
-     * @return T The resolved criteria from the enum
-     */
-    public function getCountCriteria(Request $request, string $criteriaEnum, string $defaultValue): mixed
-    {
-        try {
-            $data = $this->criteriaOptionsResolver
-                ->configureCriteria($criteriaEnum, $defaultValue)
-                ->setIgnoreUndefined()
-                ->resolve($request->query->all());
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
-        }
-
-        /** @var T $criteria */
-        $criteria = $data['criteria'];
-
-        return $criteria;
     }
 
     public function getPeriodParameter(Request $request): PeriodType
