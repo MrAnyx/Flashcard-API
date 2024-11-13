@@ -4,60 +4,42 @@ declare(strict_types=1);
 
 namespace App\ValueResolver;
 
-use App\Attribute\RelativeToEntity;
 use App\Attribute\Searchable;
+use App\Enum\OperatorType;
 use App\Model\Filter;
-use App\OptionsResolver\FilterOptionsResolver;
-use App\Service\AttributeParser;
-use App\Service\ObjectInitializer;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class FilterResolver implements ValueResolverInterface
+class FilterResolver extends MapQueryStringRelativeToEntityResolver
 {
-    public function __construct(
-        private AttributeParser $attributeParser,
-        private ObjectInitializer $objectInitializer,
-        private FilterOptionsResolver $filterOptionsResolver,
-    ) {
-    }
-
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         if ($argument->getType() !== Filter::class) {
             return [];
         }
 
-        $attribute = $argument->getAttributes(RelativeToEntity::class, ArgumentMetadata::IS_INSTANCEOF)[0] ?? null;
+        dd($this->optionsResolver);
 
-        if (!($attribute instanceof RelativeToEntity)) {
-            throw new \InvalidArgumentException(\sprintf('Missing %s attribute', RelativeToEntity::class));
+        $relativeEntity = $this->getRelativeEntity($request, $argument);
+        $searchableFields = $this->getFields($relativeEntity, Searchable::class);
+
+        $filter = $request->query->get('filter');
+        $value = $request->query->get('value');
+        $operator = $request->query->getEnum('operator', OperatorType::class, OperatorType::EQUAL);
+
+        if (!\in_array($filter, $searchableFields)) {
+            throw new BadRequestHttpException(\sprintf('Invalid "filter" parameter. Available options are: %s', implode(', ', $searchableFields)));
         }
 
-        $reflectionProperties = $this->attributeParser->getFieldsWithAttribute($attribute->entity, Searchable::class);
-        $searchableFields = array_map(fn (\ReflectionProperty $p) => $p->name, $reflectionProperties);
+        $pageInstance = new Filter($filter, $value, $operator);
 
-        try {
-            $queryParams = $this->filterOptionsResolver
-                ->configureOperator()
-                ->configureFilter($searchableFields)
-                ->configureValue($attribute->entity)
-                ->setIgnoreUndefined()
-                ->resolve($request->query->all());
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException($e->getMessage());
+        $errors = $this->validator->validate($pageInstance);
+
+        if (\count($errors) > 0) {
+            throw new BadRequestHttpException($errors[0]->getMessage());
         }
 
-        try {
-            return [
-                $this->objectInitializer->initialize(Filter::class, $queryParams),
-            ];
-        } catch (\Exception $e) {
-            throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, \sprintf('Can not initialize a %s object', Filter::class));
-        }
+        yield $pageInstance;
     }
 }

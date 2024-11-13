@@ -27,7 +27,7 @@ class BodyResolver implements ValueResolverInterface
         $isValidMethod = "is_{$bodyAttribute->expectedType}";
 
         if (!\function_exists($isValidMethod)) {
-            throw new \InvalidArgumentException(\sprintf('Function %s doesn \'t exist', $isValidMethod));
+            throw new \InvalidArgumentException(\sprintf('Function %s doesn\'t exist', $isValidMethod));
         }
 
         if (!json_validate($request->getContent())) {
