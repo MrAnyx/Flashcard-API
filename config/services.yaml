@@ -18,6 +18,7 @@ services:
         exclude:
             - "../src/DependencyInjection/"
             - "../src/Entity/"
+            - "../src/Model/"
             - "../src/Kernel.php"
 
     monolog.formatter.extra_log:
