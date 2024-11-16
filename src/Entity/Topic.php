@@ -21,7 +21,7 @@ class Topic
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
+    #[Groups(['read:topic:user'])]
     #[Sortable]
     #[Searchable]
     private ?int $id = null;
@@ -29,18 +29,18 @@ class Topic
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a topic can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a topic can not exceed {{ limit }} characters')]
-    #[Groups(['read:topic:admin', 'read:topic:user', 'read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
+    #[Groups(['read:topic:user', 'write:topic:user'])]
     #[Sortable]
     #[Searchable]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:user'])]
     #[Sortable]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:user'])]
     #[Sortable]
     private ?\DateTimeImmutable $updatedAt = null;
 
@@ -54,13 +54,13 @@ class Topic
 
     #[ORM\Column(length: 300)]
     #[Assert\Length(max: 300, maxMessage: 'The description of a topic can not exceed {{ limit }} characters')]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:user', 'write:topic:user'])]
     #[Sortable]
     #[Searchable]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['read:topic:admin', 'read:topic:user'])]
+    #[Groups(['read:topic:user', 'write:topic:user'])]
     #[Sortable]
     #[Searchable]
     private ?bool $favorite = null;

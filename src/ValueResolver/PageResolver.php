@@ -8,13 +8,10 @@ use App\Attribute\Sortable;
 use App\Model\Page;
 use Doctrine\Common\Collections\Order;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Attribute\AsTargetedValueResolver;
-use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-#[AsTargetedValueResolver(PageResolver::class)]
-class PageResolver implements ValueResolverInterface
+class PageResolver extends MapQueryStringRelativeToEntityResolver
 {
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
@@ -22,26 +19,26 @@ class PageResolver implements ValueResolverInterface
             return [];
         }
 
-        // $relativeEntity = $this->getRelativeEntity($request, $argument);
-        // $sortableFields = $this->getFields($relativeEntity, Sortable::class);
+        $relativeEntity = $this->getRelativeEntity($request, $argument);
+        $sortableFields = $this->getFields($relativeEntity, Sortable::class);
 
-        // $page = $request->query->getInt('page', 1);
-        // $sort = $request->query->getString('sort', 'id');
-        // $order = $request->query->getEnum('order', Order::class, Order::Ascending);
-        // $itemsPerPage = $request->query->getInt('itemsPerPage', 25);
+        $page = $request->query->getInt('page', 1);
+        $sort = $request->query->getString('sort', 'id');
+        $order = $request->query->getEnum('order', Order::class, Order::Ascending);
+        $itemsPerPage = $request->query->getInt('itemsPerPage', 25);
 
-        // if (!\in_array($sort, $sortableFields)) {
-        //     throw new BadRequestHttpException(\sprintf('Invalid "sort" parameter. Available options are: %s', implode(', ', $sortableFields)));
-        // }
+        if (!\in_array($sort, $sortableFields)) {
+            throw new BadRequestHttpException(\sprintf('Invalid "sort" parameter. Available options are: %s', implode(', ', $sortableFields)));
+        }
 
-        // $pageInstance = new Page($page, $sort, $order, $itemsPerPage);
+        $pageInstance = new Page($page, $sort, $order, $itemsPerPage);
 
-        // $errors = $this->validator->validate($pageInstance);
+        $errors = $this->validator->validate($pageInstance);
 
-        // if (\count($errors) > 0) {
-        //     throw new BadRequestHttpException($errors[0]->getMessage());
-        // }
+        if (\count($errors) > 0) {
+            throw new BadRequestHttpException($errors[0]->getMessage());
+        }
 
-        // yield $pageInstance;
+        yield $pageInstance;
     }
 }
