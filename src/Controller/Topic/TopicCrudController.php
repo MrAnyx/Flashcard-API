@@ -24,13 +24,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
+#[RelativeToEntity(Topic::class)]
 class TopicCrudController extends AbstractRestController
 {
     #[Route('/topics', name: 'get_topics', methods: ['GET'])]
     public function getTopics(
         TopicRepository $topicRepository,
-        #[RelativeToEntity(Topic::class)] Page $page,
-        #[RelativeToEntity(Topic::class)] Filter $filter,
+        Page $page,
+        ?Filter $filter,
         #[CurrentUser] User $user,
     ): JsonResponse {
         $topics = $topicRepository->paginateAndFilterAll($page, $filter, $user);

@@ -12,6 +12,7 @@ use App\Model\Page;
 use App\Service\RequestDecoder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/_internal', name: 'api_', format: 'json')]
@@ -34,8 +35,8 @@ class TestController extends AbstractRestController
         //     deserializationGroups: ['write:topic:user']
         // );
 
-        dd($page, $filter);
+        throw new BadRequestHttpException('toto');
 
-        return $this->jsonStd($page);
+        return $this->json(['hello' => 'world']);
     }
 }
