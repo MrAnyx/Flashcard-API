@@ -61,8 +61,11 @@ class Setting
     {
         $templateSetting = SettingTemplate::getSetting($this->name);
 
-        // TODO return default value if error
-        return $templateSetting->serializer->deserialize($this->value);
+        try {
+            return $templateSetting->serializer->deserialize($this->value);
+        } catch (\Exception) {
+            return $templateSetting->getValue();
+        }
     }
 
     public function setValue(string $value): static
