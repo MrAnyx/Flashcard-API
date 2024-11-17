@@ -36,13 +36,11 @@ class Paginator extends DoctrinePaginator
         );
     }
 
-    public function hasNextPage(): bool
+    public function getIterator(): \Traversable
     {
-        return $this->pagination->page >= 1 && $this->pagination->page < $this->pagination->totalpages;
-    }
-
-    public function hasPreviousPage(): bool
-    {
-        return $this->pagination->page > 1 && $this->pagination->page <= $this->pagination->totalpages;
+        return new \ArrayIterator([
+            'pagination' => $this->pagination,
+            'data' => $this->data,
+        ]);
     }
 }

@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Enum\JsonStandardStatus;
 use App\Enum\PeriodType;
 use App\Enum\SettingName;
-use App\Model\JsonStandard;
 use App\OptionsResolver\PeriodOptionsResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -47,11 +44,6 @@ class AbstractRestController extends AbstractController
         if (\count($errors) > 0) {
             throw new BadRequestHttpException((string) $errors[0]->getMessage());
         }
-    }
-
-    public function jsonStd(mixed $data, int $status = 200, array $headers = [], array $context = [], JsonStandardStatus $jsonStatus = JsonStandardStatus::VALID): JsonResponse
-    {
-        return $this->json(new JsonStandard($data, $jsonStatus), $status, $headers, $context);
     }
 
     public function getUserSetting(SettingName $settingName): mixed

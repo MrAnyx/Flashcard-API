@@ -27,7 +27,7 @@ class TopicRepository extends ServiceEntityRepository
         parent::__construct($registry, Topic::class);
     }
 
-    public function paginateAndFilterAll(Page $page, Filter $filter, ?User $user = null): Paginator
+    public function paginateAndFilterAll(Page $page, ?Filter $filter, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('t');
 
@@ -37,7 +37,7 @@ class TopicRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        if ($filter->isFullyConfigured()) {
+        if ($filter !== null) {
             $query
                 ->andWhere("t.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
                 ->setParameter('query', $filter->getDoctrineParameter());
@@ -45,7 +45,7 @@ class TopicRepository extends ServiceEntityRepository
 
         $query
             ->addOrderBy("CASE WHEN t.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
-            ->addOrderBy("t.{$page->sort}", $page->order);
+            ->addOrderBy("t.{$page->sort}", $page->order->value);
 
         return new Paginator($query, $page);
     }

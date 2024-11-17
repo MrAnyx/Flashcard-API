@@ -15,7 +15,7 @@ class JsonStandardEncoder implements EncoderInterface
         return [
             '@timestamp' => (new \DateTime())->format(\DateTime::ATOM),
             '@status' => $response->isSuccessful() ? JsonStandardStatus::VALID : JsonStandardStatus::INVALID,
-            'result' => $normalizedData,
+            'data' => $normalizedData,
         ];
     }
 }

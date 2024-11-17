@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use Symfony\Component\Serializer\Attribute\Groups;
+
+#[Groups(['read:pagination'])]
 class Pagination
 {
     public function __construct(
