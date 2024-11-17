@@ -10,12 +10,10 @@ use App\Entity\User;
 use App\OptionsResolver\SettingOptionsResolver;
 use App\OptionsResolver\UserOptionsResolver;
 use App\Setting\SettingTemplate;
-use App\ValueResolver\BodyResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,7 +26,7 @@ class UserCrudController extends AbstractRestController
     public function getMe(
         #[CurrentUser] User $user,
     ) {
-        return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
+        return $this->json($user, context: ['groups' => ['read:user:user']]);
     }
 
     #[Route('/users/me', name: 'delete_me', methods: ['DELETE'])]
@@ -107,14 +105,14 @@ class UserCrudController extends AbstractRestController
     public function createOrUpdateSetting(
         EntityManagerInterface $em,
         SettingOptionsResolver $settingOptionsResolver,
-        #[Body, ValueResolver(BodyResolver::class)] mixed $body,
+        Request $request,
         #[CurrentUser] User $user,
     ) {
         try {
             $data = $settingOptionsResolver
                 ->configureName()
                 ->configureValue()
-                ->resolve($body);
+                ->resolve(json_decode($request->getContent(), true));
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage(), $e);
         }
@@ -131,6 +129,6 @@ class UserCrudController extends AbstractRestController
 
         $em->flush();
 
-        return $this->jsonStd($user->getSettings());
+        return $this->json($user->getSettings());
     }
 }

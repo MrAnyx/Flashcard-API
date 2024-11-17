@@ -10,6 +10,7 @@ use App\Setting\SettingEntry;
 use App\Setting\SettingTemplate;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SettingRepository::class)]
 class Setting
@@ -20,9 +21,11 @@ class Setting
     private ?int $id = null;
 
     #[ORM\Column(enumType: SettingName::class)]
+    #[Groups(['write:setting:user'])]
     private ?SettingName $name = null;
 
     #[ORM\Column(type: Types::STRING, length: 1000)]
+    #[Groups(['write:setting:user'])]
     private ?string $value = null;
 
     #[ORM\ManyToOne(inversedBy: 'settings')]
@@ -58,6 +61,7 @@ class Setting
     {
         $templateSetting = SettingTemplate::getSetting($this->name);
 
+        // TODO return default value if error
         return $templateSetting->serializer->deserialize($this->value);
     }
 

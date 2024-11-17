@@ -32,7 +32,7 @@ class AuthenticationController extends AbstractRestController
             throw new UnauthorizedHttpException('Unauthenticated user');
         }
 
-        return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
+        return $this->json($user, context: ['groups' => ['read:user:user']]);
     }
 
     #[Route('/register', name: 'register', methods: ['POST'])]

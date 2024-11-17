@@ -17,7 +17,7 @@ class BooleanSerializer implements SerializerInterface
     {
         $this->canSerialize($value);
 
-        return (string) $value;
+        return $value ? 'true' : 'false';
     }
 
     public function canDeserialize(string $value): void
@@ -31,6 +31,6 @@ class BooleanSerializer implements SerializerInterface
     {
         $this->canDeserialize($value);
 
-        return (bool) $value;
+        return filter_var($value, \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE) ?? false;
     }
 }

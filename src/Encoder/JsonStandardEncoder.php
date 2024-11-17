@@ -7,6 +7,7 @@ namespace App\Encoder;
 use App\Enum\JsonStandardStatus;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Uid\Uuid;
 
 class JsonStandardEncoder implements EncoderInterface
 {
@@ -15,6 +16,7 @@ class JsonStandardEncoder implements EncoderInterface
         return [
             '@timestamp' => (new \DateTime())->format(\DateTime::ATOM),
             '@status' => $response->isSuccessful() ? JsonStandardStatus::VALID : JsonStandardStatus::INVALID,
+            '@token' => Uuid::v7()->toRfc4122(),
             'data' => $normalizedData,
         ];
     }

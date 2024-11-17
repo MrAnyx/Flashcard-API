@@ -321,7 +321,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $existingSetting = null;
 
         foreach ($this->settings as $existing) {
-            if ($existing->getName() === $setting->getName()) {
+            if ($existing->getName() === $setting->getName(true)) {
                 $existingSetting = $existing;
                 break;
             }
