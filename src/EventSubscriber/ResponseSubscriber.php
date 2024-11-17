@@ -22,25 +22,19 @@ class ResponseSubscriber implements EventSubscriberInterface
 
     public function onKernelResponse(ResponseEvent $event): void
     {
-        $request = $event->getRequest();
-        $response = $event->getResponse();
+        $initialRequest = $event->getRequest();
+        $initialResponse = $event->getResponse();
 
-        $acceptHeaders = $request->getAcceptableContentTypes();
+        $acceptHeaders = $initialRequest->getAcceptableContentTypes();
         $format = $this->getResponseFormat($acceptHeaders) ?? new ResponseFormat('jsonstd', 'application/json+std');
+        $encoder = $this->getEncoder($format);
 
-        /** @var EncoderInterface $encoder */
-        $encoder = match ($format->format) {
-            'json' => new JsonEncoder(),
-            'jsonstd' => new JsonStandardEncoder(),
-            default => throw new \RuntimeException(\sprintf('Can not find the corresponding response encoder for format %s', $format->format)),
-        };
-
-        $data = $encoder->encode(json_decode($response->getContent(), true), $request, $response);
+        $data = $encoder->encode(json_decode($initialResponse->getContent(), true), $initialRequest, $initialResponse);
 
         $response = new JsonResponse(
             $data,
-            $response->getStatusCode(),
-            array_merge($response->headers->all(), ['Content-Type' => $format->mimeType]),
+            $initialResponse->getStatusCode(),
+            array_merge($initialResponse->headers->all(), ['Content-Type' => $format->mimeType]),
         );
 
         $event->setResponse($response);
@@ -71,5 +65,14 @@ class ResponseSubscriber implements EventSubscriberInterface
         }
 
         return null;
+    }
+
+    private function getEncoder(ResponseFormat $format): EncoderInterface
+    {
+        return match ($format->format) {
+            'json' => new JsonEncoder(),
+            'jsonstd' => new JsonStandardEncoder(),
+            default => throw new \RuntimeException(\sprintf('Can not find the corresponding response encoder for format %s', $format->format)),
+        };
     }
 }
