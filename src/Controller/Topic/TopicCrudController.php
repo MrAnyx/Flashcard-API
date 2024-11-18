@@ -89,10 +89,8 @@ class TopicCrudController extends AbstractRestController
             classname: Topic::class,
             fromObject: $topic,
             deserializationGroups: ['write:topic:user'],
-            validationGroups: null
         );
 
-        $this->validateEntity($updatedTopic);
         $em->flush();
 
         return $this->json($updatedTopic, context: ['groups' => ['read:topic:user']]);

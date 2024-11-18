@@ -22,7 +22,7 @@ class Unit
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
+    #[Groups(['read:unit:user'])]
     #[Sortable]
     #[Searchable]
     private ?int $id = null;
@@ -30,26 +30,26 @@ class Unit
     #[ORM\Column(length: 35)]
     #[Assert\NotBlank(message: 'The name of a unit can not be blank')]
     #[Assert\Length(max: 35, maxMessage: 'The name of a unit can not exceed {{ limit }} characters')]
-    #[Groups(['read:unit:admin', 'read:unit:user', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
+    #[Groups(['read:unit:user', 'write:unit:user'])]
     #[Sortable]
     #[Searchable]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'units')]
     #[Assert\NotBlank(message: 'You must associate a topic to this unit')]
-    #[Groups(['read:unit:admin', 'read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
+    #[Groups(['read:unit:user', 'write:unit:user'])]
     private ?Topic $topic = null;
 
     #[ORM\OneToMany(mappedBy: 'unit', targetEntity: Flashcard::class, orphanRemoval: true)]
@@ -57,13 +57,13 @@ class Unit
 
     #[ORM\Column(length: 300)]
     #[Assert\Length(max: 300, maxMessage: 'The description of a unit can not exceed {{ limit }} characters')]
-    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:user', 'write:unit:user'])]
     #[Sortable]
     #[Searchable]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['read:unit:admin', 'read:unit:user'])]
+    #[Groups(['read:unit:user', 'write:unit:user'])]
     #[Sortable]
     #[Searchable]
     private ?bool $favorite = null;
