@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Enum\PeriodType;
 use App\Enum\SettingName;
 use App\OptionsResolver\PeriodOptionsResolver;
+use App\Service\RequestDecoder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -16,8 +17,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class AbstractRestController extends AbstractController
 {
     public function __construct(
-        private ValidatorInterface $validator,
-        private PeriodOptionsResolver $periodOptionsResolver,
+        private readonly ValidatorInterface $validator,
+        private readonly PeriodOptionsResolver $periodOptionsResolver,
+        private readonly RequestDecoder $requestDecoder,
     ) {
     }
 
@@ -54,5 +56,32 @@ class AbstractRestController extends AbstractController
         $user = $this->getUser();
 
         return $user->getSetting($settingName);
+    }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T> $classname
+     * @param bool|null $strict Define the strictness of the field resolution. With value null, the strictness with be guessed by the request method (POST and PUT)
+     * @param array<string, Transformer[]> $transformers
+     * @param array<string, Transformer[]> $mutators
+     *
+     * @return T
+     */
+    public function decodeBody(
+        string $classname,
+        ?object $fromObject = null,
+        ?bool $strict = null,
+        array $deserializationGroups = [],
+        bool $ignoreUnknownFields = true,
+        array $transformers = [],
+        array $mutators = [],
+        ?array $validationGroups = ['Default'],
+    ) {
+        try {
+            return $this->requestDecoder->decode($classname, $fromObject, $strict, $deserializationGroups, $ignoreUnknownFields, $transformers, $mutators, $validationGroups);
+        } catch (\Exception $ex) {
+            throw new BadRequestHttpException($ex->getMessage(), $ex);
+        }
     }
 }

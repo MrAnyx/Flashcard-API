@@ -7,7 +7,6 @@ namespace App\Controller\Topic;
 use App\Attribute\RelativeToEntity;
 use App\Attribute\Resource;
 use App\Controller\AbstractRestController;
-use App\DTO\TopicDTO;
 use App\Entity\Topic;
 use App\Entity\User;
 use App\Model\Filter;
@@ -17,9 +16,7 @@ use App\Utility\Regex;
 use App\Voter\TopicVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -36,7 +33,7 @@ class TopicCrudController extends AbstractRestController
     ): JsonResponse {
         $topics = $topicRepository->paginateAndFilterAll($page, $filter, $user);
 
-        return $this->json($topics, context: ['groups' => ['read:topic:user']]);
+        return $this->json($topics, context: ['groups' => ['read:topic:user', 'read:pagination']]);
     }
 
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -50,16 +47,14 @@ class TopicCrudController extends AbstractRestController
     public function createTopic(
         EntityManagerInterface $em,
         #[CurrentUser] User $user,
-        #[MapRequestPayload('json')] TopicDTO $topicBodyPayload,
     ): JsonResponse {
-        $this->validateEntity($topicBodyPayload, ['post']);
+        $topic = $this->decodeBody(
+            classname: Topic::class,
+            deserializationGroups: ['write:topic:user'],
+            validationGroups: null
+        );
 
-        $topic = new Topic();
-        $topic
-            ->setName($topicBodyPayload->name)
-            ->setAuthor($user)
-            ->setDescription($topicBodyPayload->description)
-            ->setFavorite($topicBodyPayload->favorite);
+        $topic->setAuthor($user);
 
         $this->validateEntity($topic);
 
@@ -88,29 +83,19 @@ class TopicCrudController extends AbstractRestController
     #[Route('/topics/{id}', name: 'update_topic', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
     public function updateTopic(
         EntityManagerInterface $em,
-        Request $request,
         #[Resource(TopicVoter::OWNER)] Topic $topic,
-        #[MapRequestPayload('json')] TopicDTO $topicBodyPayload,
     ): JsonResponse {
-        $validationGroups = $request->getMethod() === 'PUT' ? ['put'] : ['patch'];
+        $updatedTopic = $this->decodeBody(
+            classname: Topic::class,
+            fromObject: $topic,
+            deserializationGroups: ['write:topic:user'],
+            validationGroups: null
+        );
 
-        $this->validateEntity($topicBodyPayload, $validationGroups);
-
-        if (isset($topicBodyPayload->name)) {
-            $topic->setName($topicBodyPayload->name);
-        }
-        if (isset($topicBodyPayload->description)) {
-            $topic->setDescription($topicBodyPayload->description);
-        }
-        if (isset($topicBodyPayload->favorite)) {
-            $topic->setFavorite($topicBodyPayload->favorite);
-        }
-
-        $this->validateEntity($topic);
-
+        $this->validateEntity($updatedTopic);
         $em->flush();
 
-        return $this->json($topic, context: ['groups' => ['read:topic:user']]);
+        return $this->json($updatedTopic, context: ['groups' => ['read:topic:user']]);
     }
 
     #[Route('/topics/recent', name: 'recent_topic', methods: ['GET'])]

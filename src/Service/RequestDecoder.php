@@ -52,7 +52,7 @@ class RequestDecoder
         bool $ignoreUnknownFields = true,
         array $transformers = [],
         array $mutators = [],
-        array $validationGroups = ['Default'],
+        ?array $validationGroups = ['Default'],
     ): object {
         $request = Request::createFromGlobals();
         $method = $request->getMethod();
@@ -104,9 +104,11 @@ class RequestDecoder
             }
         }
 
-        $errors = $this->validator->validate($entity, groups: $validationGroups);
-        if (\count($errors) > 0) {
-            throw new \Exception((string) $errors[0]->getMessage());
+        if ($validationGroups !== null) {
+            $errors = $this->validator->validate($entity, groups: $validationGroups);
+            if (\count($errors) > 0) {
+                throw new \Exception((string) $errors[0]->getMessage());
+            }
         }
 
         return $entity;

@@ -19,11 +19,13 @@ class Pagination
     ) {
     }
 
+    #[Groups(['read:pagination'])]
     public function hasNextPage(): bool
     {
         return $this->page >= 1 && $this->page < $this->totalpages;
     }
 
+    #[Groups(['read:pagination'])]
     public function hasPreviousPage(): bool
     {
         return $this->page > 1 && $this->page <= $this->totalpages;
