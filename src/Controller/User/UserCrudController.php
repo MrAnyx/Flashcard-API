@@ -45,7 +45,7 @@ class UserCrudController extends AbstractRestController
         $em->remove($user);
         $em->flush();
 
-        return $this->jsonStd(null, status: Response::HTTP_NO_CONTENT);
+        return $this->json(null, status: Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/users/me', name: 'update_me', methods: ['PATCH', 'PUT'])]
@@ -98,7 +98,7 @@ class UserCrudController extends AbstractRestController
         $em->flush();
 
         // Return the user
-        return $this->jsonStd($user, context: ['groups' => ['read:user:user']]);
+        return $this->json($user, context: ['groups' => ['read:user:user']]);
     }
 
     #[Route('/users/settings', name: 'create_update_setting', methods: ['POST'])]

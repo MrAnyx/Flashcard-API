@@ -33,7 +33,7 @@ class TopicBehaviorController extends AbstractRestController
         $reviewRepository->resetBy($user, $topic);
         $flashcardRepository->resetBy($user, $topic);
 
-        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/topics/{id}/session', name: 'topic_session', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -46,7 +46,7 @@ class TopicBehaviorController extends AbstractRestController
         $cardsToReview = $flashcardRepository->findFlashcardToReviewBy($topic, $user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
 
         if (\count($cardsToReview) === 0) {
-            return $this->jsonStd([
+            return $this->json([
                 'session' => null,
                 'flashcards' => [],
             ]);
@@ -61,7 +61,7 @@ class TopicBehaviorController extends AbstractRestController
         $em->persist($session);
         $em->flush();
 
-        return $this->jsonStd([
+        return $this->json([
             'session' => $session,
             'flashcards' => $cardsToReview,
         ], context: ['groups' => ['read:flashcard:user', 'read:session:user']]);

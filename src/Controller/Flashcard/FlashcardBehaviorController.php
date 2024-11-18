@@ -69,7 +69,7 @@ class FlashcardBehaviorController extends AbstractRestController
         $em->persist($review);
         $em->flush();
 
-        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/reset', name: 'reset_all_flashcard', methods: ['POST'])]
@@ -81,7 +81,7 @@ class FlashcardBehaviorController extends AbstractRestController
         $reviewRepository->resetBy($user);
         $flashcardRepository->resetBy($user);
 
-        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/{id}/reset', name: 'reset_flashcard', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
@@ -94,7 +94,7 @@ class FlashcardBehaviorController extends AbstractRestController
         $reviewRepository->resetBy($user, $flashcard);
         $flashcardRepository->resetBy($user, $flashcard);
 
-        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/session', name: 'session_flashcard', methods: ['GET'])]
@@ -106,7 +106,7 @@ class FlashcardBehaviorController extends AbstractRestController
         $cardsToReview = $flashcardRepository->findFlashcardToReview($user, $this->getUserSetting(SettingName::FLASHCARD_PER_SESSION));
 
         if (\count($cardsToReview) === 0) {
-            return $this->jsonStd([
+            return $this->json([
                 'session' => null,
                 'flashcards' => [],
             ]);
@@ -120,7 +120,7 @@ class FlashcardBehaviorController extends AbstractRestController
         $em->persist($session);
         $em->flush();
 
-        return $this->jsonStd([
+        return $this->json([
             'session' => $session,
             'flashcards' => $cardsToReview,
         ], context: ['groups' => ['read:flashcard:user', 'read:session:user']]);

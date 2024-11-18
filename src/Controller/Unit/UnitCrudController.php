@@ -38,14 +38,14 @@ class UnitCrudController extends AbstractRestController
     ): JsonResponse {
         $units = $unitRepository->paginateAndFilterAll($page, $filter, $user);
 
-        return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
+        return $this->json($units, context: ['groups' => ['read:unit:user']]);
     }
 
     #[Route('/units/{id}', name: 'get_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getUnit(
         #[Resource(UnitVoter::OWNER)] Unit $unit,
     ): JsonResponse {
-        return $this->jsonStd($unit, context: ['groups' => ['read:unit:user']]);
+        return $this->json($unit, context: ['groups' => ['read:unit:user']]);
     }
 
     #[Route('/units', name: 'create_unit', methods: ['POST'])]
@@ -84,7 +84,7 @@ class UnitCrudController extends AbstractRestController
         $em->flush();
 
         // Return the element with the the status 201 (Created)
-        return $this->jsonStd(
+        return $this->json(
             $unit,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('api_get_unit', ['id' => $unit->getId()])],
@@ -100,7 +100,7 @@ class UnitCrudController extends AbstractRestController
         $em->remove($unit);
         $em->flush();
 
-        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/units/{id}', name: 'update_unit', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
@@ -153,7 +153,7 @@ class UnitCrudController extends AbstractRestController
         $em->flush();
 
         // Return the element
-        return $this->jsonStd($unit, context: ['groups' => ['read:unit:user']]);
+        return $this->json($unit, context: ['groups' => ['read:unit:user']]);
     }
 
     #[Route('/topics/{id}/units', name: 'get_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -165,7 +165,7 @@ class UnitCrudController extends AbstractRestController
     ): JsonResponse {
         $units = $unitRepository->paginateAndFilterByTopic($page, $filter, $topic);
 
-        return $this->jsonStd($units, context: ['groups' => ['read:unit:user']]);
+        return $this->json($units, context: ['groups' => ['read:unit:user']]);
     }
 
     #[Route('/units/recent', name: 'recent_units', methods: ['GET'])]
@@ -175,7 +175,7 @@ class UnitCrudController extends AbstractRestController
     ): JsonResponse {
         $recentUnits = $unitRepository->findRecentUnitsByTopic($user, null, 5);
 
-        return $this->jsonStd($recentUnits, context: ['groups' => ['read:unit:user']]);
+        return $this->json($recentUnits, context: ['groups' => ['read:unit:user']]);
     }
 
     #[Route('/topics/{id}/units/recent', name: 'recent_units_by_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -186,6 +186,6 @@ class UnitCrudController extends AbstractRestController
     ): JsonResponse {
         $recentUnits = $unitRepository->findRecentUnitsByTopic($user, $topic, 4);
 
-        return $this->jsonStd($recentUnits, context: ['groups' => ['read:unit:user']]);
+        return $this->json($recentUnits, context: ['groups' => ['read:unit:user']]);
     }
 }

@@ -27,7 +27,7 @@ class FlashcardScalarController extends AbstractRestController
             FlashcardCountCriteria::CORRECT => $flashcardRepository->countCorrectFlashcards($user),
         };
 
-        return $this->jsonStd($count);
+        return $this->json($count);
     }
 
     #[Route('/flashcards/averageGrade', name: 'flashcard_average_grade', methods: ['GET'])]
@@ -37,6 +37,6 @@ class FlashcardScalarController extends AbstractRestController
     ): JsonResponse {
         $count = $flashcardRepository->averageGrade($user);
 
-        return $this->jsonStd($count);
+        return $this->json($count);
     }
 }

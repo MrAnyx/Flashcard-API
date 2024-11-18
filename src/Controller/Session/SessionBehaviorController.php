@@ -24,6 +24,6 @@ class SessionBehaviorController extends AbstractRestController
         $session->setEndedAt(new \DateTimeImmutable());
         $em->flush();
 
-        return $this->jsonStd($session, context: ['groups' => ['read:session:user']]);
+        return $this->json($session, context: ['groups' => ['read:session:user']]);
     }
 }

@@ -25,6 +25,6 @@ class UnitScalarController extends AbstractRestController
             UnitCountCriteria::ALL => $unitRepository->countAll($user),
         };
 
-        return $this->jsonStd($count);
+        return $this->json($count);
     }
 }

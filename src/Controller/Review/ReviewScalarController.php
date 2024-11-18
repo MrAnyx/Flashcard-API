@@ -34,6 +34,6 @@ class ReviewScalarController extends AbstractRestController
             ReviewCountCriteria::GROUP_BY_DATE => $reviewRepository->countAllByDate($user, $period),
         };
 
-        return $this->jsonStd($count);
+        return $this->json($count);
     }
 }

@@ -47,6 +47,6 @@ class UserBehaviorController extends AbstractRestController
 
         $em->flush();
 
-        return $this->jsonStd($user->getSettings());
+        return $this->json($user->getSettings());
     }
 }

@@ -36,14 +36,14 @@ class TopicCrudController extends AbstractRestController
     ): JsonResponse {
         $topics = $topicRepository->paginateAndFilterAll($page, $filter, $user);
 
-        return $this->jsonStd($topics, context: ['groups' => ['read:topic:user']]);
+        return $this->json($topics, context: ['groups' => ['read:topic:user']]);
     }
 
     #[Route('/topics/{id}', name: 'get_topic', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getTopic(
         #[Resource(TopicVoter::OWNER)] Topic $topic,
     ): JsonResponse {
-        return $this->jsonStd($topic, context: ['groups' => ['read:topic:user']]);
+        return $this->json($topic, context: ['groups' => ['read:topic:user']]);
     }
 
     #[Route('/topics', name: 'create_topic', methods: ['POST'])]
@@ -66,7 +66,7 @@ class TopicCrudController extends AbstractRestController
         $em->persist($topic);
         $em->flush();
 
-        return $this->jsonStd(
+        return $this->json(
             $topic,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('api_get_topic', ['id' => $topic->getId()])],
@@ -82,7 +82,7 @@ class TopicCrudController extends AbstractRestController
         $em->remove($topic);
         $em->flush();
 
-        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/topics/{id}', name: 'update_topic', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
@@ -110,7 +110,7 @@ class TopicCrudController extends AbstractRestController
 
         $em->flush();
 
-        return $this->jsonStd($topic, context: ['groups' => ['read:topic:user']]);
+        return $this->json($topic, context: ['groups' => ['read:topic:user']]);
     }
 
     #[Route('/topics/recent', name: 'recent_topic', methods: ['GET'])]
@@ -120,6 +120,6 @@ class TopicCrudController extends AbstractRestController
     ): JsonResponse {
         $recentTopics = $topicRepository->findRecentTopics($user, 5);
 
-        return $this->jsonStd($recentTopics, context: ['groups' => ['read:topic:user']]);
+        return $this->json($recentTopics, context: ['groups' => ['read:topic:user']]);
     }
 }

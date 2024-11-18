@@ -40,14 +40,14 @@ class FlashcardCrudController extends AbstractRestController
     ): JsonResponse {
         $flashcards = $flashcardRepository->paginateAndFilterAll($page, $filter, $user);
 
-        return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
+        return $this->json($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getFlashcard(
         #[Resource(FlashcardVoter::OWNER)] Flashcard $flashcard,
     ): JsonResponse {
-        return $this->jsonStd($flashcard, context: ['groups' => ['read:flashcard:user']]);
+        return $this->json($flashcard, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/flashcards', name: 'create_flashcard', methods: ['POST'])]
@@ -90,7 +90,7 @@ class FlashcardCrudController extends AbstractRestController
         $em->flush();
 
         // Return the flashcard with the the status 201 (Created)
-        return $this->jsonStd(
+        return $this->json(
             $flashcard,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('api_get_flashcard', ['id' => $flashcard->getId()])],
@@ -108,7 +108,7 @@ class FlashcardCrudController extends AbstractRestController
         $em->flush();
 
         // Return a response with status 204 (No Content)
-        return $this->jsonStd(null, Response::HTTP_NO_CONTENT);
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/flashcards/{id}', name: 'update_flashcard', methods: ['PATCH', 'PUT'], requirements: ['id' => Regex::INTEGER])]
@@ -169,7 +169,7 @@ class FlashcardCrudController extends AbstractRestController
         $em->flush();
 
         // Return the flashcard
-        return $this->jsonStd($flashcard, context: ['groups' => ['read:flashcard:user']]);
+        return $this->json($flashcard, context: ['groups' => ['read:flashcard:user']]);
     }
 
     #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -181,6 +181,6 @@ class FlashcardCrudController extends AbstractRestController
     ): JsonResponse {
         $flashcards = $flashcardRepository->paginateAndFilterByUnit($page, $filter, $unit);
 
-        return $this->jsonStd($flashcards, context: ['groups' => ['read:flashcard:user']]);
+        return $this->json($flashcards, context: ['groups' => ['read:flashcard:user']]);
     }
 }

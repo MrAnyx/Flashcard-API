@@ -72,6 +72,6 @@ class AuthenticationController extends AbstractRestController
         $em->persist($user);
         $em->flush();
 
-        return $this->jsonStd($user, Response::HTTP_CREATED, context: ['groups' => ['read:user:user']]);
+        return $this->json($user, Response::HTTP_CREATED, context: ['groups' => ['read:user:user']]);
     }
 }

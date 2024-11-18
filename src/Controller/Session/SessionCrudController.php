@@ -27,6 +27,6 @@ class SessionCrudController extends AbstractRestController
     ): JsonResponse {
         $sessions = $sessionRepository->paginateAndFilterAll($page, $filter, $user);
 
-        return $this->jsonStd($sessions, context: ['groups' => ['read:session:user']]);
+        return $this->json($sessions, context: ['groups' => ['read:session:user']]);
     }
 }

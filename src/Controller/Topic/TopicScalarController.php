@@ -25,6 +25,6 @@ class TopicScalarController extends AbstractRestController
             TopicCountCriteria::ALL => $topicRepository->countAll($user),
         };
 
-        return $this->jsonStd($count);
+        return $this->json($count);
     }
 }

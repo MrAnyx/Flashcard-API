@@ -89,7 +89,7 @@ class PasswordForgottenController extends AbstractRestController
             $token
         ));
 
-        return $this->jsonStd(null, Response::HTTP_CREATED);
+        return $this->json(null, Response::HTTP_CREATED);
     }
 
     #[Route('/reset-password/proceed', name: 'password_reset_proceed', methods: ['POST'])]
@@ -126,6 +126,6 @@ class PasswordForgottenController extends AbstractRestController
 
         $em->flush();
 
-        return $this->jsonStd($user, Response::HTTP_OK, context: ['groups' => ['read:user:user']]);
+        return $this->json($user, Response::HTTP_OK, context: ['groups' => ['read:user:user']]);
     }
 }

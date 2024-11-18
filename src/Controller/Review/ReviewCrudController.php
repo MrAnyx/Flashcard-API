@@ -23,7 +23,7 @@ class ReviewCrudController extends AbstractRestController
     ): JsonResponse {
         $reviews = $reviewRepository->findAllBySession($session, true);
 
-        return $this->jsonStd($reviews, context: [
+        return $this->json($reviews, context: [
             'groups' => ['read:review:user'],
         ]);
     }

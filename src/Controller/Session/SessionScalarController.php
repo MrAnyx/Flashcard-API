@@ -33,6 +33,6 @@ class SessionScalarController extends AbstractRestController
             SessionCountCriteria::GROUP_BY_DATE => $sessionRepository->countAllByDate($user, $period),
         };
 
-        return $this->jsonStd($count);
+        return $this->json($count);
     }
 }
