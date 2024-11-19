@@ -7,13 +7,12 @@ namespace App\Controller;
 use App\Attribute\RelativeToEntity;
 use App\Entity\Topic;
 use App\Entity\User;
-use App\Model\Filter;
-use App\Model\Page;
-use App\Repository\TopicRepository;
+use App\Modifier\Modifier;
+use App\Modifier\Mutator\HashPasswordMutator;
 use App\Service\RequestDecoder;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api/_internal', name: 'api_', format: 'json')]
 #[RelativeToEntity(Topic::class)]
@@ -21,23 +20,22 @@ class TestController extends AbstractRestController
 {
     #[Route('/test', name: 'test')]
     public function index(
-        // RequestDecoder $requestDecoder,
-        // EntityManagerInterface $em,
-        TopicRepository $topicRepository,
-        Page $page,
-        ?Filter $filter,
+        RequestDecoder $requestDecoder,
+        #[CurrentUser] User $user,
     ): JsonResponse {
-        // $existingEntity = $em->find(Topic::class, 1);
+        $entity = $requestDecoder->decode(
+            classname: User::class,
+            fromObject: $user,
+            deserializationGroups: ['write:user:user'],
+            mutators: [
+                new Modifier('rawPassword', HashPasswordMutator::class),
+            ],
+        );
 
-        // $entity = $requestDecoder->decode(
-        //     classname: Topic::class,
-        //     fromObject: $existingEntity,
-        //     strict: true,
-        //     deserializationGroups: ['write:topic:user']
-        // );
+        if ($entity->getRawPassword() !== null) {
+            $this->validateEntity($entity, ['Default', 'edit:user:password']);
+        }
 
-        $topics = $topicRepository->paginateAndFilterAll($page, $filter);
-
-        return $this->json($topics, context: ['groups' => ['read:topic:user', 'read:pagination']]);
+        return $this->json($entity, context: ['groups' => ['read:user:user']]);
     }
 }

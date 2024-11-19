@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Transformer\Transformer;
-use App\Transformer\TransformerInterface;
+use App\Modifier\Modifier;
+use App\Modifier\Mutator\MutatorInterface;
+use App\Modifier\Transformer\TransformerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,8 +40,8 @@ class RequestDecoder
      *
      * @param class-string<T> $classname
      * @param bool|null $strict Define the strictness of the field resolution. With value null, the strictness with be guessed by the request method (POST and PUT)
-     * @param array<string, Transformer[]> $transformers
-     * @param array<string, Transformer[]> $mutators
+     * @param Modifier[] $transformers
+     * @param Modifier[] $mutators
      *
      * @return T
      */
@@ -75,15 +76,18 @@ class RequestDecoder
 
         $transformedBody = $fieldsOptionsResolver->resolve($requestBody);
 
-        foreach ($transformedBody as $field => $value) {
-            if (\array_key_exists($field, $transformers)) {
-                foreach ($transformers[$field] as $transformer) {
-                    /** @var TransformerInterface $transformerInstance */
-                    $transformerInstance = $this->container->get($transformer->transformerClassname);
-
-                    $transformedBody[$field] = $transformerInstance->transform($transformedBody[$field], $transformer->context);
-                }
+        foreach ($transformers as $transformer) {
+            if (!\array_key_exists($transformer->field, $transformedBody)) {
+                continue;
             }
+
+            if (!is_subclass_of($transformer->modifierClassname, TransformerInterface::class)) {
+                throw new \InvalidArgumentException(\sprintf('Transformer %s must implement the %s interface', $transformer->modifierClassname, TransformerInterface::class));
+            }
+
+            /** @var TransformerInterface $transformerInstance */
+            $transformerInstance = $this->container->get($transformer->modifierClassname);
+            $transformedBody[$transformer->field] = $transformerInstance->transform($transformedBody[$transformer->field], $transformer->context);
         }
 
         $entity = $fromObject ?? new $classname();
@@ -91,17 +95,20 @@ class RequestDecoder
             $this->propertyAccessor->setValue($entity, $field, $value);
         }
 
-        foreach ($transformedBody as $field => $value) {
-            if (\array_key_exists($field, $mutators)) {
-                foreach ($mutators[$field] as $mutator) {
-                    $currentValue = $this->propertyAccessor->getValue($entity, $field);
-
-                    /** @var TransformerInterface $mutatorInstance */
-                    $mutatorInstance = $this->container->get($mutator->transformerClassname);
-
-                    $this->propertyAccessor->setValue($entity, $field, $mutatorInstance->transform($currentValue, $mutator->context));
-                }
+        foreach ($mutators as $mutator) {
+            if (!\in_array($mutator->field, $transformedBody)) {
+                continue;
             }
+
+            if (!is_subclass_of($mutator->modifierClassname, MutatorInterface::class)) {
+                throw new \InvalidArgumentException(\sprintf('Mutator %s must implement the %s interface', $mutator->modifierClassname, MutatorInterface::class));
+            }
+
+            $currentValue = $this->propertyAccessor->getValue($entity, $mutator->field);
+
+            /** @var MutatorInterface $mutatorInstance */
+            $mutatorInstance = $this->container->get($mutator->modifierClassname);
+            $mutatorInstance->mutate($entity, $currentValue, $mutator->context);
         }
 
         if ($validationGroups !== null) {

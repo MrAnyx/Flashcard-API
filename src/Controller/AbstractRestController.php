@@ -9,7 +9,6 @@ use App\Enum\PeriodType;
 use App\Enum\SettingName;
 use App\OptionsResolver\PeriodOptionsResolver;
 use App\Service\RequestDecoder;
-use App\Transformer\Transformer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;

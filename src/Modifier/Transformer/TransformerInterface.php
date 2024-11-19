@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Transformer;
+namespace App\Modifier\Transformer;
 
 interface TransformerInterface
 {

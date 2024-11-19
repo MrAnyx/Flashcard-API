@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Transformer;
+namespace App\Modifier;
 
-class Transformer
+class Modifier
 {
     public function __construct(
-        public readonly string $transformerClassname,
+        public readonly string $field,
+        public readonly string $modifierClassname,
         public readonly array $context = [],
     ) {
     }

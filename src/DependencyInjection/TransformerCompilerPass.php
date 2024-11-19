@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\DependencyInjection;
 
-use App\Transformer\TransformerInterface;
+use App\Modifier\Mutator\MutatorInterface;
+use App\Modifier\Transformer\TransformerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -20,8 +21,8 @@ class TransformerCompilerPass implements CompilerPassInterface
                 continue;
             }
 
-            // Ensure the class implements TransformerInterface
-            if (is_subclass_of($class, TransformerInterface::class)) {
+            // Ensure the class implements TransformerInterface or MutatorInterface
+            if (is_subclass_of($class, TransformerInterface::class) || is_subclass_of($class, MutatorInterface::class)) {
                 $definition->setPublic(true);
             }
         }

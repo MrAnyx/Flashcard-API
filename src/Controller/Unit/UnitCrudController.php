@@ -14,7 +14,7 @@ use App\Model\Filter;
 use App\Model\Page;
 use App\Repository\UnitRepository;
 use App\Transformer\EntityByIdTransformer;
-use App\Transformer\Transformer;
+use App\Transformer\Modifier;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
 use App\Voter\UnitVoter;
@@ -57,7 +57,7 @@ class UnitCrudController extends AbstractRestController
             validationGroups: null,
             transformers: [
                 'topic' => [
-                    new Transformer(EntityByIdTransformer::class, ['entity' => Topic::class, 'voter' => TopicVoter::OWNER]),
+                    new Modifier(EntityByIdTransformer::class, ['entity' => Topic::class, 'voter' => TopicVoter::OWNER]),
                 ],
             ]
         );
@@ -96,7 +96,7 @@ class UnitCrudController extends AbstractRestController
             deserializationGroups: ['write:unit:user'],
             transformers: [
                 'topic' => [
-                    new Transformer(EntityByIdTransformer::class, ['entity' => Topic::class, 'voter' => TopicVoter::OWNER]),
+                    new Modifier(EntityByIdTransformer::class, ['entity' => Topic::class, 'voter' => TopicVoter::OWNER]),
                 ],
             ]
         );
