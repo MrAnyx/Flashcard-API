@@ -16,13 +16,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
+#[RelativeToEntity(Session::class)]
 class SessionCrudController extends AbstractRestController
 {
     #[Route('/sessions', name: 'get_sessions', methods: ['GET'])]
     public function getSessions(
         SessionRepository $sessionRepository,
-        #[RelativeToEntity(Session::class)] Page $page,
-        #[RelativeToEntity(Session::class)] Filter $filter,
+        Page $page,
+        ?Filter $filter,
         #[CurrentUser] User $user,
     ): JsonResponse {
         $sessions = $sessionRepository->paginateAndFilterAll($page, $filter, $user);

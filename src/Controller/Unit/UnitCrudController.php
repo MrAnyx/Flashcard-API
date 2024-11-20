@@ -12,9 +12,9 @@ use App\Entity\Unit;
 use App\Entity\User;
 use App\Model\Filter;
 use App\Model\Page;
+use App\Modifier\Modifier;
+use App\Modifier\Transformer\EntityByIdTransformer;
 use App\Repository\UnitRepository;
-use App\Transformer\EntityByIdTransformer;
-use App\Transformer\Modifier;
 use App\Utility\Regex;
 use App\Voter\TopicVoter;
 use App\Voter\UnitVoter;
@@ -54,15 +54,11 @@ class UnitCrudController extends AbstractRestController
         $unit = $this->decodeBody(
             classname: Unit::class,
             deserializationGroups: ['write:unit:user'],
-            validationGroups: null,
             transformers: [
-                'topic' => [
-                    new Modifier(EntityByIdTransformer::class, ['entity' => Topic::class, 'voter' => TopicVoter::OWNER]),
-                ],
+                new Modifier('topic', EntityByIdTransformer::class, ['entity' => Topic::class, 'voter' => TopicVoter::OWNER]),
             ]
         );
 
-        $this->validateEntity($unit);
         $em->persist($unit);
         $em->flush();
 
@@ -95,9 +91,7 @@ class UnitCrudController extends AbstractRestController
             fromObject: $unit,
             deserializationGroups: ['write:unit:user'],
             transformers: [
-                'topic' => [
-                    new Modifier(EntityByIdTransformer::class, ['entity' => Topic::class, 'voter' => TopicVoter::OWNER]),
-                ],
+                new Modifier('topic', EntityByIdTransformer::class, ['entity' => Topic::class, 'voter' => TopicVoter::OWNER]),
             ]
         );
 

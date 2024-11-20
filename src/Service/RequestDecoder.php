@@ -96,7 +96,7 @@ class RequestDecoder
         }
 
         foreach ($mutators as $mutator) {
-            if (!\in_array($mutator->field, $transformedBody)) {
+            if (!\array_key_exists($mutator->field, $transformedBody)) {
                 continue;
             }
 
