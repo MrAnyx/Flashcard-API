@@ -63,8 +63,8 @@ class AbstractRestController extends AbstractController
      *
      * @param class-string<T> $classname
      * @param bool|null $strict Define the strictness of the field resolution. With value null, the strictness with be guessed by the request method (POST and PUT)
-     * @param array<string, Transformer[]> $transformers
-     * @param array<string, Transformer[]> $mutators
+     * @param Modifier[] $transformers
+     * @param Modifier[] $mutators
      *
      * @return T
      */

@@ -33,7 +33,7 @@ class TestController extends AbstractRestController
         );
 
         if ($entity->getRawPassword() !== null) {
-            $this->validateEntity($entity, ['Default', 'edit:user:password']);
+            $this->validateEntity($entity, ['edit:user:password']);
         }
 
         return $this->json($entity, context: ['groups' => ['read:user:user']]);

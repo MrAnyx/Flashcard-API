@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
-use App\Attribute\Body;
 use App\Controller\AbstractRestController;
+use App\Entity\Setting;
 use App\Entity\User;
-use App\OptionsResolver\SettingOptionsResolver;
-use App\OptionsResolver\UserOptionsResolver;
-use App\Setting\SettingTemplate;
+use App\Modifier\Modifier;
+use App\Modifier\Mutator\HashPasswordMutator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -51,84 +47,23 @@ class UserCrudController extends AbstractRestController
     #[Route('/users/me', name: 'update_me', methods: ['PATCH', 'PUT'])]
     public function updateMe(
         EntityManagerInterface $em,
-        Request $request,
-        UserOptionsResolver $userOptionsResolver,
-        UserPasswordHasherInterface $passwordHasher,
-        #[Body] mixed $body,
         #[CurrentUser] User $user,
     ): JsonResponse {
-        try {
-            // Check if the request method is PUT. In this case, all parameters must be provided in the request body.
-            // Otherwise, all parameters are optional.
-            $mandatoryParameters = $request->getMethod() === 'PUT';
+        $updatedUser = $this->decodeBody(
+            classname: User::class,
+            fromObject: $user,
+            deserializationGroups: ['write:user:user'],
+            mutators: [
+                new Modifier('rawPassword', HashPasswordMutator::class),
+            ]
+        );
 
-            // Validate the content of the request body
-            $data = $userOptionsResolver
-                ->configureUsername($mandatoryParameters)
-                ->configureEmail($mandatoryParameters)
-                ->configurePassword($mandatoryParameters)
-                ->resolve($body);
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
+        if ($updatedUser->getRawPassword() !== null) {
+            $this->validateEntity($updatedUser, ['edit:user:password']);
         }
-
-        $validationGroups = ['Default'];
-
-        // Update each fields if necessary
-        foreach ($data as $field => $value) {
-            switch ($field) {
-                case 'username':
-                    $user->setUsername($value);
-                    break;
-                case 'email':
-                    $user->setEmail($value);
-                    break;
-                case 'password':
-                    $user->setRawPassword($value);
-                    $user->setPassword($passwordHasher->hashPassword($user, $value));
-                    $validationGroups[] = 'edit:user:password';
-                    break;
-            }
-        }
-
-        // Second validation using the validation constraints
-        $this->validateEntity($user, $validationGroups);
-
-        // Save the user information
-        $em->flush();
-
-        // Return the user
-        return $this->json($user, context: ['groups' => ['read:user:user']]);
-    }
-
-    #[Route('/users/settings', name: 'create_update_setting', methods: ['POST'])]
-    public function createOrUpdateSetting(
-        EntityManagerInterface $em,
-        SettingOptionsResolver $settingOptionsResolver,
-        Request $request,
-        #[CurrentUser] User $user,
-    ) {
-        try {
-            $data = $settingOptionsResolver
-                ->configureName()
-                ->configureValue()
-                ->resolve(json_decode($request->getContent(), true));
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
-        }
-
-        try {
-            $setting = SettingTemplate::getSetting($data['name']);
-
-            $setting->setValue($data['value']);
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
-        }
-
-        $user->updateSetting($setting);
 
         $em->flush();
 
-        return $this->json($user->getSettings());
+        return $this->json($updatedUser, context: ['groups' => ['read:user:user']]);
     }
 }
