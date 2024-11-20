@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
+use App\Attribute\RelativeToEntity;
 use App\Controller\AbstractRestController;
 use App\DTO\SettingDTO;
 use App\Entity\User;
@@ -17,6 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
+#[RelativeToEntity(User::class)]
 class UserBehaviorController extends AbstractRestController
 {
     #[Route('/users/settings', name: 'create_update_setting', methods: ['POST'])]

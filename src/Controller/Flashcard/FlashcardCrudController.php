@@ -29,13 +29,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
+#[RelativeToEntity(Flashcard::class)]
 class FlashcardCrudController extends AbstractRestController
 {
     #[Route('/flashcards', name: 'get_flashcards', methods: ['GET'])]
     public function getFlashcards(
         FlashcardRepository $flashcardRepository,
-        #[RelativeToEntity(Flashcard::class)] Page $page,
-        #[RelativeToEntity(Flashcard::class)] Filter $filter,
+        Page $page,
+        ?Filter $filter,
         #[CurrentUser] User $user,
     ): JsonResponse {
         $flashcards = $flashcardRepository->paginateAndFilterAll($page, $filter, $user);
@@ -175,8 +176,8 @@ class FlashcardCrudController extends AbstractRestController
     #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getFlashcardsByUnit(
         FlashcardRepository $flashcardRepository,
-        #[RelativeToEntity(Flashcard::class)] Page $page,
-        #[RelativeToEntity(Flashcard::class)] Filter $filter,
+        Page $page,
+        ?Filter $filter,
         #[Resource(UnitVoter::OWNER)] Unit $unit,
     ): JsonResponse {
         $flashcards = $flashcardRepository->paginateAndFilterByUnit($page, $filter, $unit);

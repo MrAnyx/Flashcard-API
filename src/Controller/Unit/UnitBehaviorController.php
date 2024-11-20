@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Unit;
 
+use App\Attribute\RelativeToEntity;
 use App\Attribute\Resource;
 use App\Controller\AbstractRestController;
 use App\Entity\Session;
@@ -21,6 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
+#[RelativeToEntity(Unit::class)]
 class UnitBehaviorController extends AbstractRestController
 {
     #[Route('/units/{id}/reset', name: 'reset_unit', methods: ['PATCH'], requirements: ['id' => Regex::INTEGER])]

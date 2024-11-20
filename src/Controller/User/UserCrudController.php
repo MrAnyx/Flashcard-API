@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
+use App\Attribute\RelativeToEntity;
 use App\Controller\AbstractRestController;
 use App\Entity\Setting;
 use App\Entity\User;
@@ -16,6 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
+#[RelativeToEntity(User::class)]
 class UserCrudController extends AbstractRestController
 {
     #[Route('/users/me', name: 'get_me', methods: ['GET'])]

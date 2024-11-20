@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Flashcard;
 
 use App\Attribute\Body;
+use App\Attribute\RelativeToEntity;
 use App\Attribute\Resource;
 use App\Controller\AbstractRestController;
 use App\Entity\Flashcard;
@@ -27,6 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api', 'api_', format: 'json')]
+#[RelativeToEntity(Flashcard::class)]
 class FlashcardBehaviorController extends AbstractRestController
 {
     #[Route('/flashcards/{id}/review', name: 'review_flashcard', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
