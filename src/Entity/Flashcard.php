@@ -43,7 +43,7 @@ class Flashcard
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'The front side of a flashcard can not be blank')]
     #[Assert\Length(max: 255, maxMessage: 'The front side of a flashcard can not exceed {{ limit }} characters')]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
+    #[Groups(['read:flashcard:user', 'write:flashcard:user'])]
     #[Sortable]
     #[Searchable]
     private ?string $front = null;
@@ -51,33 +51,33 @@ class Flashcard
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'The back side of a flashcard can not be blank')]
     #[Assert\Length(max: 255, maxMessage: 'The back side of a flashcard can not exceed {{ limit }} characters')]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
+    #[Groups(['read:flashcard:user', 'write:flashcard:user'])]
     private ?string $back = null;
 
     #[ORM\Column(length: 1000, nullable: true)]
     #[Assert\Length(max: 1000, maxMessage: 'The details of a flashcard can not exceed {{ limit }} characters')]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user', 'write:flashcard:user'])]
     private ?string $details = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $nextReview = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $previousReview = null;
 
     #[ORM\Column(type: Types::INTEGER, enumType: StateType::class)]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user'])]
     #[Assert\NotBlank(message: 'The state of a flashcard can not be blank')]
     private StateType $state = StateType::New;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user'])]
     #[Assert\Range(
         min: 1,
         max: 10,
@@ -88,28 +88,28 @@ class Flashcard
     private ?float $difficulty = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable]
     private ?float $stability = null;
 
     #[ORM\ManyToOne(inversedBy: 'flashcards')]
     #[Assert\NotBlank(message: 'You must associate a unit to this flashcard')]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
+    #[Groups(['read:flashcard:user', 'write:flashcard:user'])]
     private ?Unit $unit = null;
 
     #[ORM\OneToMany(mappedBy: 'flashcard', targetEntity: Review::class, orphanRemoval: true)]
     private Collection $reviewHistory;
 
     #[ORM\Column]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user', 'write:flashcard:user'])]
     #[Sortable]
     #[Searchable]
     private bool $favorite = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255, maxMessage: 'The help of a flashcard can not exceed {{ limit }} characters')]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user', 'write:flashcard:user'])]
     #[Sortable]
     #[Searchable]
     private ?string $help = null;

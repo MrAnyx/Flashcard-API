@@ -58,7 +58,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getOneOrNullResult();
     }
 
-    public function paginateAndFilterAll(Page $page, Filter $filter): Paginator
+    public function paginateAndFilterAll(Page $page, ?Filter $filter): Paginator
     {
         $query = $this->createQueryBuilder('u');
 

@@ -72,7 +72,7 @@ class AbstractRestController extends AbstractController
         string $classname,
         ?object $fromObject = null,
         ?bool $strict = null,
-        array $deserializationGroups = ['Default'],
+        array $deserializationGroups = [],
         bool $ignoreUnknownFields = true,
         array $transformers = [],
         array $mutators = [],

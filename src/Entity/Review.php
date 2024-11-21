@@ -33,7 +33,7 @@ class Review
 
     #[ORM\Column(type: Types::INTEGER, enumType: GradeType::class)]
     #[Assert\NotBlank(message: 'The grade of a review can not be blank')]
-    #[Groups(['read:review:user'])]
+    #[Groups(['read:review:user', 'write:review:user'])]
     private ?GradeType $grade = null;
 
     #[ORM\Column]
@@ -43,6 +43,7 @@ class Review
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: 'You must associate a session to this review')]
+    #[Groups(['write:review:user'])]
     private ?Session $session = null;
 
     #[ORM\Column(nullable: true)]

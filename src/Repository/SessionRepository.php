@@ -22,7 +22,7 @@ class SessionRepository extends ServiceEntityRepository
         parent::__construct($registry, Session::class);
     }
 
-    public function paginateAndFilterAll(Page $page, Filter $filter, ?User $user = null)
+    public function paginateAndFilterAll(Page $page, ?Filter $filter, ?User $user = null)
     {
         $query = $this->createQueryBuilder('s')
             ->select('s, COUNT(r.id) as totalReviews')

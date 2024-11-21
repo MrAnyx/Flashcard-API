@@ -12,7 +12,11 @@ use App\Entity\Flashcard;
 use App\Entity\Review;
 use App\Entity\Session;
 use App\Entity\User;
+use App\Enum\GradeType;
 use App\Enum\SettingName;
+use App\Modifier\Modifier;
+use App\Modifier\Transformer\EntityByIdTransformer;
+use App\Modifier\Transformer\EnumTransformer;
 use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 use App\Repository\FlashcardRepository;
 use App\Repository\ReviewRepository;
@@ -20,6 +24,7 @@ use App\SpacedRepetition\Fsrs4_5Algorithm;
 use App\SpacedRepetition\SpacedRepetitionScheduler;
 use App\Utility\Regex;
 use App\Voter\FlashcardVoter;
+use App\Voter\SessionVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,27 +48,24 @@ class FlashcardBehaviorController extends AbstractRestController
             throw new BadRequestHttpException(\sprintf('You can not review the flashcard with id %d yet. The next review is scheduled for %s', $flashcard->getId(), $flashcard->getNextReview()->format('jS \\of F Y')));
         }
 
-        try {
-            $data = $spacedRepetitionOptionsResolver
-                ->configureGrade()
-                ->configureSession()
-                ->resolve($body);
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
+        $review = $this->decodeBody(
+            classname: Review::class,
+            deserializationGroups: ['write:review:user'],
+            transformers: [
+                new Modifier('session', EntityByIdTransformer::class, ['entity' => Session::class, 'voter' => SessionVoter::OWNER]),
+                new Modifier('grade', EnumTransformer::class, ['enum' => GradeType::class]),
+            ]
+        );
+
+        if ($review->getSession()->getEndedAt() !== null) {
+            throw new BadRequestHttpException(\sprintf('The session with id %d ended at %s. You can not associate a new review with this session', $review->getSession()->getId(), $review->getSession()->getEndedAt()->format('jS \\of F Y')));
         }
 
-        if ($data['session']->getEndedAt() !== null) {
-            throw new BadRequestHttpException(\sprintf('The session with id %d ended at %s. You can not associate a new review with this session', $data['session']->getId(), $data['session']->getEndedAt()->format('jS \\of F Y')));
-        }
-
-        $spacedRepetitionScheduler->review($flashcard, $data['grade'], new Fsrs4_5Algorithm());
+        $spacedRepetitionScheduler->review($flashcard, $review->getGrade(), new Fsrs4_5Algorithm());
         $this->validateEntity($flashcard);
 
-        $review = new Review();
         $review
             ->setFlashcard($flashcard)
-            ->setGrade($data['grade'])
-            ->setSession($data['session'])
             ->setDifficulty($flashcard->getDifficulty())
             ->setStability($flashcard->getStability());
 

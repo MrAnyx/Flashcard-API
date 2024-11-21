@@ -47,7 +47,7 @@ class FlashcardRepository extends ServiceEntityRepository
         return $query->getQuery()->getSingleScalarResult();
     }
 
-    public function paginateAndFilterAll(Page $page, Filter $filter, ?User $user = null): Paginator
+    public function paginateAndFilterAll(Page $page, ?Filter $filter, ?User $user = null): Paginator
     {
         $query = $this->createQueryBuilder('f')
             ->select('f', 'u', 't')
@@ -73,7 +73,7 @@ class FlashcardRepository extends ServiceEntityRepository
         return new Paginator($query, $page);
     }
 
-    public function paginateAndFilterByUnit(Page $page, Filter $filter, Unit $unit): Paginator
+    public function paginateAndFilterByUnit(Page $page, ?Filter $filter, Unit $unit): Paginator
     {
         $query = $this->createQueryBuilder('f')
             ->select('f', 'u', 't')
