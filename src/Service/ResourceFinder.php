@@ -18,13 +18,13 @@ class ResourceFinder
     }
 
     /**
-     * @template T
+     * @template T of object
      *
      * @param class-string<T> $classname
      *
-     * @return T
+     * @return ?T
      */
-    public function getResourceById(string $classname, mixed $id, bool $allowNull = false, ?string $voterAttribute = null): object
+    public function getResourceById(string $classname, mixed $id, bool $allowNull = false, ?string $voterAttribute = null): ?object
     {
         $resource = $this->em->find($classname, $id);
 

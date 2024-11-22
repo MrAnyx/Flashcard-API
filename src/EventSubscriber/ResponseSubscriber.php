@@ -59,7 +59,6 @@ class ResponseSubscriber implements EventSubscriberInterface
         return match ($format) {
             ContentType::JSON => new JsonEncoder(),
             ContentType::JSON_STD => new JsonStandardEncoder(),
-            default => throw new \RuntimeException(\sprintf('Can not find the corresponding response encoder for format %s', $format)),
         };
     }
 }

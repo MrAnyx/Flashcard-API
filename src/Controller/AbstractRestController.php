@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Enum\PeriodType;
 use App\Enum\SettingName;
+use App\Modifier\Modifier;
 use App\OptionsResolver\PeriodOptionsResolver;
 use App\Service\RequestDecoder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

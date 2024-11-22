@@ -36,7 +36,7 @@ class RequestDecoder
     }
 
     /**
-     * @template T
+     * @template T of object
      *
      * @param class-string<T> $classname
      * @param bool|null $strict Define the strictness of the field resolution. With value null, the strictness with be guessed by the request method (POST and PUT)
