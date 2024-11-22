@@ -6,12 +6,13 @@ namespace App\DataFixtures;
 
 use App\Factory\UnitFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
 use function Zenstruck\Foundry\Persistence\flush_after;
 
-class UnitFixtures extends Fixture implements DependentFixtureInterface
+class UnitFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     public static function getGroups(): array
     {

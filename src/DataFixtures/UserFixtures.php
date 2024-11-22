@@ -7,11 +7,12 @@ namespace App\DataFixtures;
 use App\Factory\UserFactory;
 use App\Utility\Roles;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
 use function Zenstruck\Foundry\Persistence\flush_after;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements FixtureGroupInterface
 {
     public static function getGroups(): array
     {
