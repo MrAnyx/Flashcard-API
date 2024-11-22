@@ -12,7 +12,7 @@ enum FlashcardCountCriteria: string
 
     case ALL = 'all';
 
-    case TO_REVIEW = 'to_review';
+    case TO_REVIEW = 'to-review';
 
     case CORRECT = 'correct';
 }

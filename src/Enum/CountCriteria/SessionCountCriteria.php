@@ -12,5 +12,5 @@ enum SessionCountCriteria: string
 
     case ALL = 'all';
 
-    case GROUP_BY_DATE = 'group_by_date';
+    case GROUP_BY_DATE = 'group-by-date';
 }
