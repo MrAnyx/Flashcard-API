@@ -62,14 +62,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         $query = $this->createQueryBuilder('u');
 
-        if ($filter->isFullyConfigured()) {
+        if ($filter !== null) {
             $query
                 ->andWhere("u.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
                 ->setParameter('query', $filter->getDoctrineParameter());
         }
 
         $query->addOrderBy("CASE WHEN u.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC')
-            ->addOrderBy("u.{$page->sort}", $page->order);
+            ->addOrderBy("u.{$page->sort}", $page->order->value);
 
         return new Paginator($query, $page);
     }

@@ -35,7 +35,7 @@ class SessionRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        if ($filter->isFullyConfigured()) {
+        if ($filter !== null) {
             $query
                 ->andWhere("s.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
                 ->setParameter('query', $filter->getDoctrineParameter());
@@ -43,7 +43,7 @@ class SessionRepository extends ServiceEntityRepository
 
         $query
             ->addOrderBy("CASE WHEN s.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
-            ->addOrderBy("s.{$page->sort}", $page->order);
+            ->addOrderBy("s.{$page->sort}", $page->order->value);
 
         return new Paginator($query, $page, VirtualHydrator::class);
     }

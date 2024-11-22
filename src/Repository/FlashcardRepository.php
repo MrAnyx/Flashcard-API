@@ -60,7 +60,7 @@ class FlashcardRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        if ($filter->isFullyConfigured()) {
+        if ($filter !== null) {
             $query
                 ->andWhere("f.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
                 ->setParameter('query', $filter->getDoctrineParameter());
@@ -68,7 +68,7 @@ class FlashcardRepository extends ServiceEntityRepository
 
         $query
             ->addOrderBy("CASE WHEN f.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
-            ->addOrderBy("f.{$page->sort}", $page->order);
+            ->addOrderBy("f.{$page->sort}", $page->order->value);
 
         return new Paginator($query, $page);
     }
@@ -82,14 +82,14 @@ class FlashcardRepository extends ServiceEntityRepository
             ->where('f.unit = :unit')
             ->setParameter('unit', $unit);
 
-        if ($filter->isFullyConfigured()) {
+        if ($filter !== null) {
             $query
                 ->andWhere("f.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
                 ->setParameter('query', $filter->getDoctrineParameter());
         }
 
         $query->addOrderBy("CASE WHEN f.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC')
-            ->addOrderBy("f.{$page->sort}", $page->order);
+            ->addOrderBy("f.{$page->sort}", $page->order->value);
 
         return new Paginator($query, $page);
     }

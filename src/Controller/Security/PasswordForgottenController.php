@@ -10,7 +10,6 @@ use App\DTO\PasswordResetDTO;
 use App\Entity\PasswordReset;
 use App\Exception\MaxTriesReachedException;
 use App\Message\SendTextEmailMessage;
-use App\OptionsResolver\UserOptionsResolver;
 use App\Repository\PasswordResetRepository;
 use App\Repository\UserRepository;
 use App\UniqueGenerator\UniqueTokenGenerator;
@@ -31,7 +30,6 @@ class PasswordForgottenController extends AbstractRestController
     #[Route('/reset-password/request', name: 'password_reset_request', methods: ['POST'])]
     public function requestPasswordReset(
         EntityManagerInterface $em,
-        UserOptionsResolver $userOptionsResolver,
         UserRepository $userRepository,
         PasswordResetRepository $passwordResetRepository,
         UniqueTokenGenerator $uniqueTokenGenerator,

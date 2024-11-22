@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Flashcard;
 
-use App\Attribute\Body;
 use App\Attribute\RelativeToEntity;
 use App\Attribute\Resource;
 use App\Controller\AbstractRestController;
@@ -17,7 +16,6 @@ use App\Enum\SettingName;
 use App\Modifier\Modifier;
 use App\Modifier\Transformer\EntityByIdTransformer;
 use App\Modifier\Transformer\EnumTransformer;
-use App\OptionsResolver\SpacedRepetitionOptionsResolver;
 use App\Repository\FlashcardRepository;
 use App\Repository\ReviewRepository;
 use App\SpacedRepetition\Fsrs4_5Algorithm;
@@ -39,10 +37,8 @@ class FlashcardBehaviorController extends AbstractRestController
     #[Route('/flashcards/{id}/review', name: 'review_flashcard', methods: ['POST'], requirements: ['id' => Regex::INTEGER])]
     public function reviewFlashcard(
         EntityManagerInterface $em,
-        SpacedRepetitionOptionsResolver $spacedRepetitionOptionsResolver,
         SpacedRepetitionScheduler $spacedRepetitionScheduler,
         #[Resource(FlashcardVoter::OWNER)] Flashcard $flashcard,
-        #[Body] mixed $body,
     ): JsonResponse {
         if ($flashcard->getNextReview() > (new \DateTimeImmutable())) {
             throw new BadRequestHttpException(\sprintf('You can not review the flashcard with id %d yet. The next review is scheduled for %s', $flashcard->getId(), $flashcard->getNextReview()->format('jS \\of F Y')));
