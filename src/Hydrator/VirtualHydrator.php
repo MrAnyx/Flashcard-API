@@ -6,6 +6,7 @@ namespace App\Hydrator;
 
 use App\Attribute\Virtual;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class VirtualHydrator extends ObjectHydrator
 {
@@ -33,15 +34,12 @@ class VirtualHydrator extends ObjectHydrator
 
                 $propertyMappings = $this->propertyCache[$className];
 
+                $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
                 // Hydrate only the fields that are mapped by Virtual attributes
                 foreach ($propertyMappings as [$propertyName, $fieldName]) {
-                    $setterMethod = 'set' . ucfirst($propertyName->name);
-
-                    if (method_exists($object, $setterMethod) && isset($row[$fieldName])) {
-                        // Dynamically call the setter method
-                        \call_user_func([$object, $setterMethod], $row[$fieldName]);
-
-                        // Remove the hydrated key from the data array
+                    if ($propertyAccessor->isWritable($object, $propertyName->name) && isset($row[$fieldName])) {
+                        $propertyAccessor->setValue($object, $propertyName->name, $row[$fieldName]);
                         unset($data[$rowNumber][$fieldName]);
                     }
                 }
