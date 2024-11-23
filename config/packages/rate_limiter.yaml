@@ -1,0 +1,11 @@
+framework:
+    rate_limiter:
+        api:
+            policy: "sliding_window"
+            limit: 10
+            interval: "5 minutes"
+
+        login:
+            policy: "sliding_window"
+            limit: 3
+            interval: "1 minute"
