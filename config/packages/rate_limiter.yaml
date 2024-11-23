@@ -2,7 +2,7 @@ framework:
     rate_limiter:
         api:
             policy: "sliding_window"
-            limit: 10
+            limit: 1000
             interval: "5 minutes"
 
         login:
