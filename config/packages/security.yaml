@@ -3,7 +3,6 @@ security:
         ROLE_PREMIUM: ROLE_USER
         ROLE_ADMIN: ROLE_USER
 
-    enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
@@ -20,9 +19,9 @@ security:
                 property: token
 
     firewalls:
-        # dev:
-        #     pattern: ^/(_(profiler|wdt)|css|images|js)/
-        #     security: false
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
 
         login:
             pattern: ^/api/auth/login

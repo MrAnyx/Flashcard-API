@@ -20,6 +20,12 @@ class ResponseSubscriber implements EventSubscriberInterface
         $initialRequest = $event->getRequest();
         $initialResponse = $event->getResponse();
 
+        // Enabled only for project routes, not symfony routes like the profiler
+        [$controller, $method] = explode('::', $initialRequest->attributes->get('_controller'));
+        if (!class_exists($controller) || !method_exists($controller, $method)) {
+            return;
+        }
+
         $acceptHeaders = $initialRequest->getAcceptableContentTypes();
         $format = $this->getResponseFormat($acceptHeaders) ?? ContentType::JSON_STD;
         $encoder = $this->getEncoder($format);
