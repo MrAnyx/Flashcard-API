@@ -6,35 +6,32 @@ namespace App\Controller;
 
 use App\Attribute\RelativeToEntity;
 use App\Entity\Topic;
-use App\Entity\User;
+use App\Entity\Unit;
 use App\Modifier\Modifier;
-use App\Modifier\Mutator\HashPasswordMutator;
-use App\Service\RequestDecoder;
+use App\Modifier\Transformer\EntityByIdTransformer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api/_internal', name: 'api_', format: 'json')]
 #[RelativeToEntity(Topic::class)]
 class TestController extends AbstractRestController
 {
     #[Route('/test', name: 'test')]
-    public function index(
-        RequestDecoder $requestDecoder,
-        #[CurrentUser] User $user,
-    ): JsonResponse {
-        $entity = $requestDecoder->decode(
-            classname: User::class,
-            fromObject: $user,
-            deserializationGroups: ['write:user:user'],
-            mutators: [
-                new Modifier('rawPassword', HashPasswordMutator::class),
+    public function index(): JsonResponse
+    {
+        $entity = $this->decodeBody(
+            classname: Unit::class,
+            strict: false,
+            deserializationGroups: ['write:unit:user'],
+            transformers: [
+                new Modifier('topic', EntityByIdTransformer::class, [
+                    'entity' => Topic::class,
+                ]),
             ],
+            validationGroups: null
         );
 
-        if ($entity->getRawPassword() !== null) {
-            $this->validateEntity($entity, ['edit:user:password']);
-        }
+        dd($entity);
 
         return $this->json($entity, context: ['groups' => ['read:user:user']]);
     }
