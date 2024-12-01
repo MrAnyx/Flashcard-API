@@ -13,7 +13,7 @@
         "doctrine/doctrine-bundle": "*",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "*",
-        "nelmio/cors-bundle": "^2.3",
+        "nelmio/cors-bundle": "^2.5",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.23",
         "symfony/console": "6.4.*",

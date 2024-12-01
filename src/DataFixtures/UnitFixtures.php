@@ -19,7 +19,7 @@ class UnitFixtures extends Fixture implements DependentFixtureInterface, Fixture
         return ['all'];
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             TopicFixtures::class,

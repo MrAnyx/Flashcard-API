@@ -19,7 +19,7 @@ class FlashcardFixtures extends Fixture implements DependentFixtureInterface, Fi
         return ['all'];
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             UnitFixtures::class,
