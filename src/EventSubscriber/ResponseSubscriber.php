@@ -17,12 +17,11 @@ class ResponseSubscriber implements EventSubscriberInterface
 {
     public function onKernelResponse(ResponseEvent $event): void
     {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
         $initialRequest = $event->getRequest();
-
-        // if (!\in_array($initialRequest->getMethod(), ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
-        //     return;
-        // }
-
         $initialResponse = $event->getResponse();
 
         // Enabled only for project routes, not symfony routes like the profiler
