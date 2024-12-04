@@ -24,7 +24,7 @@ final class SendTextEmailMessageHandler
     public function __invoke(SendTextEmailMessage $message): void
     {
         $email = (new Email())
-            ->from('noreply@example.com')
+            ->from($this->sender)
             ->to($message->email)
             ->priority($message->priority)
             ->subject($message->subject)
