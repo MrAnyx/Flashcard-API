@@ -27,7 +27,7 @@ class ReviewCrudController extends AbstractRestController
         $reviews = $reviewRepository->findAllBySession($session, true);
 
         return $this->json($reviews, context: [
-            'groups' => ['read:review:user'],
+            'groups' => ['read:review:user', 'read:flashcard:user', 'read:unit:user', 'read:topic:user'],
         ]);
     }
 }

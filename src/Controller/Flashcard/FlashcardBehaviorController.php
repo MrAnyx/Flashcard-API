@@ -50,7 +50,8 @@ class FlashcardBehaviorController extends AbstractRestController
             transformers: [
                 new Modifier('session', EntityByIdTransformer::class, ['entity' => Session::class, 'voter' => SessionVoter::OWNER]),
                 new Modifier('grade', EnumTransformer::class, ['enum' => GradeType::class]),
-            ]
+            ],
+            validationGroups: null
         );
 
         if ($review->getSession()->getEndedAt() !== null) {
@@ -123,6 +124,6 @@ class FlashcardBehaviorController extends AbstractRestController
         return $this->json([
             'session' => $session,
             'flashcards' => $cardsToReview,
-        ], context: ['groups' => ['read:flashcard:user', 'read:session:user']]);
+        ], context: ['groups' => ['read:flashcard:user', 'read:unit:user', 'read:topic:user', 'read:session:user']]);
     }
 }

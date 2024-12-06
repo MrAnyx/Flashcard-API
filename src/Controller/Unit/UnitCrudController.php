@@ -44,7 +44,7 @@ class UnitCrudController extends AbstractRestController
     public function getUnit(
         #[Resource(UnitVoter::OWNER)] Unit $unit,
     ): JsonResponse {
-        return $this->json($unit, context: ['groups' => ['read:unit:user']]);
+        return $this->json($unit, context: ['groups' => ['read:unit:user', 'read:topic:user']]);
     }
 
     #[Route('/units', name: 'create_unit', methods: ['POST'])]

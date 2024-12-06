@@ -37,14 +37,14 @@ class FlashcardCrudController extends AbstractRestController
     ): JsonResponse {
         $flashcards = $flashcardRepository->paginateAndFilterAll($page, $filter, $user);
 
-        return $this->json($flashcards, context: ['groups' => ['read:flashcard:user']]);
+        return $this->json($flashcards, context: ['groups' => ['read:flashcard:user', 'read:unit:user', 'read:topic:user', 'read:pagination']]);
     }
 
     #[Route('/flashcards/{id}', name: 'get_flashcard', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
     public function getFlashcard(
         #[Resource(FlashcardVoter::OWNER)] Flashcard $flashcard,
     ): JsonResponse {
-        return $this->json($flashcard, context: ['groups' => ['read:flashcard:user']]);
+        return $this->json($flashcard, context: ['groups' => ['read:flashcard:user', 'read:unit:user', 'read:topic:user']]);
     }
 
     #[Route('/flashcards', name: 'create_flashcard', methods: ['POST'])]
@@ -99,7 +99,7 @@ class FlashcardCrudController extends AbstractRestController
         $this->validateEntity($updatedFlashcard);
         $em->flush();
 
-        return $this->json($updatedFlashcard, context: ['groups' => ['read:flashcard:user']]);
+        return $this->json($updatedFlashcard, context: ['groups' => ['read:flashcard:user', 'read:unit:user', 'read:topic:user']]);
     }
 
     #[Route('/units/{id}/flashcards', name: 'get_flashcards_by_unit', methods: ['GET'], requirements: ['id' => Regex::INTEGER])]
@@ -111,6 +111,6 @@ class FlashcardCrudController extends AbstractRestController
     ): JsonResponse {
         $flashcards = $flashcardRepository->paginateAndFilterByUnit($page, $filter, $unit);
 
-        return $this->json($flashcards, context: ['groups' => ['read:flashcard:user']]);
+        return $this->json($flashcards, context: ['groups' => ['read:flashcard:user', 'read:unit:user', 'read:topic:user', 'read:pagination']]);
     }
 }

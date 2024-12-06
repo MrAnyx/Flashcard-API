@@ -65,6 +65,6 @@ class UnitBehaviorController extends AbstractRestController
         return $this->json([
             'session' => $session,
             'flashcards' => $cardsToReview,
-        ], context: ['groups' => ['read:flashcard:user', 'read:session:user']]);
+        ], context: ['groups' => ['read:flashcard:user', 'read:session:user', 'read:unit:user', 'read:topic:user']]);
     }
 }

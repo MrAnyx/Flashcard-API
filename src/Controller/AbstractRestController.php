@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Enum\PeriodType;
 use App\Enum\SettingName;
+use App\Exception\Http\UnauthorizedHttpException;
 use App\Modifier\Modifier;
 use App\OptionsResolver\PeriodOptionsResolver;
 use App\Service\RequestDecoder;
@@ -52,11 +53,11 @@ class AbstractRestController extends AbstractController
     public function getUserSetting(SettingName $settingName): mixed
     {
         /**
-         * @var User $user
+         * @var ?User $user
          */
         $user = $this->getUser();
 
-        return $user->getSetting($settingName);
+        return $user?->getSetting($settingName) ?? throw new UnauthorizedHttpException('You must authenticated to access thos resource');
     }
 
     /**

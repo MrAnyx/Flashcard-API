@@ -23,19 +23,19 @@ class Flashcard
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user', 'read:review:user'])]
+    #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['read:flashcard:admin', 'read:flashcard:user'])]
+    #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $updatedAt = null;
