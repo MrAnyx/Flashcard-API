@@ -24,7 +24,7 @@ class SettingTemplate
             new SettingEntry(SettingName::FLASHCARD_PER_SESSION, 20, IntegerSerializer::class, [], [
                 new Assert\Range(min: 1, max: 50),
             ]),
-            new SettingEntry(SettingName::COLOR_THEME, 'light', StringSerializer::class, [], [
+            new SettingEntry(SettingName::COLOR_THEME, 'system', StringSerializer::class, [], [
                 new Assert\Choice(['light', 'dark', 'system']),
             ]),
             new SettingEntry(SettingName::PRIMARY_COLOR, 'sky', StringSerializer::class, [], [
