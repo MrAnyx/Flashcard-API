@@ -24,12 +24,14 @@ class PageResolver extends MapQueryStringRelativeToEntityResolver
 
         $page = $request->query->getInt('page', 1);
         $sort = $request->query->getString('sort', 'id');
-        $order = $request->query->getEnum('order', Order::class, Order::Ascending);
+        $strOrder = mb_strtoupper($request->query->getString('order', Order::Ascending->value));
         $itemsPerPage = $request->query->getInt('itemsPerPage', 25);
 
         if (!\in_array($sort, $sortableFields)) {
             throw new BadRequestHttpException(\sprintf('Invalid "sort" parameter. Available options are: %s', implode(', ', $sortableFields)));
         }
+
+        $order = Order::tryFrom($strOrder) ?? throw new BadRequestHttpException('Invalid "order" parameter');
 
         $pageInstance = new Page($page, $sort, $order, $itemsPerPage);
 
