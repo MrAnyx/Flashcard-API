@@ -14,7 +14,7 @@ class SettingDTO
     #[Groups(['write:setting:user'])]
     public SettingName $name;
 
-    #[Assert\NotBlank]
+    #[Assert\NotNull]
     #[Groups(['write:setting:user'])]
     public mixed $value;
 }
