@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Enum\PeriodType;
 use App\Enum\SettingName;
 use App\Exception\Http\UnauthorizedHttpException;
 use App\Modifier\Modifier;
-use App\OptionsResolver\PeriodOptionsResolver;
 use App\Service\RequestDecoder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,26 +18,8 @@ class AbstractRestController extends AbstractController
 {
     public function __construct(
         private readonly ValidatorInterface $validator,
-        private readonly PeriodOptionsResolver $periodOptionsResolver,
         private readonly RequestDecoder $requestDecoder,
     ) {
-    }
-
-    public function getPeriodParameter(Request $request): PeriodType
-    {
-        try {
-            $data = $this->periodOptionsResolver
-                ->configurePeriod()
-                ->setIgnoreUndefined()
-                ->resolve($request->query->all());
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
-        }
-
-        /** @var PeriodType $period */
-        $period = $data['period'];
-
-        return $period;
     }
 
     public function validateEntity(mixed $entity, array $validationGroups = ['Default']): void
@@ -57,7 +37,7 @@ class AbstractRestController extends AbstractController
          */
         $user = $this->getUser();
 
-        return $user?->getSetting($settingName) ?? throw new UnauthorizedHttpException('You must authenticated to access thos resource');
+        return $user?->getSetting($settingName) ?? throw new UnauthorizedHttpException('You must be authenticated to access this resource');
     }
 
     /**

@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Attribute\RelativeToEntity;
 use App\Entity\Topic;
+use App\Enum\SettingName;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/_internal', name: 'api_', format: 'json')]
@@ -15,9 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class TestController extends AbstractRestController
 {
     #[Route('/test', name: 'test')]
-    public function index(Request $request): JsonResponse
-    {
-        throw new \Exception('Test');
+    public function index(
+    ): JsonResponse {
+        dd($this->getUserSetting(SettingName::COLOR_THEME));
 
         return $this->json(null);
     }

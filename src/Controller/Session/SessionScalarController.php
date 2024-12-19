@@ -9,8 +9,8 @@ use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use App\Entity\User;
 use App\Enum\CountCriteria\SessionCountCriteria;
+use App\Model\Period;
 use App\Repository\SessionRepository;
-use App\Service\PeriodService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -23,14 +23,10 @@ class SessionScalarController extends AbstractRestController
     public function countSessions(
         SessionRepository $sessionRepository,
         Request $request,
-        PeriodService $periodService,
+        ?Period $period,
         #[CurrentUser] User $user,
         SessionCountCriteria $criteria = SessionCountCriteria::ALL,
     ) {
-        $periodType = $this->getPeriodParameter($request);
-
-        $period = $periodService->getDateTimePeriod($periodType);
-
         $count = match ($criteria) {
             SessionCountCriteria::ALL => $sessionRepository->countAll($user, $period),
             SessionCountCriteria::GROUP_BY_DATE => $sessionRepository->countAllByDate($user, $period),

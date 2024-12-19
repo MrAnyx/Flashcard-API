@@ -17,11 +17,11 @@ class SettingEntry
     /**
      * @var Constraint[]
      */
-    private readonly array $constraints;
+    public readonly array $constraints;
 
-    private readonly SettingName $name;
+    public readonly SettingName $name;
 
-    private mixed $value;
+    public mixed $value;
 
     /**
      * @param Constraint[] $constraints

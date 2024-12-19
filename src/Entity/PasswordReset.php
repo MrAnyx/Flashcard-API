@@ -28,7 +28,7 @@ class PasswordReset
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     private ?\DateTimeImmutable $date = null;
 
     #[ORM\ManyToOne]
@@ -36,7 +36,7 @@ class PasswordReset
     #[Assert\NotBlank(message: 'You must associate a user to this password reset request')]
     private ?User $user = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     private ?\DateTimeImmutable $expirationDate = null;
 
     #[ORM\Column(length: 128)]

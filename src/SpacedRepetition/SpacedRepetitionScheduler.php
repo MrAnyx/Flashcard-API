@@ -23,6 +23,7 @@ class SpacedRepetitionScheduler
 
         $interval = $algorithm->getInterval($flashcard, $grade);
 
+        // TODO Handle timezone
         $flashcard->setNextReview($now->modify("+{$interval} days")->setTime(0, 0, 0));
         $flashcard->setPreviousReview($now);
         $flashcard->setState(StateType::Learning);

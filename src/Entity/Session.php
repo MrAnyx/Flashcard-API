@@ -28,13 +28,13 @@ class Session
     #[Searchable]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[Groups(['read:session:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $startedAt = null;
 
-    #[ORM\Column(nullable: true, type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(nullable: true, type: Types::DATETIMETZ_IMMUTABLE)]
     #[Groups(['read:session:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]

@@ -19,9 +19,6 @@ class FilterResolver extends MapQueryStringRelativeToEntityResolver
             return [];
         }
 
-        $relativeEntity = $this->getRelativeEntity($request, $argument);
-        $searchableFields = $this->getFields($relativeEntity, Searchable::class);
-
         $filter = $request->query->get('filter');
         $value = $request->query->get('value');
         $operator = $request->query->getEnum('operator', OperatorType::class, OperatorType::EQUAL);
@@ -29,6 +26,9 @@ class FilterResolver extends MapQueryStringRelativeToEntityResolver
         if ($filter === null || $value === null) {
             return [null];
         }
+
+        $relativeEntity = $this->getRelativeEntity($request, $argument);
+        $searchableFields = $this->getFields($relativeEntity, Searchable::class);
 
         if (!\in_array($filter, $searchableFields)) {
             throw new BadRequestHttpException(\sprintf('Invalid "filter" parameter. Available options are: %s', implode(', ', $searchableFields)));
@@ -41,6 +41,6 @@ class FilterResolver extends MapQueryStringRelativeToEntityResolver
             throw new BadRequestHttpException($errors[0]->getMessage());
         }
 
-        yield $pageInstance;
+        return [$pageInstance];
     }
 }

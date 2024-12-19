@@ -27,7 +27,7 @@ class Review
     #[Groups(['read:review:user'])]
     private ?Flashcard $flashcard = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[Groups(['read:review:user'])]
     private ?\DateTimeImmutable $date = null;
 

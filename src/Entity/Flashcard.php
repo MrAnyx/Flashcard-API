@@ -28,13 +28,13 @@ class Flashcard
     #[Searchable]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
@@ -59,13 +59,13 @@ class Flashcard
     #[Groups(['read:flashcard:user', 'write:flashcard:user'])]
     private ?string $details = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
     #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $nextReview = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
     #[Groups(['read:flashcard:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]

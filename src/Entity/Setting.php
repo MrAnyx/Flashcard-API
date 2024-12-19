@@ -11,6 +11,7 @@ use App\Setting\SettingTemplate;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Validation;
 
 #[ORM\Entity(repositoryClass: SettingRepository::class)]
 class Setting
@@ -62,7 +63,16 @@ class Setting
         $templateSetting = SettingTemplate::getSetting($this->name);
 
         try {
-            return $templateSetting->serializer->deserialize($this->value);
+            $storedValue = $templateSetting->serializer->deserialize($this->value);
+
+            $validator = Validation::createValidator();
+            $errors = $validator->validate($storedValue, $templateSetting->constraints);
+
+            if (\count($errors) > 0) {
+                throw new \InvalidArgumentException($errors[0]->getMessage());
+            }
+
+            return $storedValue;
         } catch (\Exception) {
             return $templateSetting->getValue();
         }

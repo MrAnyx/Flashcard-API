@@ -35,13 +35,13 @@ class Unit
     #[Searchable]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[Groups(['read:unit:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[Groups(['read:unit:user'])]
     #[Sortable]
     #[Searchable(DateTimeConverter::class, ['format' => \DateTimeInterface::ATOM])]

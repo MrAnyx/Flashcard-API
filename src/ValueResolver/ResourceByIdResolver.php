@@ -35,9 +35,7 @@ class ResourceByIdResolver implements ValueResolverInterface
         try {
             $resource = $this->resourceFinder->getResourceById($entityClass, $id, false, $resourceAttribute->voterAttribute);
 
-            return [
-                $resource,
-            ];
+            return [$resource];
         } catch (NotFoundException $ex) {
             throw new NotFoundHttpException($ex->getMessage());
         } catch (UnauthorizedException $ex) {

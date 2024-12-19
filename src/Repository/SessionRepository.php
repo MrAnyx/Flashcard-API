@@ -48,7 +48,7 @@ class SessionRepository extends ServiceEntityRepository
         return new Paginator($query, $page, VirtualHydrator::class);
     }
 
-    public function countAll(?User $user, Period $period): int
+    public function countAll(?User $user, ?Period $period): int
     {
         $query = $this->createQueryBuilder('s')
             ->select('count(s.id)');
@@ -59,94 +59,30 @@ class SessionRepository extends ServiceEntityRepository
                 ->setParameter('user', $user);
         }
 
-        $query
-            ->andWhere('s.startedAt BETWEEN :start AND :end')
-            ->setParameter('start', $period->start)
-            ->setParameter('end', $period->end);
+        if ($period !== null) {
+            $query
+                ->andWhere('s.startedAt BETWEEN :start AND :end')
+                ->setParameter('start', $period->start)
+                ->setParameter('end', $period->end);
+        }
 
         return $query->getQuery()->getSingleScalarResult();
     }
 
-    /**
-     * @return array{
-     *     current: int,
-     *     longest: int
-     * }
-     */
-    public function getStrike(User $user): array
-    {
-        // dates are sorted from latest to oldest
-        $rawDates = $this->createQueryBuilder('s')
-            ->select('DATE(s.startedAt)')
-            ->distinct()
-            ->where('s.author = :user')
-            ->orderBy('DATE(s.startedAt)', 'DESC')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getSingleColumnResult();
-
-        if (\count($rawDates) === 0) {
-            return [
-                'current' => 0,
-                'longest' => 0,
-            ];
-        }
-
-        $dates = array_map(fn ($date) => new \DateTimeImmutable($date), $rawDates);
-
-        /*
-        [
-            2024-08-17
-            2024-08-16
-            2024-08-15
-            2024-08-10 // break
-            2024-08-02 // break
-        ]
-        */
-
-        $longestStreak = 0;
-        $currentStreak = 0;
-
-        // $today = new \DateTime('today');
-        // $yesterday = (clone $today)->modify('-1 day');
-        // $startIndex = 0;
-
-        // if ($dates[0]->format('Y-m-d') === $today->format('Y-m-d')) {
-        //     ++$currentStreak;
-        //     $startIndex = 1;
-        // }
-
-        // if ($dates[0]->format('Y-m-d') === $yesterday->format('Y-m-d')) {
-        //     ++$currentStreak;
-        // }
-
-        // $comparisonDate = $yesterday;
-
-        // for ($i = $startIndex; $i < \count($dates); ++$i) {
-        //     if ($dates[$i]->format('Y-m-d') === $comparisonDate->format('Y-m-d')) {
-        //         ++$currentStreak;
-        //         $comparisonDate->modify('-1 day');
-        //     } else {
-        //         break;
-        //     }
-        // }
-
-        return [
-            'current' => $currentStreak,
-            'longest' => $longestStreak,
-        ];
-    }
-
-    public function countAllByDate(User $user, Period $period)
+    public function countAllByDate(User $user, ?Period $period)
     {
         $query = $this->createQueryBuilder('s')
             ->select('DATE(s.startedAt) AS date, count(s.id) total')
             ->where('s.author = :user')
-            ->andWhere('s.startedAt BETWEEN :start AND :end')
             ->groupBy('date')
-            ->setParameter('user', $user)
-            ->setParameter('start', $period->start)
-            ->setParameter('end', $period->end);
+            ->setParameter('user', $user);
+
+        if ($period !== null) {
+            $query
+                ->andWhere('s.startedAt BETWEEN :start AND :end')
+                ->setParameter('start', $period->start)
+                ->setParameter('end', $period->end);
+        }
 
         return $query
             ->getQuery()

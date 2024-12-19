@@ -41,6 +41,6 @@ class PageResolver extends MapQueryStringRelativeToEntityResolver
             throw new BadRequestHttpException($errors[0]->getMessage());
         }
 
-        yield $pageInstance;
+        return [$pageInstance];
     }
 }

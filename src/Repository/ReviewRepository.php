@@ -65,7 +65,7 @@ class ReviewRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function countReviews(User $user, Period $period, bool $withReset)
+    public function countReviews(User $user, ?Period $period, bool $withReset)
     {
         $query = $this->createQueryBuilder('r')
             ->select('count(r.id)')
@@ -81,10 +81,12 @@ class ReviewRepository extends ServiceEntityRepository
                 ->setParameter('withReset', false);
         }
 
-        $query
-            ->andWhere('r.date BETWEEN :start AND :end')
-            ->setParameter('start', $period->start)
-            ->setParameter('end', $period->end);
+        if ($period !== null) {
+            $query
+                ->andWhere('r.date BETWEEN :start AND :end')
+                ->setParameter('start', $period->start)
+                ->setParameter('end', $period->end);
+        }
 
         return $query->getQuery()->getSingleScalarResult();
     }
@@ -109,17 +111,23 @@ class ReviewRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function countAllByDate(User $user, Period $period)
+    public function countAllByDate(User $user, ?Period $period)
     {
-        return $this->createQueryBuilder('r')
+        $query = $this->createQueryBuilder('r')
             ->select('DATE(r.date) AS date, count(r.id) total')
             ->join('r.session', 's')
             ->where('s.author = :user')
-            ->andWhere('r.date BETWEEN :start AND :end')
-            ->groupBy('date')
             ->setParameter('user', $user)
-            ->setParameter('start', $period->start)
-            ->setParameter('end', $period->end)
+            ->groupBy('date');
+
+        if ($period !== null) {
+            $query
+                ->andWhere('r.date BETWEEN :start AND :end')
+                ->setParameter('start', $period->start)
+                ->setParameter('end', $period->end);
+        }
+
+        return $query
             ->getQuery()
             ->getResult();
     }
