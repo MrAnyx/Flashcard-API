@@ -322,14 +322,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $existingSetting = null;
 
         foreach ($this->settings as $existing) {
-            if ($existing->getName() === $setting->getName(true)) {
+            if ($existing->getName() === $setting->name) {
                 $existingSetting = $existing;
                 break;
             }
         }
 
         if ($existingSetting !== null) {
-            $existingSetting->setValue($setting->getSerializedValue());
+            $existingSetting->setValue($setting->serialize());
         } else {
             $newSetting = new Setting($setting, $this);
             $this->settings->add($newSetting);

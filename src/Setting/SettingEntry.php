@@ -6,49 +6,26 @@ namespace App\Setting;
 
 use App\Enum\SettingName;
 use App\Serializer\SerializerInterface;
-use App\Service\ObjectInitializer;
+use App\Trait\UseValidationTrait;
 use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\Validation;
 
 class SettingEntry
 {
-    public readonly SerializerInterface $serializer;
+    use UseValidationTrait;
 
-    /**
-     * @var Constraint[]
-     */
-    public readonly array $constraints;
-
-    public readonly SettingName $name;
-
-    public mixed $value;
+    private mixed $value;
 
     /**
      * @param Constraint[] $constraints
      */
-    public function __construct(SettingName $name, mixed $defaultValue, string $serializer, array $serializerConstructorArgs = [], array $constraints = [])
-    {
-        $this->name = $name;
-        $this->value = $defaultValue;
-
-        if (!is_a($serializer, SerializerInterface::class, true)) {
-            throw new \InvalidArgumentException(\sprintf('Serializer %s must implement %s', $serializer, SerializerInterface::class));
-        }
-
-        $this->serializer = ObjectInitializer::initialize($serializer, $serializerConstructorArgs);
-        $this->constraints = $constraints;
-
-        $this->canSerialize();
-    }
-
-    /**
-     * @param bool $asEnum If true, returns the name as a SettingName enum; otherwise, returns the name as a string
-     *
-     * @return string|SettingName The name of the setting, either as a string or as a SettingName enum, depending on the value of $asEnum
-     */
-    public function getName(bool $asEnum = false): string|SettingName
-    {
-        return $asEnum ? $this->name : $this->name->value;
+    public function __construct(
+        public readonly SettingName $name,
+        mixed $value,
+        public readonly SerializerInterface $serializer,
+        /** @var Constraint[] */
+        public readonly array $constraints = [],
+    ) {
+        $this->setValue($value);
     }
 
     public function getValue(): mixed
@@ -56,28 +33,44 @@ class SettingEntry
         return $this->value;
     }
 
-    public function setValue(mixed $value): static
+    public function setValue(mixed $value): self
     {
+        $this->validateMixedValue($value);
+
         $this->value = $value;
-        $this->canSerialize();
 
         return $this;
     }
 
-    public function getSerializedValue(): string
+    public function serialize(): string
     {
+        $this->validateMixedValue($this->value);
+
         return $this->serializer->serialize($this->value);
     }
 
-    private function canSerialize(): void
+    public function deserialize(string $rawValue): mixed
     {
-        $this->serializer->canSerialize($this->value);
+        try {
+            $this->validateStringValue($rawValue);
 
-        $validator = Validation::createValidator();
-        $errors = $validator->validate($this->value, $this->constraints);
-
-        if (\count($errors) > 0) {
-            throw new \InvalidArgumentException($errors[0]->getMessage());
+            return $this->serializer->deserialize($rawValue);
+        } catch (\Exception) {
+            return $this->value;
         }
+    }
+
+    private function validateMixedValue(mixed $value): void
+    {
+        $this->serializer->canSerialize($value);
+        $this->validate($value, $this->constraints);
+    }
+
+    private function validateStringValue(mixed $rawValue): void
+    {
+        $this->serializer->canDeserialize($rawValue);
+        $value = $this->serializer->deserialize($rawValue);
+
+        $this->validate($value, $this->constraints);
     }
 }

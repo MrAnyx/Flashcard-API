@@ -35,7 +35,7 @@ class UserBehaviorController extends AbstractRestController
         );
 
         try {
-            $defaultSetting = SettingTemplate::getSetting($setting->name);
+            $defaultSetting = SettingTemplate::getSettingEntry($setting->name);
             $defaultSetting->setValue($setting->value);
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage(), $e);

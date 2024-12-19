@@ -11,7 +11,6 @@ use App\Setting\SettingTemplate;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Validator\Validation;
 
 #[ORM\Entity(repositoryClass: SettingRepository::class)]
 class Setting
@@ -36,8 +35,8 @@ class Setting
     public function __construct(SettingEntry $settingEntry, User $user)
     {
         $this
-            ->setName($settingEntry->getName(true))
-            ->setValue($settingEntry->getSerializedValue())
+            ->setName($settingEntry->name)
+            ->setValue($settingEntry->serialize())
             ->setUser($user);
     }
 
@@ -60,22 +59,9 @@ class Setting
 
     public function getValue(): mixed
     {
-        $templateSetting = SettingTemplate::getSetting($this->name);
+        $templateSetting = SettingTemplate::getSettingEntry($this->name);
 
-        try {
-            $storedValue = $templateSetting->serializer->deserialize($this->value);
-
-            $validator = Validation::createValidator();
-            $errors = $validator->validate($storedValue, $templateSetting->constraints);
-
-            if (\count($errors) > 0) {
-                throw new \InvalidArgumentException($errors[0]->getMessage());
-            }
-
-            return $storedValue;
-        } catch (\Exception) {
-            return $templateSetting->getValue();
-        }
+        return $templateSetting->deserialize($this->value);
     }
 
     public function setValue(string $value): static
