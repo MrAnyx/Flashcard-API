@@ -1,18 +1,8 @@
 {
     "name": "Flashcard API",
-    "forwardPorts": [80, 8081, 8082],
-    "portsAttributes": {
-        "80": {
-            "label": "API"
-        },
-        "8081": {
-            "label": "PgAdmin4"
-        },
-        "8082": {
-            "label": "Mailer"
-        }
-    },
-    "dockerComposeFile": "docker-compose.yaml",
+    "dockerComposeFile": [
+        "../docker-compose.yaml"
+    ],
     "service": "franken",
     "workspaceFolder": "/app",
     "postCreateCommand": "task app:default:config",

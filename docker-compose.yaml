@@ -28,27 +28,19 @@ services:
             - 8082:80
             - 2525:25
 
-    franken:
+    api:
         container_name: flashcard-api
         build:
             context: .
-            dockerfile: Dockerfile
-        environment:
-            SERVER_NAME: :80
+            dockerfile: dockerfile
+            target: dev
         volumes:
-            - ..:/app
-            # - ./Caddyfile:/etc/Caddyfile
-            - caddy_data:/data
-            - caddy_config:/config
+            - .:/var/www/html
         ports:
-            - 80:80 # HTTP
-            # - 443:443 # HTTPS
-            # - 443:443/udp # HTTP/3
+            - 80:80
         depends_on:
             - database
             - mailer
 
 volumes:
     pgdata:
-    caddy_data:
-    caddy_config:
