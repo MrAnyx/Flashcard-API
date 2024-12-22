@@ -1,0 +1,8 @@
+docker-compose.yaml
+Dockerfile
+/.git
+/.devcontainer
+/vendor
+/var
+/.github
+.env.local.*
