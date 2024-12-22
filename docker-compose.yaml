@@ -32,7 +32,7 @@ services:
         container_name: flashcard-api
         build:
             context: .
-            dockerfile: dockerfile
+            dockerfile: Dockerfile
             target: dev
         volumes:
             - .:/var/www/html
