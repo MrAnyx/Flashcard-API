@@ -3,8 +3,8 @@
     "dockerComposeFile": [
         "../docker-compose.yaml"
     ],
-    "service": "franken",
-    "workspaceFolder": "/app",
+    "service": "api",
+    "workspaceFolder": "/var/www/html",
     "postCreateCommand": "task app:default:config",
     // "postStartCommand": "task app:messenger:async",
     "customizations": {
