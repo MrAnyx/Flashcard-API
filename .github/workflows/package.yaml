@@ -1,0 +1,31 @@
+name: Build and Push Docker Image
+
+on:
+    release:
+        types: [published]
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - name: Check Out Repository
+              uses: actions/checkout@v2
+
+            - name: Log in to GitHub Container Registry
+              run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            - name: Build Docker image
+              run: |
+                  REPO_LOWER=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+                  TAG=$(echo ${{ github.ref_name }} | tr '/' '-') # Replace / with -
+                  docker build . -t ghcr.io/$REPO_LOWER:$TAG -t ghcr.io/$REPO_LOWER:latest --no-cache --target prod
+
+            - name: Push Docker image to GitHub Registry
+              run: |
+                  REPO_LOWER=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+                  TAG=$(echo ${{ github.ref_name }} | tr '/' '-') # Replace / with -
+                  docker push ghcr.io/$REPO_LOWER:$TAG
+                  docker push ghcr.io/$REPO_LOWER:latest
