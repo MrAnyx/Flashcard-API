@@ -9,7 +9,8 @@ RUN install-php-extensions @composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY ./.docker/apache/apache.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
-CMD ["apache2-foreground"]
+RUN chmod +x ./.docker/entrypoint.sh
+ENTRYPOINT ["./.docker/entrypoint.sh"]
 
 FROM base AS dev
 ENV APP_ENV=dev
@@ -21,8 +22,6 @@ FROM base AS prod
 ENV APP_ENV=prod
 RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY . .
-RUN chmod +x ./.docker/entrypoint.sh
 EXPOSE 80
 RUN composer install --no-dev --optimize-autoloader --no-interaction
-ENTRYPOINT ["./.docker/entrypoint.sh"]
 RUN php bin/console cache:clear && php bin/console cache:warmup
