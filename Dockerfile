@@ -25,4 +25,6 @@ COPY . .
 ADD --chmod=0755 ./.docker/entrypoint.prod.sh /usr/local/bin/entrypoint.sh
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN php bin/console cache:clear && php bin/console cache:warmup
+RUN rm -f .env*
+RUN echo "APP_ENV=prod" > .env
 EXPOSE 80
