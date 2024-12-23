@@ -1,7 +1,7 @@
 services:
     database:
         container_name: flashcard-database
-        image:postgres:${POSTGRES_VERSION:-16.4}-alpine
+        image: postgres:${POSTGRES_VERSION:-16.4}-alpine
         environment:
             POSTGRES_DB: ${POSTGRES_DB:-flashcard}
             POSTGRES_USER: ${POSTGRES_USER:-user}
