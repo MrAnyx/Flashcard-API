@@ -23,4 +23,5 @@ RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY . .
 EXPOSE 80
 RUN composer install --no-dev --optimize-autoloader --no-interaction
+ENTRYPOINT ["./.docker/entrypoint.sh"]
 RUN php bin/console cache:clear && php bin/console cache:warmup
