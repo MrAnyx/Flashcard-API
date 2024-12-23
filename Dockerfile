@@ -21,6 +21,7 @@ FROM base AS prod
 ENV APP_ENV=prod
 RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY . .
+RUN chmod +x ./.docker/entrypoint.sh
 EXPOSE 80
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 ENTRYPOINT ["./.docker/entrypoint.sh"]
