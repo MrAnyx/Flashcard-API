@@ -13,7 +13,13 @@ class TransformerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        foreach ($container->getDefinitions() as $id => $definition) {
+        $modifiers = array_merge(
+            $container->findTaggedServiceIds('app.modifier.transformer'),
+            $container->findTaggedServiceIds('app.modifier.mutator')
+        );
+
+        foreach ($modifiers as $id => $tags) {
+            $definition = $container->getDefinition($id);
             $class = $definition->getClass();
 
             // Skip services without a class
@@ -21,10 +27,7 @@ class TransformerCompilerPass implements CompilerPassInterface
                 continue;
             }
 
-            // Ensure the class implements TransformerInterface or MutatorInterface
-            if (is_subclass_of($class, TransformerInterface::class) || is_subclass_of($class, MutatorInterface::class)) {
-                $definition->setPublic(true);
-            }
+            $definition->setPublic(true);
         }
     }
 }

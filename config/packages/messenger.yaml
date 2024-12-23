@@ -4,6 +4,7 @@ framework:
         failure_transport: failed
 
         transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
             async:
                 dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
                 retry_strategy:
@@ -14,7 +15,7 @@ framework:
             sync: "sync://"
 
         routing:
-            App\Message\SendTextEmailMessage: sync
+            App\Message\SendTextEmailMessage: async
 # when@test:
 #    framework:
 #        messenger:

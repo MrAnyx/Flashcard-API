@@ -7,7 +7,10 @@ doctrine:
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '15'
+        #server_version: '16'
+
+        profiling_collect_backtrace: "%kernel.debug%"
+        use_savepoints: true
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
@@ -17,14 +20,13 @@ doctrine:
         auto_mapping: true
         mappings:
             App:
+                type: attribute
                 is_bundle: false
                 dir: "%kernel.project_dir%/src/Entity"
                 prefix: 'App\Entity'
                 alias: App
-
         hydrators:
             App\Hydrator\VirtualHydrator: App\Hydrator\VirtualHydrator
-
         dql:
             datetime_functions:
                 date: App\Doctrine\DateFunction

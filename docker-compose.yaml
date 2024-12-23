@@ -1,21 +1,20 @@
-version: "3.8"
-
 services:
     database:
         container_name: flashcard-database
-        image: postgres:16.4-alpine
+        image:postgres:${POSTGRES_VERSION:-16.4}-alpine
         environment:
-            POSTGRES_USER: user
-            POSTGRES_PASSWORD: password
+            POSTGRES_DB: ${POSTGRES_DB:-flashcard}
+            POSTGRES_USER: ${POSTGRES_USER:-user}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
         volumes:
-            - pgdata:/var/lib/postgresql/data
+            - pgdata:/var/lib/postgresql/data:rw
 
     pgadmin:
         image: dpage/pgadmin4:8.11
         container_name: flashcard-pgadmin
         environment:
-            PGADMIN_DEFAULT_EMAIL: example@mail.com
-            PGADMIN_DEFAULT_PASSWORD: password
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-example@mail.com}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-password}
         depends_on:
             - database
         ports:

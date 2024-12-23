@@ -21,7 +21,10 @@ services:
             - "../src/Model/"
             - "../src/Kernel.php"
 
-    monolog.formatter.extra_log:
-        class: Monolog\Formatter\LineFormatter
-        arguments:
-            - "[%%datetime%%] %%channel%%.%%level_name%% [%%extra.ip%% %%extra.method%% %%extra.url%%] %%message%% %%context%% %%extra%%\n"
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    # monolog.formatter.extra_log:
+    #     class: Monolog\Formatter\LineFormatter
+    #     arguments:
+    #         - "[%%datetime%%] %%channel%%.%%level_name%% [%%extra.ip%% %%extra.method%% %%extra.url%%] %%message%% %%context%% %%extra%%\n"

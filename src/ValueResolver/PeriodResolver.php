@@ -6,9 +6,10 @@ namespace App\ValueResolver;
 
 use App\Model\Period;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
-class PeriodResolver extends MapQueryStringRelativeToEntityResolver
+class PeriodResolver implements ValueResolverInterface
 {
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
