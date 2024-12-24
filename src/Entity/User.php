@@ -82,7 +82,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank(message: 'Your password can not be blank', groups: ['edit:user:password'])]
-    #[Assert\NotCompromisedPassword(message: 'This password has been compromised. Please choose another password', groups: ['edit:user:password'])]
+    // #[Assert\NotCompromisedPassword(message: 'This password has been compromised. Please choose another password', groups: ['edit:user:password'])]
     #[Assert\Regex(pattern: Regex::PASSWORD_SLASH, groups: ['edit:user:password'])]
     #[Assert\NotEqualTo(propertyPath: 'username', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
     #[Assert\NotEqualTo(propertyPath: 'email', message: 'You must choose a stronger password', groups: ['edit:user:password'])]
