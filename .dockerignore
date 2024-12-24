@@ -5,4 +5,6 @@ Dockerfile
 /vendor
 /var
 /.github
-.env.local.*
+/.env.local
+/.env.local.php
+/.env.*.local
