@@ -20,11 +20,11 @@ ADD --chmod=0755 ./.docker/entrypoint.dev.sh /usr/local/bin/entrypoint.sh
 
 FROM base AS prod
 ENV APP_ENV=prod
+ENV APP_DEBUG=0
 RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY . .
 ADD --chmod=0755 ./.docker/entrypoint.prod.sh /usr/local/bin/entrypoint.sh
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN php bin/console cache:clear && php bin/console cache:warmup
-RUN rm -f .env*
-RUN touch .env
+RUN composer dump-env prod --empty
 EXPOSE 80
