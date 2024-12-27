@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
+use App\Trait\UseRepositoryExtension;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,6 +23,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TopicRepository extends ServiceEntityRepository
 {
+    use UseRepositoryExtension;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Topic::class);
@@ -38,14 +41,10 @@ class TopicRepository extends ServiceEntityRepository
         }
 
         if ($filter !== null) {
-            $query
-                ->andWhere("t.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
-                ->setParameter('query', $filter->getDoctrineParameter());
+            $this->addFilter($query, 't', $filter);
         }
 
-        $query
-            ->addOrderBy("CASE WHEN t.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
-            ->addOrderBy("t.{$page->sort}", $page->order->value);
+        $this->addSort($query, 't', $page);
 
         return new Paginator($query, $page);
     }

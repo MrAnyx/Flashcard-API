@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
+use App\Trait\UseRepositoryExtension;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
@@ -25,6 +26,8 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserLoaderInterface
 {
+    use UseRepositoryExtension;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
@@ -63,13 +66,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $query = $this->createQueryBuilder('u');
 
         if ($filter !== null) {
-            $query
-                ->andWhere("u.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
-                ->setParameter('query', $filter->getDoctrineParameter());
+            $this->addFilter($query, 'u', $filter);
         }
 
-        $query->addOrderBy("CASE WHEN u.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC')
-            ->addOrderBy("u.{$page->sort}", $page->order->value);
+        $this->addSort($query, 'u', $page);
 
         return new Paginator($query, $page);
     }

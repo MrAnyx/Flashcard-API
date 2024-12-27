@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
+use App\Trait\UseRepositoryExtension;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,6 +24,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UnitRepository extends ServiceEntityRepository
 {
+    use UseRepositoryExtension;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Unit::class);
@@ -41,14 +44,10 @@ class UnitRepository extends ServiceEntityRepository
         }
 
         if ($filter !== null) {
-            $query
-                ->andWhere("u.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
-                ->setParameter('query', $filter->getDoctrineParameter());
+            $this->addFilter($query, 'u', $filter);
         }
 
-        $query
-            ->addOrderBy("CASE WHEN u.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
-            ->addOrderBy("u.{$page->sort}", $page->order->value);
+        $this->addSort($query, 'u', $page);
 
         return new Paginator($query, $page);
     }
@@ -61,15 +60,12 @@ class UnitRepository extends ServiceEntityRepository
             ->where('u.topic = :topic')
             ->setParameter('topic', $topic);
 
+
         if ($filter !== null) {
-            $query
-                ->andWhere("u.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
-                ->setParameter('query', $filter->getDoctrineParameter());
+            $this->addFilter($query, 'u', $filter);
         }
 
-        $query
-            ->addOrderBy("CASE WHEN u.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
-            ->addOrderBy("u.{$page->sort}", $page->order->value);
+        $this->addSort($query, 'u', $page);
 
         return new Paginator($query, $page);
     }

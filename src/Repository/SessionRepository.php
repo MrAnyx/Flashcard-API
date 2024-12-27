@@ -11,11 +11,14 @@ use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
 use App\Model\Period;
+use App\Trait\UseRepositoryExtension;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 class SessionRepository extends ServiceEntityRepository
 {
+    use UseRepositoryExtension;
+
     public function __construct(
         ManagerRegistry $registry,
     ) {
@@ -36,14 +39,10 @@ class SessionRepository extends ServiceEntityRepository
         }
 
         if ($filter !== null) {
-            $query
-                ->andWhere("s.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
-                ->setParameter('query', $filter->getDoctrineParameter());
+            $this->addFilter($query, 's', $filter);
         }
 
-        $query
-            ->addOrderBy("CASE WHEN s.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
-            ->addOrderBy("s.{$page->sort}", $page->order->value);
+        $this->addSort($query, 's', $page);
 
         return new Paginator($query, $page, VirtualHydrator::class);
     }

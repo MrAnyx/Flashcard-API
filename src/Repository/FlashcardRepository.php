@@ -13,6 +13,7 @@ use App\Enum\StateType;
 use App\Model\Filter;
 use App\Model\Page;
 use App\Model\Paginator;
+use App\Trait\UseRepositoryExtension;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,6 +27,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FlashcardRepository extends ServiceEntityRepository
 {
+    use UseRepositoryExtension;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Flashcard::class);
@@ -61,14 +64,10 @@ class FlashcardRepository extends ServiceEntityRepository
         }
 
         if ($filter !== null) {
-            $query
-                ->andWhere("f.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
-                ->setParameter('query', $filter->getDoctrineParameter());
+            $this->addFilter($query, 'f', $filter);
         }
 
-        $query
-            ->addOrderBy("CASE WHEN f.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC') // To put null values last
-            ->addOrderBy("f.{$page->sort}", $page->order->value);
+        $this->addSort($query, 'f', $page);
 
         return new Paginator($query, $page);
     }
@@ -82,14 +81,12 @@ class FlashcardRepository extends ServiceEntityRepository
             ->where('f.unit = :unit')
             ->setParameter('unit', $unit);
 
+
         if ($filter !== null) {
-            $query
-                ->andWhere("f.{$filter->filter} {$filter->operator->getDoctrineNotation()} :query")
-                ->setParameter('query', $filter->getDoctrineParameter());
+            $this->addFilter($query, 'f', $filter);
         }
 
-        $query->addOrderBy("CASE WHEN f.{$page->sort} IS NULL THEN 1 ELSE 0 END", 'ASC')
-            ->addOrderBy("f.{$page->sort}", $page->order->value);
+        $this->addSort($query, 'f', $page);
 
         return new Paginator($query, $page);
     }
