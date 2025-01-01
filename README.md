@@ -25,6 +25,8 @@
 
 <br />
 
+<img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/banner.png">
+
 > [!NOTE]
 > This project is still in active development. It may change in the future.
 
