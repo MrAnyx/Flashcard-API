@@ -3,7 +3,7 @@
     <img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-App/refs/heads/master/assets/logo.svg" alt="Logo" width="50" height="50">
   </a>
 
-  <h3 align="center">Flashcard API</h3>
+  <h3 align="center">Meeio</h3>
 
   <p align="center">
     Create, manage and practice your flashcard with ease!
