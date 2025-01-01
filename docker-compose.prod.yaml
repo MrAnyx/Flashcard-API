@@ -20,7 +20,7 @@ services:
             - proxy_default
 
     api:
-        image: ghcr.io/mranyx/flashcard-api:latest
+        image: ghcr.io/mranyx/meeio-backend:latest
         restart: unless-stopped
         tty: true
         stdin_open: true
@@ -42,7 +42,7 @@ services:
             db:
                 condition: service_healthy
     app:
-        image: ghcr.io/mranyx/flashcard-app:latest
+        image: ghcr.io/mranyx/meeio-frontend:latest
         restart: unless-stopped
         tty: true
         stdin_open: true
