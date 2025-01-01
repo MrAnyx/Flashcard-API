@@ -1,10 +1,6 @@
+<img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/banner.png">
+
 <div align="center">
-  <a href="https://github.com/MrAnyx/Flashcard-API">
-    <img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-App/refs/heads/master/assets/logo.svg" alt="Logo" width="50" height="50">
-  </a>
-
-  <h3 align="center">Meeio</h3>
-
   <p align="center">
     Create, manage and practice your flashcard with ease!
     <br />
@@ -24,8 +20,6 @@
 </div>
 
 <br />
-
-<img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/banner.png">
 
 > [!NOTE]
 > This project is still in active development. It may change in the future.
