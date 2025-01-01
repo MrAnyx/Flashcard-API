@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/banner.png">
+<img src="https://raw.githubusercontent.com/meeio-app/backend/refs/heads/master/assets/banner.png">
 
 <div align="center">
   <p align="center">
@@ -6,17 +6,17 @@
     <br />
     <a href="#">Explore the docs</a>
     ·
-    <a href="https://github.com/MrAnyx/Flashcard-API/issues/new/choose">Submit a request</a>
+    <a href="https://github.com/meeio-app/backend/issues/new/choose">Submit a request</a>
     <br />
   </p>
 </div>
 
 <div align="center">
-  <a href="https://github.com/MrAnyx/Flashcard-API/tags"><img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/MrAnyx/Flashcard-API?style=flat&colorB=38BDF8"></a>
-  <a href="https://github.com/MrAnyx/Flashcard-API/stargazers"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/MrAnyx/Flashcard-API?style=flat&colorB=38BDF8"></a>
-  <a href="https://github.com/MrAnyx/Flashcard-API/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/MrAnyx/Flashcard-API?style=flat&colorB=38BDF8"></a>
-  <a href="https://github.com/MrAnyx/Flashcard-API/issues"><img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues-raw/MrAnyx/Flashcard-API?style=flat&colorB=38BDF8"></a>
-  <a href="https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/MrAnyx/Flashcard-API?style=flat&colorB=38BDF8"></a>
+  <a href="https://github.com/meeio-app/backend/tags"><img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/meeio-app/backend?style=flat&colorB=38BDF8"></a>
+  <a href="https://github.com/meeio-app/backend/stargazers"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/meeio-app/backend?style=flat&colorB=38BDF8"></a>
+  <a href="https://github.com/meeio-app/backend/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/meeio-app/backend?style=flat&colorB=38BDF8"></a>
+  <a href="https://github.com/meeio-app/backend/issues"><img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues-raw/meeio-app/backend?style=flat&colorB=38BDF8"></a>
+  <a href="https://github.com/meeio-app/backend/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/meeio-app/backend?style=flat&colorB=38BDF8"></a>
 </div>
 
 <br />
@@ -27,12 +27,12 @@
 ## About The Project
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/light.png">
-  <img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-API/refs/heads/master/assets/dark.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/meeio-app/backend/refs/heads/master/assets/dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/meeio-app/backend/refs/heads/master/assets/light.png">
+  <img src="https://raw.githubusercontent.com/meeio-app/backend/refs/heads/master/assets/dark.png">
 </picture>
 
-This project is the [Symfony backend REST API](https://github.com/MrAnyx/Flashcard-API) for a [flashcard](https://en.wikipedia.org/wiki/Flashcard) platform.
+This project is the [Symfony backend REST API](https://github.com/meeio-app/backend) for a [flashcard](https://en.wikipedia.org/wiki/Flashcard) platform.
 
 I started this project because I couldn’t find a flashcard app that combined both a modern, visually appealing interface and effective functionality.
 
@@ -52,49 +52,10 @@ This project is entirely built using [Symfony](https://symfony.com/) and its eco
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue.
 Don't forget to give the project a star! Thanks again!
 
-1. **Fork the repository**
-
-   Start by forking the project repository on GitHub. This creates a copy of the project in your account where you can freely make changes.
-
-2. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/<your-username>/Flashcard-API.git
-   ```
-
-3. **Create a new branch**
-
-   Use a descriptive branch name that reflects the purpose of your changes. For example:
-
-   ```bash
-   git checkout -b feature/new-feature
-   ```
-
-4. **Make changes**
-
-   Implement your changes. Make sure to follow coding standards and write clear, maintainable code. Add tests where appropriate, especially if your changes affect core functionality.
-
-5. **Test your changes**
-
-   Ensure that your changes don’t break existing functionality by running the test suite:
-
-   ```bash
-   # Unit tests
-   ./vendor/bin/pest
-
-   # Static tests
-   vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 500M  --ansi --error-format=table
-
-   # Code style
-   ./vendor/bin/php-cs-fixer fix --dry-run
-   ```
-
-6. **Sync your changes**
-
-   Write clear and concise commit messages that describe what you’ve done. It must follow the [Conventional Commit](https://www.conventionalcommits.org/) standard. Then, push your changes and open a pull request.
+Please, refer to the [CONTRIBUTING](https://github.com/meeio-app/backend/blob/master/CONTRIBUTING.md) markdown file for more details.
 
 ## Code of Conduct
 
@@ -102,17 +63,17 @@ Please respect other contributors and maintainers by following our Code of Condu
 
 ## Need Help?
 
-If you’re new to open-source contribution or have questions, feel free to open an [issue](https://github.com/MrAnyx/Flashcard-API/issues/new/choose) or open a [discussion thread](https://github.com/MrAnyx/Flashcard-API/discussions). We’re happy to guide you through your first contribution!
+If you’re new to open-source contribution or have questions, feel free to open an [issue](https://github.com/meeio-app/backend/issues/new/choose) or open a [discussion thread](https://github.com/meeio-app/backend/discussions). We’re happy to guide you through your first contribution!
 
 ## Top contributors:
 
-<a href="https://github.com/MrAnyx/Flashcard-API/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=MrAnyx/Flashcard-API" alt="contrib.rocks image" />
+<a href="https://github.com/meeio-app/backend/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=meeio-app/backend" alt="contrib.rocks image" />
 </a>
 
 ## License
 
-Distributed under the AGPL-3.0 License. See [License](https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE) for more information.
+Distributed under the AGPL-3.0 License. See [License](https://github.com/meeio-app/backend/blob/master/LICENSE) for more information.
 
 ## Acknowledgments
 

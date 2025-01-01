@@ -1,6 +1,6 @@
 {
     "name": "meeio/backend",
-    "description": "Flashcard API backend",
+    "description": "Backend REST API using Symfony for a Meeio",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",

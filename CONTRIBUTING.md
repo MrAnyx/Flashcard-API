@@ -1,24 +1,19 @@
-<br />
+<img src="https://raw.githubusercontent.com/meeio-app/backend/refs/heads/master/assets/banner.png">
+
 <div align="center">
-  <a href="https://github.com/MrAnyx/Flashcard-API">
-    <img src="https://raw.githubusercontent.com/MrAnyx/Flashcard-App/refs/heads/master/assets/images/logo.png" alt="Logo" width="50" height="50">
-  </a>
-
-  <h3 align="center">Flashcard API</h3>
-
   <p align="center">
     Create, manage and practice your flashcard with ease!
     <br />
     <a href="#">Explore the docs</a>
     ·
-    <a href="https://github.com/MrAnyx/Flashcard-API/issues/new/choose">Submit a request</a>
+    <a href="https://github.com/meeio-app/backend/issues/new/choose">Submit a request</a>
     <br />
   </p>
 </div>
 
 ## Overview
 
-The Flashcard API is a Symfony REST API designed to facilitate the creation, organization, and review of flashcards. Built with a developer-friendly approach, this API serves as the backend for a Nuxt.js application, providing users with the tools to efficiently manage their learning resources.
+The Meeio API is a Symfony REST API designed to facilitate the creation, organization, and review of flashcards. Built with a developer-friendly approach, this API serves as the backend for a Nuxt.js application, providing users with the tools to efficiently manage their learning resources.
 
 ## Features
 
@@ -29,7 +24,7 @@ The Flashcard API is a Symfony REST API designed to facilitate the creation, org
 
 ## Getting Started
 
-To get started with the Flashcard API, follow the instructions below.
+To get started with the Meeio API, follow the instructions below.
 
 ### Prerequisites
 
@@ -44,8 +39,8 @@ Make sure you have the following installed:
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/MrAnyx/Flashcard-API.git
-   cd Flashcard-API
+   git clone https://github.com/meeio-app/backend.git
+   cd backend
    ```
 
 > [!IMPORTANT]
@@ -59,7 +54,7 @@ Otherwise, you can still do the manual way.
    docker-compose up -d
    ```
 
-3. **prepare the project**:
+3. **Prepare the project**:
 
    ```bash
    docker-compose exec task a:d:c
@@ -71,7 +66,7 @@ Otherwise, you can still do the manual way.
 
 ## Contributing Guidelines
 
-We welcome contributions to the Flashcard API! To maintain a high-quality codebase and collaborative environment, please follow these guidelines:
+We welcome contributions to the Meeio API! To maintain a high-quality codebase and collaborative environment, please follow these guidelines:
 
 ### Code of Conduct
 
@@ -84,7 +79,7 @@ This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). We expect all c
 2. **Clone your fork**:
 
    ```bash
-   git clone https://github.com/your-username/Flashcard-API.git
+   git clone https://github.com/your-username/backend.git
    ```
 
 ### Conventional Commits
@@ -173,4 +168,4 @@ We encourage open discussions about features, bugs, and improvements. Please be 
 
 ## License
 
-Distributed under the AGPL-3.0 License. See [License](https://github.com/MrAnyx/Flashcard-API/blob/master/LICENSE) for more information.
+Distributed under the AGPL-3.0 License. See [License](https://github.com/meeio-app/backend/blob/master/LICENSE) for more information.

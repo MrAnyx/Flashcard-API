@@ -1,5 +1,5 @@
 {
-    "name": "Flashcard API",
+    "name": "Meeio Backend",
     "dockerComposeFile": [
         "../docker-compose.yaml"
     ],
