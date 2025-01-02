@@ -27,4 +27,5 @@ ADD --chmod=0755 ./.docker/entrypoint.prod.sh /usr/local/bin/entrypoint.sh
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN php bin/console cache:clear && php bin/console cache:warmup
 RUN composer dump-env prod --empty
+RUN chown www-data:www-data ./var
 EXPOSE 80
