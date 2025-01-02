@@ -202,7 +202,7 @@ class FlashcardRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('f')
             ->select('count(f.id)')
             ->join('f.reviewHistory', 'r')
-            ->andWhere('r.grade > :threshold')
+            ->andWhere('r.grade >= :threshold')
             ->setParameter('threshold', GradeType::HARD->value)
             ->andWhere('r.reset = :isReset')
             ->setParameter('isReset', false);
