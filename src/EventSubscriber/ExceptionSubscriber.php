@@ -34,7 +34,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $response = new JsonResponse(
             [
                 'message' => Response::$statusTexts[$statusCode],
-                'details' => $statusCode === Response::HTTP_INTERNAL_SERVER_ERROR ? 'Internal server error' : $exception->getMessage(),
+                'details' => $statusCode === Response::HTTP_INTERNAL_SERVER_ERROR ? 'An error occured' : $exception->getMessage(),
             ],
             $statusCode
         );
