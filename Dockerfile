@@ -1,6 +1,7 @@
 FROM php:8.3.15-apache AS base
 WORKDIR /var/www/html
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN apt-get install -y systemd
 RUN install-php-extensions intl
 RUN install-php-extensions opcache
 RUN install-php-extensions zip
