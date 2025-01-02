@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[Route('/api/_internal', name: 'api_', format: 'json')]
+#[Route('/_internal', name: 'api_', format: 'json')]
 #[RelativeToEntity(Topic::class)]
 class TestController extends AbstractRestController
 {

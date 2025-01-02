@@ -30,7 +30,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[Route('/api', 'api_', format: 'json')]
+#[Route('', 'api_', format: 'json')]
 #[RelativeToEntity(Flashcard::class)]
 class FlashcardBehaviorController extends AbstractRestController
 {

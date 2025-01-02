@@ -15,7 +15,7 @@ use App\Voter\SessionVoter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api', 'api_', format: 'json')]
+#[Route(name: 'api_', format: 'json')]
 #[RelativeToEntity(Review::class)]
 class ReviewCrudController extends AbstractRestController
 {

@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/admin', 'api_admin_', format: 'json')]
+#[Route('/admin', 'api_admin_', format: 'json')]
 class UserAdminController extends AbstractRestController
 {
     // #[Route('/users', name: 'get_users', methods: ['GET'])]

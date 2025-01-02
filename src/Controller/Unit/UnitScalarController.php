@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[Route('/api', 'api_', format: 'json')]
+#[Route(name: 'api_', format: 'json')]
 #[RelativeToEntity(Unit::class)]
 class UnitScalarController extends AbstractRestController
 {

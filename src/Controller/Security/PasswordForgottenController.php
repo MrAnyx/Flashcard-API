@@ -24,7 +24,7 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/auth', 'api_auth_', format: 'json')]
+#[Route('/auth', 'api_auth_', format: 'json')]
 class PasswordForgottenController extends AbstractRestController
 {
     #[Route('/reset-password/request', name: 'password_reset_request', methods: ['POST'])]

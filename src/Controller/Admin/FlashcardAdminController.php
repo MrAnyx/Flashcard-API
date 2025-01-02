@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/admin', 'api_admin_', format: 'json')]
+#[Route('/admin', 'api_admin_', format: 'json')]
 class FlashcardAdminController extends AbstractRestController
 {
     // #[Route('/flashcards', name: 'get_flashcards', methods: ['GET'])]

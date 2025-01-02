@@ -24,7 +24,7 @@ security:
             security: false
 
         login:
-            pattern: ^/api/auth/login
+            pattern: ^/auth/login
             stateless: true
             provider: api_user_provider
             json_login:
@@ -35,7 +35,7 @@ security:
                 failure_handler: App\Security\AuthenticationFailureHandler
 
         api:
-            pattern: ^/api
+            pattern: ^/
             stateless: true
             provider: api_user_token_provider
             custom_authenticators:
@@ -44,11 +44,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/auth, roles: PUBLIC_ACCESS }
-        - { path: ^/api/admin, roles: ROLE_ADMIN }
-        - { path: ^/api/analytics, roles: ROLE_PREMIUM }
-        - { path: ^/api/_internal, roles: PUBLIC_ACCESS, allow_if: "'%env(APP_ENV)%' in ['dev', 'test']" }
-        - { path: ^/api, roles: IS_AUTHENTICATED }
+        - { path: ^/auth, roles: PUBLIC_ACCESS }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/analytics, roles: ROLE_PREMIUM }
+        - { path: ^/_internal, roles: PUBLIC_ACCESS, allow_if: "'%env(APP_ENV)%' in ['dev', 'test']" }
+        - { path: ^/, roles: IS_AUTHENTICATED }
 
 when@test:
     security:

@@ -9,7 +9,7 @@ use App\Controller\AbstractRestController;
 use App\Entity\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api', 'api_', format: 'json')]
+#[Route(name: 'api_', format: 'json')]
 #[RelativeToEntity(Session::class)]
 class SessionAnalyticsController extends AbstractRestController
 {

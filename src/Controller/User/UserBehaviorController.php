@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[Route('/api', 'api_', format: 'json')]
+#[Route(name: 'api_', format: 'json')]
 #[RelativeToEntity(User::class)]
 class UserBehaviorController extends AbstractRestController
 {

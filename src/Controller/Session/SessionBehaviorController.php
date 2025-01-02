@@ -14,7 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api', 'api_', format: 'json')]
+#[Route(name: 'api_', format: 'json')]
 #[RelativeToEntity(Session::class)]
 class SessionBehaviorController extends AbstractRestController
 {

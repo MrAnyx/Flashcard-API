@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/admin', 'api_admin_', format: 'json')]
+#[Route('/admin', 'api_admin_', format: 'json')]
 class TopicAdminController extends AbstractRestController
 {
     // #[Route('/topics', name: 'get_topics', methods: ['GET'])]

@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[Route('/api/auth', 'api_auth_', format: 'json')]
+#[Route('/auth', 'api_auth_', format: 'json')]
 class AuthenticationController extends AbstractRestController
 {
     #[Route('/login', name: 'login', methods: ['POST'])]
