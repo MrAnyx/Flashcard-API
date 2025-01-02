@@ -23,8 +23,10 @@ class SessionBehaviorController extends AbstractRestController
         EntityManagerInterface $em,
         #[Resource(SessionVoter::OWNER)] Session $session,
     ): JsonResponse {
-        $session->setEndedAt(new \DateTimeImmutable());
-        $em->flush();
+        if ($session->getEndedAt() === null) {
+            $session->setEndedAt(new \DateTimeImmutable());
+            $em->flush();
+        }
 
         return $this->json($session, context: ['groups' => ['read:session:user']]);
     }
