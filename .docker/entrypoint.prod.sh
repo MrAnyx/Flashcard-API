@@ -7,8 +7,8 @@ php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migratio
 
 # Enable and start the worker
 systemctl --user daemon-reload
-systemctl --user enable messenger-worker@1
-systemctl --user start messenger-worker@1
+systemctl --user enable messenger-worker
+systemctl --user start messenger-worker
 
 # Start Apache server
 echo "Starting Apache..."
