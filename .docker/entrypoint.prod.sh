@@ -7,6 +7,10 @@ php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migratio
 
 # Update and start supervisor service
 echo "Starting supervisor..."
+service supervisor restart
+supervisorctl reread
+supervisorctl update
+supervisorctl restart all
 
 # Start Apache server
 echo "Starting Apache..."
