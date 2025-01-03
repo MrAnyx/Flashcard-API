@@ -12,8 +12,4 @@ supervisorctl reread
 supervisorctl update
 supervisorctl restart all
 
-# Start Apache server
-echo "Starting Apache..."
-exec apache2-foreground
-
 exec docker-php-entrypoint "$@"

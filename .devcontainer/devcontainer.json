@@ -1,11 +1,8 @@
 {
     "name": "Meeio Backend",
-    "dockerComposeFile": [
-        "../docker-compose.yaml"
-    ],
+    "dockerComposeFile": ["../docker-compose.yaml"],
     "service": "api",
     "workspaceFolder": "/var/www/html",
-    "postCreateCommand": "task app:default:config",
     "customizations": {
         "vscode": {
             "settings": {

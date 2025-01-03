@@ -8,14 +8,14 @@ framework:
             async:
                 dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
                 retry_strategy:
-                    max_retries: 3
+                    max_retries: 5
                     delay: 3000
 
             failed: "doctrine://default?queue_name=failed"
             sync: "sync://"
 
         routing:
-            App\Message\SendTextEmailMessage: sync
+            App\Message\SendTextEmailMessage: async
 # when@test:
 #    framework:
 #        messenger:

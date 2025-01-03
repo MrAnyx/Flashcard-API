@@ -1,8 +1,11 @@
 #!/bin/bash
 set -e
 
-# Start Apache server
-echo "Starting Apache..."
-exec apache2-foreground
+# Update and start supervisor service
+echo "Starting supervisor..."
+service supervisor start
+supervisorctl reread
+supervisorctl update
+supervisorctl restart all
 
 exec docker-php-entrypoint "$@"
