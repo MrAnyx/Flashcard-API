@@ -5,10 +5,8 @@ set -e
 echo "Running database migrations..."
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
-# Enable and start the worker
-systemctl --user daemon-reload
-systemctl --user enable messenger-worker
-systemctl --user start messenger-worker
+# Update and start supervisor service
+echo "Starting supervisor..."
 
 # Start Apache server
 echo "Starting Apache..."

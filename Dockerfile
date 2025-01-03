@@ -1,5 +1,5 @@
 FROM php:8.3.15-apache AS base
-RUN apt-get update && apt-get install -y systemd
+RUN apt-get update && apt-get install -y supervisor
 WORKDIR /var/www/html
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN install-php-extensions intl
@@ -24,7 +24,7 @@ ENV APP_ENV=prod
 ENV APP_DEBUG=0
 RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY . .
-COPY ./.docker/messenger-worker@.service /etc/systemd/user
+COPY ./.docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD --chmod=0755 ./.docker/entrypoint.prod.sh /usr/local/bin/entrypoint.sh
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN php bin/console cache:clear && php bin/console cache:warmup
