@@ -24,7 +24,7 @@ ENV APP_ENV=prod
 ENV APP_DEBUG=0
 RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY . .
-COPY ./.docker/messenger-worker@.service /etc/systemd/system
+COPY ./.docker/messenger-worker@.service /etc/systemd/user
 ADD --chmod=0755 ./.docker/entrypoint.prod.sh /usr/local/bin/entrypoint.sh
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN php bin/console cache:clear && php bin/console cache:warmup
