@@ -1,11 +1,12 @@
 FROM php:8.3.15-apache AS base
+WORKDIR /var/www/html
 RUN apt-get update
-ARG S6_OVERLAY_VERSION=3.2.0.3
+ARG S6_OVERLAY_VERSION=3.2.0.2
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
 RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
 RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz
-WORKDIR /var/www/html
+COPY --chmod=755 ./.docker/s6 /etc/services.d
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN install-php-extensions intl
 RUN install-php-extensions opcache
